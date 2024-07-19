@@ -144,6 +144,19 @@ Version 2.0
 - Banderas de la Armada bugeadas
 - Inestabilidad del Motor Grafico
 
+## Instrucciones:
+
+Winter-AO cuenta con un pequeño sistema de seguridad de GM. Es simple, solo deja entrar al GM que tiene
+X ip asignada. Si por ejemplo la ip de ese GM es XX-XX-XX-XX solo podra entrar con esa ip, en caso de intentar
+entrar con la ip YY-YY-YY-YY-YY Le dara error.
+Esto evita que los usuarios puedan entrar a la cuenta de los GM apesar de que consigan su pass, o tambien que
+los GM le deje a un amigo entrar desde su casa.
+
+Simplemente buscan "ERWIN" y sustitulle en nombre de erwin por el nombre el GM. Despues en server.init
+Sustitullen el nombre y IP.
+
+En el cliente tendran que cambiar la ip de comprobacion de actualizaciones o si no dara muchos problemas.
+
 ## Galeria
 
 ![image](https://github.com/user-attachments/assets/452a45b1-14ad-4cb5-8031-8666bd95ed8b)
