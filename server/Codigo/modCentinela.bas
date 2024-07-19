@@ -121,7 +121,7 @@ Public Sub CentinelaCheckClave(ByVal UserIndex As Integer, ByVal clave As Intege
     If clave = Centinela.clave And UserIndex = Centinela.RevisandoUserIndex Then
         UserList(Centinela.RevisandoUserIndex).flags.CentinelaOK = True
         Centinela.RevisandoUserIndex = 0
-        Call SendData(SendTarget.ToIndex, Centinela.RevisandoUserIndex, 0, "||" & vbWhite & "°" & "¡Muchas gracias " & UserList(Centinela.RevisandoUserIndex).name & "! Espero no haber sido una molestia" & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
+        Call SendData(SendTarget.ToIndex, Centinela.RevisandoUserIndex, 0, "||" & vbwhite & "°" & "¡Muchas gracias " & UserList(Centinela.RevisandoUserIndex).name & "! Espero no haber sido una molestia" & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
     Else
         Call CentinelaSendClave(UserIndex)
         
@@ -153,14 +153,14 @@ Public Sub CentinelaSendClave(ByVal UserIndex As Integer)
     
     If UserIndex = Centinela.RevisandoUserIndex Then
         If Not UserList(UserIndex).flags.CentinelaOK Then
-            Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & vbWhite & "°" & "¡La clave que te he dicho es " & "/CENTINELA " & Centinela.clave & " escríbelo rápido!" & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
+            Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & vbwhite & "°" & "¡La clave que te he dicho es " & "/CENTINELA " & Centinela.clave & " escríbelo rápido!" & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
         Else
             'Logueamos el evento
             Call LogCentinela("El usuario " & UserList(Centinela.RevisandoUserIndex).name & " respondió más de una vez la contraseña correcta.")
-            Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & vbWhite & "°" & "Te agradezco, pero ya me has respondido. Me retiraré pronto." & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
+            Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & vbwhite & "°" & "Te agradezco, pero ya me has respondido. Me retiraré pronto." & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
         End If
     Else
-        Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & vbWhite & "°" & "No es a ti a quien estoy hablando, ¿no ves?" & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & vbwhite & "°" & "No es a ti a quien estoy hablando, ¿no ves?" & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
     End If
 End Sub
 
@@ -185,7 +185,7 @@ Public Sub PasarMinutoCentinela()
             End If
             
             'El centinela habla y se manda a consola para que no quepan dudas
-            Call SendData(SendTarget.ToIndex, Centinela.RevisandoUserIndex, 0, "||" & vbRed & "°¡" & UserList(Centinela.RevisandoUserIndex).name & ", tienes un minuto más para responder! Debes escribir /CENTINELA " & Centinela.clave & "." & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
+            Call SendData(SendTarget.ToIndex, Centinela.RevisandoUserIndex, 0, "||" & vbred & "°¡" & UserList(Centinela.RevisandoUserIndex).name & ", tienes un minuto más para responder! Debes escribir /CENTINELA " & Centinela.clave & "." & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
             Call SendData(SendTarget.ToIndex, Centinela.RevisandoUserIndex, 0, "||" & "¡" & UserList(Centinela.RevisandoUserIndex).name & ", tienes un minuto más para responder! Debes escribir /CENTINELA " & Centinela.clave & "." & FONTTYPE_CENTINELA)
         End If
     End If

@@ -182,7 +182,7 @@ On Error Resume Next
 
     Dim ind As String
     ind = UserList(UserIndex).Char.CharIndex
-    Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbCyan & "°" & S & "°" & ind)
+    Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbcyan & "°" & S & "°" & ind)
     Exit Sub
 End Sub
 
@@ -978,7 +978,7 @@ ElseIf Hechizos(hIndex).SubeHP = 2 Then
     b = True
     Call NpcAtacado(NpcIndex, UserIndex)
     If Npclist(NpcIndex).flags.Snd2 > 0 Then Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "TW" & Npclist(NpcIndex).flags.Snd2)
-    Call SendData(ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbRed & "°-" & daño & "°" & str(Npclist(NpcIndex).Char.CharIndex))
+    Call SendData(ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbred & "°-" & daño & "°" & str(Npclist(NpcIndex).Char.CharIndex))
 
     Npclist(NpcIndex).Stats.MinHP = Npclist(NpcIndex).Stats.MinHP - daño
     SendData SendTarget.ToIndex, UserIndex, 0, "||Le has causado " & daño & " puntos de daño a la criatura!" & FONTTYPE_FIGHT
@@ -1031,6 +1031,7 @@ Dim tempChr As Integer
     
 H = UserList(UserIndex).Stats.UserHechizos(UserList(UserIndex).flags.Hechizo)
 tempChr = UserList(UserIndex).flags.TargetUser
+
       
 'If UserList(UserIndex).Name = "EL OSO" Then
 '    Call SendData(SendTarget.ToIndex, UserIndex, 0, "|| le tiro el hechizo " & H & " a " & UserList(tempChr).Name & FONTTYPE_VENENO)

@@ -163,7 +163,17 @@ Next LoopC
              rData = Right$(rData, Len(rData) - 1)
             tIndex = NameIndex(ReadField(1, rData, 32))
             Arg1 = ReadField(2, rData, 32)
- 
+            
+             If (EsDios(tName) Or EsAdmin(tName)) And UserList(UserIndex).flags.Privilegios < PlayerType.Dios Then
+                Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No puedes comunicarte con los Dioses y Admins." & FONTTYPE_INFO)
+                Exit Sub
+            End If
+            
+                        If UserList(UserIndex).flags.Privilegios = PlayerType.User And (EsSemiDios(tName) Or EsConsejero(tName)) Then
+                Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No puedes comunicarte con los GMs" & FONTTYPE_INFO)
+                Exit Sub
+            End If
+            
         If UserList(UserIndex).flags.Muerto = 1 Then
             Call SendData(SendTarget.ToIndex, UserIndex, 0, "||¡¡Estas muerto!! Los muertos no pueden comunicarse con el mundo de los vivos. " & FONTTYPE_INFO)
             Exit Sub
@@ -173,18 +183,6 @@ Next LoopC
             Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Usuario offline." & FONTTYPE_INFO)
             Exit Sub
         End If
- 
-             'A los dioses y admins no vale susurrarles si no sos uno vos mismo (así no pueden ver si están conectados o no)
-            If (EsDios(tName) Or EsAdmin(tName)) And UserList(UserIndex).flags.Privilegios < PlayerType.Dios Then
-                Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No puedes comunicarte con los Dioses y Admins." & FONTTYPE_INFO)
-                Exit Sub
-            End If
-            
-            'A los Consejeros y SemiDioses no vale susurrarles si sos un PJ común.
-            If UserList(UserIndex).flags.Privilegios = PlayerType.User And (EsSemiDios(tName) Or EsConsejero(tName)) Then
-                Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No puedes comunicarte con los GMs" & FONTTYPE_INFO)
-                Exit Sub
-            End If
  
         If Not EstaPCarea(UserIndex, tIndex) Then
             Call SendData(SendTarget.ToIndex, UserIndex, UserList(UserIndex).Pos.Map, "||" & &H8000& & "°" & tMessage & "°" & str(ind))
@@ -211,11 +209,13 @@ Next LoopC
                         UserList(UserIndex).flags.CountSH = 0
                     End If
                     If Not UserList(UserIndex).flags.CountSH = 0 Then
+                        If Not UserList(UserIndex).flags.Privilegios > 1 Then
                         dummy = 126000 \ dummy
                         Call LogHackAttemp("Tramposo SH: " & UserList(UserIndex).name & " , " & dummy)
                         Call SendData(SendTarget.ToAdmins, 0, 0, "||Servidor> " & UserList(UserIndex).name & " ha sido echado por el servidor por posible uso de SH." & FONTTYPE_SERVER)
                         Call CloseSocket(UserIndex)
                         Exit Sub
+                        End If
                     Else
                         UserList(UserIndex).flags.CountSH = TempTick
                     End If
@@ -318,11 +318,7 @@ Next LoopC
                     Call SendData(SendTarget.ToIndex, UserIndex, 0, "||¡¡Estas muerto!! Los muertos no pueden tomar objetos. " & FONTTYPE_INFO)
                     Exit Sub
             End If
-            '[Consejeros]
-            If UserList(UserIndex).flags.Privilegios = PlayerType.Consejero And Not UserList(UserIndex).flags.EsRolesMaster Then
-                Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No puedes tomar ningun objeto. " & FONTTYPE_INFO)
-                Exit Sub
-            End If
+
             Call GetObj(UserIndex)
             Exit Sub
         Case "TAB" 'Entrar o salir modo combate
@@ -364,7 +360,14 @@ Next LoopC
         Case "FEST" 'Mini estadisticas :)
             Call EnviarMiniEstadisticas(UserIndex)
             Exit Sub
-                    
+            
+                            Case "FINSUB"
+            'User sale del modo COMERCIO
+            'UserList(UserIndex).flags.Comerciando = False
+            Subastando = False
+            Call SendData(SendTarget.ToIndex, UserIndex, 0, "FINSUBOK")
+            Exit Sub
+            
         '[Alejo]
         Case "FINCOM"
             'User sale del modo COMERCIO
@@ -523,7 +526,7 @@ Call MeterItemEnInventario(UserIndex, Sarasa)
 End If
 Exit Sub
 
-Case "KOTO10"
+Case "KITI1"
 Sarasa.Amount = 1
 Sarasa.ObjIndex = 1245
 
@@ -531,6 +534,66 @@ If UserList(UserIndex).Stats.PuntosTorneo < 35 Then
 Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No tienes suficientes puntos de torneo!." & FONTTYPE_INFO)
 Else
 UserList(UserIndex).Stats.PuntosTorneo = UserList(UserIndex).Stats.PuntosTorneo - 35
+Call MeterItemEnInventario(UserIndex, Sarasa)
+End If
+Exit Sub
+
+Case "KITI2"
+Sarasa.Amount = 1
+Sarasa.ObjIndex = 1289
+
+If UserList(UserIndex).Stats.PuntosTorneo < 50 Then
+Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No tienes suficientes puntos de torneo!." & FONTTYPE_INFO)
+Else
+UserList(UserIndex).Stats.PuntosTorneo = UserList(UserIndex).Stats.PuntosTorneo - 50
+Call MeterItemEnInventario(UserIndex, Sarasa)
+End If
+Exit Sub
+
+Case "KITI3"
+Sarasa.Amount = 1
+Sarasa.ObjIndex = 1285
+
+If UserList(UserIndex).Stats.PuntosTorneo < 45 Then
+Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No tienes suficientes puntos de torneo!." & FONTTYPE_INFO)
+Else
+UserList(UserIndex).Stats.PuntosTorneo = UserList(UserIndex).Stats.PuntosTorneo - 45
+Call MeterItemEnInventario(UserIndex, Sarasa)
+End If
+Exit Sub
+
+Case "KITI4"
+Sarasa.Amount = 1
+Sarasa.ObjIndex = 1247
+
+If UserList(UserIndex).Stats.PuntosTorneo < 45 Then
+Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No tienes suficientes puntos de torneo!." & FONTTYPE_INFO)
+Else
+UserList(UserIndex).Stats.PuntosTorneo = UserList(UserIndex).Stats.PuntosTorneo - 45
+Call MeterItemEnInventario(UserIndex, Sarasa)
+End If
+Exit Sub
+
+Case "KITI5"
+Sarasa.Amount = 1
+Sarasa.ObjIndex = 1299
+
+If UserList(UserIndex).Stats.PuntosTorneo < 55 Then
+Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No tienes suficientes puntos de torneo!." & FONTTYPE_INFO)
+Else
+UserList(UserIndex).Stats.PuntosTorneo = UserList(UserIndex).Stats.PuntosTorneo - 55
+Call MeterItemEnInventario(UserIndex, Sarasa)
+End If
+Exit Sub
+
+Case "KITI6"
+Sarasa.Amount = 1
+Sarasa.ObjIndex = 1292
+
+If UserList(UserIndex).Stats.PuntosTorneo < 55 Then
+Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No tienes suficientes puntos de torneo!." & FONTTYPE_INFO)
+Else
+UserList(UserIndex).Stats.PuntosTorneo = UserList(UserIndex).Stats.PuntosTorneo - 55
 Call MeterItemEnInventario(UserIndex, Sarasa)
 End If
 Exit Sub
@@ -662,11 +725,6 @@ End Select
     Select Case UCase$(Left$(rData, 7))
     End Select
     Select Case UCase$(Left$(rData, 3))
-         Case "UMH" ' Usa macro de hechizos
-            Call SendData(SendTarget.ToAdmins, UserIndex, 0, "||" & UserList(UserIndex).name & " fue expulsado por Anti-macro de hechizos " & FONTTYPE_VENENO)
-            Call SendData(SendTarget.ToIndex, UserIndex, 0, "ERR Has sido expulsado por usar macro de hechizos. Recomendamos leer el reglamento sobre el tema macros" & FONTTYPE_INFO)
-            Call CloseSocket(UserIndex)
-            Exit Sub
             Case "MACROILEGAL"
 Cerrar_Usuario (UserIndex)
 Exit Sub
@@ -1234,7 +1292,7 @@ Exit Sub
             If UserList(UserIndex).flags.TargetNPC > 0 Then
                 '¿El NPC puede comerciar?
                 If Npclist(UserList(UserIndex).flags.TargetNPC).Comercia = 0 Then
-                    Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & FONTTYPE_TALK & "°" & "No tengo ningun interes en comerciar." & "°" & str(Npclist(UserList(UserIndex).flags.TargetNPC).Char.CharIndex))
+                    Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbWhite & "°" & "No tengo ningun interes en comerciar." & "°" & str(Npclist(UserList(UserIndex).flags.TargetNPC).Char.CharIndex))
                     Exit Sub
                 End If
             Else
@@ -1284,7 +1342,7 @@ Exit Sub
             If UserList(UserIndex).flags.TargetNPC > 0 Then
                 '¿El NPC puede comerciar?
                 If Npclist(UserList(UserIndex).flags.TargetNPC).Comercia = 0 Then
-                    Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & FONTTYPE_TALK & "°" & "No tengo ningun interes en comerciar." & "°" & str(Npclist(UserList(UserIndex).flags.TargetNPC).Char.CharIndex))
+                    Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbWhite & "°" & "No tengo ningun interes en comerciar." & "°" & str(Npclist(UserList(UserIndex).flags.TargetNPC).Char.CharIndex))
                     Exit Sub
                 End If
             Else
@@ -1293,6 +1351,23 @@ Exit Sub
 '           rdata = Right$(rdata, Len(rdata) - 5)
             'User compra el item del slot rdata
             Call NPCCompraItem(UserIndex, val(ReadField(1, rData, 44)), val(ReadField(2, rData, 44)))
+            Exit Sub
+                    Case "SUBA"
+            If UserList(UserIndex).flags.Muerto = 1 Then
+                Call SendData(SendTarget.ToIndex, UserIndex, 0, "||¡¡Estas muerto!!" & FONTTYPE_INFO)
+                Exit Sub
+            End If
+            rData = Right$(rData, Len(rData) - 5)
+            tInt = val(ReadField(1, rData, 44))
+            If UserList(UserIndex).flags.TargetNPC > 0 Then
+                If Npclist(UserList(UserIndex).flags.TargetNPC).Subasta = 0 Then
+                    Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbWhite & "°" & "No puedo subastar objetos." & "°" & str(Npclist(UserList(UserIndex).flags.TargetNPC).Char.CharIndex))
+                    Exit Sub
+                End If
+            Else
+                Exit Sub
+            End If
+            Call NPCSubasta(UserIndex, val(ReadField(1, rData, 44)), val(ReadField(2, rData, 44)), val(ReadField(3, rData, 44)))
             Exit Sub
         '[KEVIN]-------------------------------------------------------------------------
         '****************************************************************************************

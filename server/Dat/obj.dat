@@ -55,7 +55,7 @@ numero de OBJs libres (cuando se pueda hay que utilizarlos)
 
 [INIT]
 'aca va el numero de OBJ mas alto, NO la cantidad de OBJs.
-NumOBJs=1258
+NumOBJs=1306
 
 
 
@@ -650,7 +650,7 @@ Name=Leña
 GrhIndex=550
 ObjType=14
 Agarrable=0
-Valor=5
+Valor=85
 Crucial=1
 Subastable=1
 
@@ -1617,7 +1617,7 @@ Name=Jugo de Frutas
 GrhIndex=584
 ObjType=13
 Agarrable=0
-MinAgu=100
+MinAgu=80
 Valor=12
 Crucial=1
 
@@ -1948,7 +1948,7 @@ GrhIndex=604
 ObjType=23
 Agarrable=0
 Lingoteindex=386
-Valor=5
+Valor=20
 Crucial=1
 MinSkill=25
 
@@ -1958,7 +1958,7 @@ GrhIndex=632
 ObjType=23
 Agarrable=0
 Lingoteindex=387
-Valor=6
+Valor=40
 Crucial=1
 MinSkill=50
 
@@ -1968,7 +1968,7 @@ GrhIndex=631
 ObjType=23
 Agarrable=0
 Lingoteindex=388
-Valor=10
+Valor=60
 Crucial=1
 MinSkill=100
 
@@ -2083,7 +2083,7 @@ HechizoIndex=5
 [OBJ204]
 Name=Flecha Eléctrica
 GrhIndex=609
-ObjType=24
+ObjType=32
 Agarrable=0
 Valor=4500
 Crucial=1
@@ -3847,7 +3847,7 @@ Anim=12
 MinHit=2
 MaxHit=5
 Apuñala=1
-Valor=840
+Valor=1040
 Crucial=0
 LingH=12
 LingP=0
@@ -4099,7 +4099,7 @@ Name=Lingote de Hierro
 GrhIndex=724
 ObjType=29
 Agarrable=0
-Valor=70
+Valor=180
 Crucial=0
 
 [OBJ387]
@@ -4107,7 +4107,7 @@ Name=Lingote de Plata
 GrhIndex=725
 ObjType=29
 Agarrable=0
-Valor=120
+Valor=290
 Crucial=0
 
 [OBJ388]
@@ -4115,7 +4115,7 @@ Name=Lingote de Oro
 GrhIndex=723
 ObjType=29
 Agarrable=0
-Valor=350
+Valor=400
 Crucial=0
 
 [OBJ389]
@@ -4362,23 +4362,29 @@ GrhIndex=716
 ObjType=2
 Agarrable=0
 Anim=15
+Minlvl=40
 MinHit=100
 MaxHit=100
 Valor=107000
 Crucial=0
+CreaAura=22904
+Minlvl=40
 CP1=MAGO
 CP2=DRUIDA
 CP3=LADRON
-CP4=PIRATA
-CP5=CARPINTERO
-CP6=MINERO
-CP7=HERRERO
-CP8=LEÑADOR
-CP9=PESCADOR
-LingH=500
-LingP=400
-LingO=300
+CP4=BARDO
+CP5=PIRATA
+CP6=CARPINTERO
+CP7=MINERO
+CP8=HERRERO
+CP9=LEÑADOR
+CP10=PESCADOR
+CP12=BARDO
+LingH=1050
+LingP=950
+LingO=890
 SkHerreria=100
+
 
 [OBJ403]
 Name=Espada de Plata
@@ -4474,7 +4480,7 @@ Agarrable=0
 Crucial=0
 
 [OBJ409]
-Name=Gema Celeste
+Name=Gema Espectral
 GrhIndex=703
 ObjType=29
 Agarrable=0
@@ -5217,8 +5223,8 @@ Agarrable=0
 Anim=7
 Proyectil=1
 Municiones=1
-MinHit=5
-MaxHit=8
+MinHit=1
+MaxHit=4
 Valor=120
 Crucial=0
 CP1=MAGO
@@ -5234,8 +5240,8 @@ Agarrable=0
 Anim=7
 Proyectil=1
 Municiones=1
-MinHit=9
-MaxHit=12
+MinHit=4
+MaxHit=10
 Valor=1800
 Crucial=0
 CP1=MAGO
@@ -5252,8 +5258,8 @@ Name=Flecha
 GrhIndex=752
 ObjType=32
 Agarrable=0
-MinHit=4
-MaxHit=6
+MinHit=1
+MaxHit=3
 Valor=3
 Crucial=1
 CP1=MAGO
@@ -5267,8 +5273,8 @@ GrhIndex=756
 ObjType=3
 NumRopaje=89
 Agarrable=0
-MaxDef=65
-MinDef=60
+MaxDef=50
+MinDef=45
 Valor=590000
 Crucial=0
 CP1=MAGO
@@ -5295,9 +5301,9 @@ ObjType=3
 NumRopaje=90
 Agarrable=0
 Mujer=1
-MaxDef=65
-MinDef=60
-Valor=590000
+MaxDef=50
+MinDef=45
+Valor=0
 Crucial=0
 CP1=MAGO
 CP2=MINERO
@@ -5376,7 +5382,7 @@ GrhIndex=20837
 ObjType=3
 NumRopaje=439
 Agarrable=0
-MaxDef=60
+MaxDef=58
 MinDef=55
 Valor=0
 Crucial=0
@@ -6342,8 +6348,8 @@ Name=Flecha +1
 GrhIndex=755
 ObjType=32
 Agarrable=0
-MinHit=6
-MaxHit=8
+MinHit=1
+MaxHit=4
 Valor=10
 Crucial=0
 CP1=PIRATA
@@ -6369,8 +6375,8 @@ Name=Flecha +2
 GrhIndex=754
 ObjType=32
 Agarrable=0
-MinHit=8
-MaxHit=10
+MinHit=1
+MaxHit=5
 Valor=16
 Crucial=0
 CP1=PIRATA
@@ -6396,8 +6402,8 @@ Name=Flecha +3
 GrhIndex=753
 ObjType=32
 Agarrable=0
-MinHit=10
-MaxHit=12
+MinHit=1
+MaxHit=6
 Valor=23
 Crucial=0
 CP1=PIRATA
@@ -6440,9 +6446,9 @@ MinHit=1000
 MaxHit=1000
 Valor=0
 Crucial=0
-LingH=500
-LingP=400
-LingO=300
+LingH=650
+LingP=550
+LingO=400
 SkHerreria=100
 
 [OBJ558]
@@ -7803,8 +7809,7 @@ CP8=LADRON
 CP9=BANDIDO
 CP10=HERRERO
 CP11=GUERRERO
-CP12=BARDO
-CP13=DRUIDA
+CP12=DRUIDA
 
 [OBJ662]
 Name=Sombrero de Mago
@@ -7830,8 +7835,7 @@ CP8=LADRON
 CP9=BANDIDO
 CP10=HERRERO
 CP11=GUERRERO
-CP12=BARDO
-CP13=DRUIDA
+CP12=DRUIDA
 
 [OBJ663]
 Name=Arco Simple Reforzado
@@ -7842,8 +7846,8 @@ Anim=7
 Proyectil=1
 Municiones=1
 Refuerzo=4
-MinHit=7
-MaxHit=10
+MinHit=2
+MaxHit=4
 Valor=1600
 Crucial=0
 CP1=MAGO
@@ -7889,8 +7893,8 @@ Anim=11
 Proyectil=1
 Municiones=1
 Refuerzo=12
-MinHit=12
-MaxHit=20
+MinHit=6
+MaxHit=10
 Valor=0
 Crucial=0
 CP1=PIRATA
@@ -8020,7 +8024,7 @@ LingO=0
 SkHerreria=75
 
 [OBJ673]
-Name=Mimetismo
+Name=Mimetismo (Druida)
 GrhIndex=609
 ObjType=24
 Agarrable=0
@@ -11705,17 +11709,19 @@ Y=40
 NoSeCae=1
 
 [OBJ991]
-Name=Espada Argentum (Sagrado)
+Name=Espada Argentum [Sagrada]
 GrhIndex=17901
 ObjType=2
 Agarrable=0
 Anim=19
-MinHit=30
-MaxHit=38
+MinHit=27
+MaxHit=35
 Valor=0
 noroba=1
 NoSeCae=1
 tirable=1
+CreaAura=22903
+Minlvl=45
 CP1=MAGO
 CP2=DRUIDA
 CP3=LADRON
@@ -11730,6 +11736,7 @@ NumRopaje=401
 Agarrable=0
 MaxDef=55
 MinDef=55
+Minlvl=37
 Valor=0
 Crucial=0
 CP1=MAGO
@@ -11777,6 +11784,7 @@ Agarrable=0
 Anim=12
 MaxDef=60
 MinDef=60
+Minlvl=50
 Valor=0
 Crucial=0
 CP1=MAGO
@@ -11805,12 +11813,11 @@ Valor=0
 Crucial=0
 CP1=MAGO
 CP2=LADRON
-CP3=BARDO
-CP4=PIRATA
-CP5=LEÑADOR
-CP6=PESCADOR
-CP7=MINERO
-CP8=CARPINTERO
+CP3=PIRATA
+CP4=LEÑADOR
+CP5=PESCADOR
+CP6=MINERO
+CP7=CARPINTERO
 LingH=150
 LingP=130
 LingO=0
@@ -11825,6 +11832,7 @@ Agarrable=0
 Anim=14
 MaxDef=60
 MinDef=60
+Minlvl=50
 Valor=0
 Crucial=0
 CP1=MAGO
@@ -11890,6 +11898,7 @@ Agarrable=0
 Anim=8
 MaxDef=24
 MinDef=24
+Minlvl=33
 Valor=4200
 Crucial=0
 CP1=MAGO
@@ -11910,11 +11919,12 @@ LingO=0
 SkHerreria=100
 
 [OBJ1000]
-Name=Pendiente del Sacrificio(Desactivado)
+Name=Pendiente del Sacrificio
 GrhIndex=18781
-ObjType=21
+ObjType=30
 Agarrable=0
-Crucial=0 
+Valor=21
+Crucial=0
 
 [OBJ1001]
 Name=Árbol
@@ -11973,6 +11983,7 @@ Agarrable=0
 Anim=15
 MaxDef=45
 MinDef=45
+Minlvl=35
 Valor=0
 Crucial=0
 CP1=MAGO
@@ -12048,6 +12059,7 @@ Agarrable=0
 Anim=17
 MaxDef=50
 MinDef=45
+Minlvl=39
 Valor=0
 Crucial=0
 CP1=MAGO
@@ -12058,6 +12070,8 @@ CP5=LEÑADOR
 CP6=PESCADOR
 CP7=MINERO
 CP8=CARPINTERO
+CP9=PALADIN
+CP10=CLERIGO
 LingH=5654
 LingP=458
 LingO=454
@@ -12159,8 +12173,7 @@ CP8=LADRON
 CP9=BANDIDO
 CP10=HERRERO
 CP11=GUERRERO
-CP12=BARDO
-CP13=DRUIDA
+CP12=DRUIDA
 
 [OBJ1018]
 Name=Escudo de Torre
@@ -12199,6 +12212,7 @@ MaxDef=18
 MinDef=18
 MinSkill=36
 NoSeCae=1
+Minlvl=40
 CP1=MAGO
 
 
@@ -12234,12 +12248,14 @@ LingO=500
 SkHerreria=100
 
 [OBJ1021]
-Name=Vara Infernal (Sagrado)
+Name=Vara Infernal [Sagrada]
 GrhIndex=19446
 ObjType=2
 Agarrable=0
 Anim=22
 StaffPower=4
+CreaAura=22907
+Minlvl=45
 noroba=1
 tirable=1
 NoSeCae=1
@@ -12320,7 +12336,8 @@ NumRopaje=420
 RazaEnana=1
 Agarrable=0
 MaxDef=55
-MinDef=55
+MinDef=50
+Minlvl=37
 Valor=0
 Crucial=0
 CP1=MAGO
@@ -12345,8 +12362,9 @@ ObjType=3
 NumRopaje=417
 RazaEnana=1
 Agarrable=0
-MaxDef=55
-MinDef=55
+MaxDef=50
+MinDef=45
+Minlvl=37
 Valor=0
 Crucial=0
 CP1=MAGO
@@ -12370,8 +12388,9 @@ GrhIndex=19582
 ObjType=3
 NumRopaje=418
 Agarrable=0
-MaxDef=55
-MinDef=55
+MaxDef=50
+MinDef=45
+Minlvl=37
 Valor=0
 Crucial=0
 CP1=MAGO
@@ -12396,7 +12415,8 @@ ObjType=3
 NumRopaje=419
 Agarrable=0
 MaxDef=55
-MinDef=55
+MinDef=50
+Minlvl=37
 Valor=0
 Crucial=0
 CP1=MAGO
@@ -12843,16 +12863,17 @@ Crucial=1
 HechizoIndex=48
 
 [OBJ1055]
-Name=Armadura del Logouth (Sagrado)
+Name=Armadura del Logouth [Sagrada]
 GrhIndex=20311
 ObjType=3
 NumRopaje=430
 Agarrable=0
 noroba=1
+Minlvl=45
 tirable=1
 NoSeCae=1
-MaxDef=60
-MinDef=55
+MaxDef=70
+MinDef=60
 Valor=0
 CP1=MAGO
 
@@ -12903,7 +12924,8 @@ Anim=25
 StaffPower=4
 MinHit=10
 MaxHit=20
-Valor=36500
+Minlvl=35
+Valor=0
 Crucial=0
 CP1=PIRATA
 CP2=CARPINTERO
@@ -12948,8 +12970,9 @@ ObjType=3
 NumRopaje=440
 RazaEnana=1
 Agarrable=0
-MaxDef=60
+MaxDef=58
 MinDef=55
+Minlvl=42
 Valor=0
 Crucial=0
 Mujer=1
@@ -12975,9 +12998,10 @@ ObjType=3
 NumRopaje=440
 Agarrable=0
 RazaEnana=1
-MaxDef=60
+MaxDef=58
 MinDef=55
 Valor=0
+Minlvl=42
 Crucial=0
 CP1=MAGO
 CP2=MINERO
@@ -13051,13 +13075,14 @@ Valor=1000
 Crucial=1
 
 [OBJ1066]
-Name=Montura de Preclitus (Sagrado)
+Name=Montura de Preclitus [Sagrada]
 GrhIndex=21164
 NumRopaje=445
 ObjType=37
 Valor=0
-MaxDef=25
-MinDef=25
+Minlvl=45
+MaxDef=50
+MinDef=50
 noroba=1
 tirable=1
 NoSeCae=1
@@ -13071,6 +13096,7 @@ NumRopaje=446
 Agarrable=0
 MaxDef=43
 MinDef=38
+Minlvl=25
 Valor=57600
 Crucial=0
 CP1=MAGO
@@ -13098,6 +13124,7 @@ Agarrable=0
 Anim=22
 MaxDef=50
 MinDef=45
+Minlvl=40
 Valor=0
 Crucial=0
 CP1=MAGO
@@ -13120,9 +13147,11 @@ GrhIndex=21223
 ObjType=2
 Agarrable=0
 Anim=27
-MinHit=26
-MaxHit=29
+MinHit=24
+MaxHit=27
+Minlvl=38
 Valor=0
+CreaAura=22906
 CP1=MAGO
 CP2=DRUIDA
 CP3=LADRON
@@ -13142,6 +13171,7 @@ Valor=450000
 MaxDef=18
 MinDef=18
 MinSkill=50
+Minlvl=40
 NoSeCae=1
 CP1=Clerigo
 CP2=Guerrero
@@ -13164,7 +13194,7 @@ Name=Pasaje a Shakoud
 GrhIndex=17831
 ObjType=36
 Valor=4254
-Mapa=13
+Mapa=268
 X=23
 Y=82
 NoSeCae=1
@@ -13242,7 +13272,7 @@ Crucial=0
 Name=Tumba
 GrhIndex=21285
 ObjType=20
-Agarrable=0
+Agarrable=1
 Valor=1024
 Crucial=0
 
@@ -13250,7 +13280,7 @@ Crucial=0
 Name=Tumba
 GrhIndex=21285
 ObjType=20
-Agarrable=0
+Agarrable=1
 Valor=1024
 Crucial=0
 
@@ -13258,7 +13288,7 @@ Crucial=0
 Name=Fuente 4 chorros
 GrhIndex=21297
 ObjType=20
-Agarrable=0
+Agarrable=1
 Valor=1024
 Crucial=0
 
@@ -13279,8 +13309,9 @@ GrhIndex=21402
 ObjType=2
 Agarrable=0
 Anim=28
-MinHit=17
-MaxHit=23
+MinHit=15
+MaxHit=17
+Minlvl=20
 Valor=15000
 Crucial=1
 CP1=MAGO
@@ -13690,19 +13721,19 @@ Agarrable=1
 Name=Guardia Muerto 1
 GrhIndex=21588
 ObjType=20
-Agarrable=0
+Agarrable=1
 
 [OBJ1221]
 Name=Guardia Muerto 2
 GrhIndex=21589
 ObjType=20
-Agarrable=0
+Agarrable=1
 
 [OBJ1222]
 Name=Guardia Muerto 3
 GrhIndex=21590
 ObjType=20
-Agarrable=0
+Agarrable=1
 
 [OBJ1223]
 Name=Árbol
@@ -13822,6 +13853,7 @@ Valor=810000
 MaxDef=65
 MinDef=65
 NoSeCae=1
+Minlvl=50
 MinSkill=50
 
 [OBJ1240]
@@ -13911,12 +13943,13 @@ LingO=0
 SkHerreria=75
 
 [OBJ1245]
-Name=Escudo Desintegrador(Sagrado)
+Name=Escudo Desintegrador[Sagrada]
 GrhIndex=21733
 ObjType=16
 NumRopaje=2
 Agarrable=0
 Anim=19
+Minlvl=45
 MaxDef=30
 MinDef=30
 Valor=0
@@ -13936,12 +13969,13 @@ CP9=HERRERO
 CP10=LEÑADOR
 
 [OBJ1246]
-Name=Armadura Angel (Sagrado)
+Name=Armadura Angel [Sagrada]
 GrhIndex=21742
 ObjType=3
 NumRopaje=454
 Agarrable=0
 noroba=1
+Minlvl=45
 tirable=1
 NoSeCae=1
 MaxDef=45
@@ -13950,11 +13984,12 @@ Valor=0
 CP1=MAGO
 
 [OBJ1247]
-Name=Armadura Demonio (Sagrado)
-GrhIndex=21769
+Name=Armadura Demonio [Sagrada]
+GrhIndex=22451
 ObjType=3
 NumRopaje=455
 Agarrable=0
+Minlvl=45
 noroba=1
 NoSeCae=1
 tirable=1
@@ -14090,3 +14125,533 @@ GrhIndex=702
 ObjType=29
 Agarrable=1
 Crucial=0
+
+[OBJ1259]
+Name=Tumba de Erwin
+GrhIndex=21838
+ObjType=20
+Agarrable=0
+
+[OBJ1260]
+Name=Escritorio
+GrhIndex=21839
+ObjType=20
+Agarrable=1
+
+[OBJ1261]
+Name=Estatua
+GrhIndex=21840
+ObjType=20
+Agarrable=0
+
+[OBJ1262]
+Name=Muelle
+GrhIndex=21841
+ObjType=20
+Agarrable=0
+
+[OBJ1263]
+Name=Estanteria Grande con libros
+GrhIndex=21842
+ObjType=20
+Agarrable=0
+
+[OBJ1265]
+Name=Estanteria Grande sin libros
+GrhIndex=21843
+ObjType=20
+Agarrable=0
+
+[OBJ1266]
+Name=Estanteria con libros
+GrhIndex=21844
+ObjType=20
+Agarrable=0
+
+[OBJ1267]
+Name=Estanteria sin libros
+GrhIndex=21845
+ObjType=20
+Agarrable=0
+
+[OBJ1268]
+Name=Casco, Espada y Escudo
+GrhIndex=21846
+ObjType=20
+Agarrable=0
+
+[OBJ1269]
+Name=Cartel Magias Destruido
+GrhIndex=22010
+VGrande=501
+ObjType=8
+Agarrable=1
+Texto=Las Mejores Magias a los Mejores Precios.
+
+[OBJ1270]
+Name=Cartel Propiedades Destruido
+GrhIndex=22011
+VGrande=501
+ObjType=8
+Agarrable=1
+Texto=Tenemos las mejores casas a tu disposicion.
+
+[OBJ1271]
+Name=Cartel Sastre Destruido
+GrhIndex=22012
+VGrande=501
+ObjType=8
+Agarrable=1
+Texto=Las mejores vestimentas para ti.
+
+[OBJ1272]
+Name=Cartel Banco Destruido
+GrhIndex=22013
+VGrande=501
+ObjType=8
+Agarrable=1
+Texto=El Banco mas Seguro de todo Winter.
+
+[OBJ1273]
+Name=Cartel Herreria Destruido
+GrhIndex=22014
+VGrande=501
+ObjType=8
+Agarrable=1
+Texto=La oja de mis espadas cortan cualquier material.
+
+[OBJ1274]
+Name=Cartel Alquimia Destruido
+GrhIndex=22015
+VGrande=501
+ObjType=8
+Agarrable=1
+Texto=Mas de 600 años de experiencia en pociones.
+
+[OBJ1275]
+Name=Cartel Templo Destruido
+GrhIndex=22016
+VGrande=501
+ObjType=8
+Agarrable=1
+Texto=Zona Sagrada.
+
+
+[OBJ1276] 'Puertas doble
+Name=Puerta doble izquierda cerrada Bander
+GrhIndex=22068
+ObjType=6
+Agarrable=1
+abierta=0
+llave=0
+IndexAbierta=1276
+IndexCerrada=1277
+IndexCerradaLlave=1277
+
+[OBJ1277] 'Puertas doble
+Name=Puerta doble izquierda abierta Bander
+GrhIndex=22067
+ObjType=6
+Agarrable=1
+abierta=1
+llave=0
+IndexAbierta=1276
+IndexCerrada=1277
+IndexCerradaLlave=1277
+
+[OBJ1278] 'Puertas doble
+Name=Puerta doble derecha cerrada bander
+GrhIndex=22065
+ObjType=6
+Agarrable=1
+abierta=1
+llave=0
+IndexAbierta=1279
+IndexCerrada=1278
+IndexCerradaLlave=1278
+
+[OBJ1279] 'Puertas doble
+Name=Puerta doble derecha abierta bander
+GrhIndex=22066
+ObjType=6
+Agarrable=1
+abierta=0
+llave=0
+IndexAbierta=1279
+IndexCerrada=1278
+IndexCerradaLlave=1278
+
+
+[OBJ1280]
+Name=Árbol
+GrhIndex=22073
+ObjType=4
+Agarrable=1
+
+[OBJ1281]
+Name=Árbol
+GrhIndex=22074
+ObjType=4
+Agarrable=1
+
+[OBJ1282]
+Name=Árbol
+GrhIndex=22075
+ObjType=4
+Agarrable=1
+
+[OBJ1283]
+Name=Árbol
+GrhIndex=22076
+ObjType=4
+Agarrable=1
+
+[OBJ1284]
+Name=Árbol
+GrhIndex=22077
+ObjType=4
+Agarrable=1
+
+[OBJ1285]
+Name=Montura Grifo [Sagrada]
+GrhIndex=22157
+NumRopaje=458
+ObjType=37
+Valor=0
+Minlvl=45
+MaxDef=65
+MinDef=65
+noroba=1
+tirable=1
+NoSeCae=1
+MinSkill=50
+
+[OBJ1286]
+Name=Lote
+GrhIndex=22246
+ObjType=13
+Agarrable=0
+MinAgu=100
+Valor=20
+Crucial=1
+
+[OBJ1287]
+Name=Surtido
+GrhIndex=22247
+ObjType=1
+Agarrable=0
+MinHam=100
+Valor=20
+Crucial=1
+
+[OBJ1288]
+Name=Daga Tawnos
+GrhIndex=22244
+ObjType=2
+Agarrable=0
+Anim=30
+MinHit=7
+MaxHit=10
+Apuñala=1
+Valor=30000
+Crucial=0
+LingH=80
+LingP=15
+LingO=0
+SkHerreria=75
+
+
+[OBJ1289]
+Name=Arco Argentum [Sagrada]
+GrhIndex=22274
+ObjType=2
+Agarrable=0
+NoSeCae=1
+Anim=31
+Proyectil=1
+Municiones=1
+Refuerzo=15
+MinHit=12
+MaxHit=24
+Minlvl=45
+CreaAura=22905
+Valor=0
+Crucial=0
+CP2=CARPINTERO
+CP3=MAGO
+CP4=PALADIN
+CP5=CLERIGO
+CP6=ASESINO
+CP7=PESCADOR
+CP8=MINERO
+CP9=LADRON
+CP10=HERRERO
+CP11=BARDO
+CP12=DRUIDA
+CP13=LEÑADOR
+
+[OBJ1290]
+Name=AK-47
+GrhIndex=22217
+ObjType=2
+Agarrable=0
+Anim=29
+MinHit=90
+MaxHit=90
+Valor=0
+NoSeCae=1
+
+[OBJ1291]
+Name=Rayo de Zeus
+GrhIndex=609
+ObjType=24
+Agarrable=0
+Valor=990040
+Crucial=1
+HechizoIndex=53
+
+[OBJ1292]
+Name=Tunica Templaria (Bajos) [Sagrado]
+GrhIndex=22369
+ObjType=3
+NoSeCae=1
+NumRopaje=463
+RazaEnana=1
+Agarrable=0
+Minlvl=45
+MaxDef=45
+MinDef=40
+DefensaMagicaMin=50
+DefensaMagicaMax=45
+Valor=0
+Crucial=0
+CP1=PALADIN
+CP2=MINERO
+CP3=PESCADOR
+CP4=GUERRERO
+CP5=LADRON
+CP6=BARDO
+CP7=PIRATA
+CP8=HERRERO
+CP9=CARPINTERO
+
+[OBJ1293]
+Name=Armadura Durex (Bajos)
+GrhIndex=22396
+ObjType=3
+NumRopaje=462
+RazaEnana=1
+Agarrable=0
+MaxDef=62
+MinDef=55
+Valor=0
+Crucial=0
+Minlvl=45
+CP1=MAGO
+CP2=MINERO
+CP3=PESCADOR
+CP4=DRUIDA
+CP5=LADRON
+CP6=BARDO
+CP7=PIRATA
+CP8=LEÑADOR
+CP9=ASESINO
+CP10=HERRERO
+CP11=CARPINTERO
+LingH=800
+LingP=600
+LingO=555
+SkHerreria=100
+Subastable=1
+
+[OBJ1294]
+Name=Tunica Black (Bajos)
+GrhIndex=22422
+ObjType=3
+NumRopaje=465
+RazaEnana=1
+Agarrable=0
+MaxDef=50
+MinDef=40
+Valor=0
+Crucial=0
+CP1=PALADIN
+CP2=MINERO
+CP3=PESCADOR
+CP4=GUERRERO
+CP5=LADRON
+CP6=BARDO
+CP7=PIRATA
+CP8=ASESINO
+CP9=HERRERO
+CP10=CARPINTERO
+LingH=7050
+LingP=500
+LingO=455
+SkHerreria=100
+
+[OBJ1295]
+Name=Pasaje a Arghal
+GrhIndex=17831
+ObjType=36
+Valor=24254
+Mapa=183
+X=87
+Y=28
+NoSeCae=1
+
+[OBJ1296]
+Name=Pasaje a Banderbill
+GrhIndex=17831
+ObjType=36
+Valor=28254
+Mapa=152
+X=66
+Y=66
+NoSeCae=1
+
+[OBJ1297]
+Name=Pasaje a Rinkel
+GrhIndex=17831
+ObjType=36
+Valor=28254
+Mapa=246
+X=49
+Y=88
+NoSeCae=1
+
+[OBJ1298]
+Name=Tunica Nogan (Bajos)
+GrhIndex=22396
+ObjType=3
+NumRopaje=462
+RazaEnana=1
+Agarrable=0
+MaxDef=30
+MinDef=25
+Valor=0
+Crucial=0
+CP1=PALADIN
+CP2=MINERO
+CP3=PESCADOR
+CP4=GUERRERO
+CP5=LADRON
+CP6=BARDO
+CP7=PIRATA
+CP8=ASESINO
+CP9=HERRERO
+CP10=CARPINTERO
+LingH=400
+LingP=350
+LingO=400
+SkHerreria=85
+NoSubasta=0
+
+[OBJ1299]
+Name=Armadura de la Oscuridad (Bajos) [Sagrado]
+GrhIndex=22478
+ObjType=3
+NumRopaje=466
+Agarrable=0
+RazaEnana=1
+MaxDef=70
+MinDef=60
+Minlvl=45
+nosecae=1
+Valor=0
+Crucial=0
+CP1=MAGO
+CP2=MINERO
+CP3=PESCADOR
+CP4=DRUIDA
+CP5=LADRON
+CP6=PIRATA
+CP7=LEÑADOR
+CP8=ASESINO
+CP9=HERRERO
+CP10=CARPINTERO
+
+[OBJ1300]
+Name=Montura de Unicornio
+GrhIndex=22527
+NumRopaje=467
+ObjType=37
+Valor=510000
+MaxDef=26
+MinDef=26
+MinSkill=50
+Minlvl=50
+NoSeCae=1
+CP1=MAGO
+
+[OBJ1301]
+Name=Montura de Fuego
+GrhIndex=22528
+NumRopaje=468
+ObjType=37
+Valor=510000
+MaxDef=26
+MinDef=26
+MinSkill=50
+NoSeCae=1
+Minlvl=50
+CP1=MAGO
+
+[OBJ1302]
+Name=Maza de Madera
+GrhIndex=22683
+ObjType=2
+Agarrable=0
+Anim=32
+MinHit=14
+MaxHit=10
+Valor=1000
+Crucial=1
+CP1=MAGO
+CP2=DRUIDA
+CP3=LADRON
+CP4=BARDO
+CP5=PIRATA
+
+[OBJ1303]
+Name=Escudo Romano
+GrhIndex=22710
+ObjType=16
+NumRopaje=2
+Agarrable=0
+Anim=20
+MaxDef=9
+MinDef=5
+Valor=3214
+Crucial=1
+CP1=MAGO
+CP2=DRUIDA
+
+[OBJ1304]
+Name=Abriendo Portal...
+GrhIndex=123
+Agarrable=1
+ObjType=19
+
+[OBJ1305]
+Name=Daga Helada
+GrhIndex=22245
+ObjType=2
+Agarrable=0
+Anim=12
+MinHit=9
+MaxHit=11
+Apuñala=1
+Valor=50000
+Crucial=0
+LingH=100
+LingP=30
+LingO=0
+SkHerreria=85
+
+[OBJ1306]
+Name=Pendiente del Sacrificio(Desactivado)
+GrhIndex=18781
+ObjType=21
+Agarrable=0
+Crucial=0 

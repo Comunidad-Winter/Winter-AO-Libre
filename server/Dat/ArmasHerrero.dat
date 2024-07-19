@@ -1,5 +1,5 @@
 [INIT]
-NumArmas=31
+NumArmas=33
 
 [Arma1] ' Daga
 Index=15
@@ -93,3 +93,9 @@ Index=1211
 
 [Arma31] 'Daga Infernal
 Index=1058
+
+[Arma32] 
+Index=1288
+
+[Arma33]
+Index=1305

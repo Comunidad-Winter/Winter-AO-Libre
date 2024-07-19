@@ -1,5 +1,11 @@
 Attribute VB_Name = "ES"
 Option Explicit
+   Dim TotalPropagandas As String
+    Dim PropagandaActual As String
+    Dim NumPropagandaActual As Integer
+    Dim Rediccionable As String
+    Dim URLRediccionable As String
+    Dim NamePropaganda As String
 
 Public Sub CargarSpawnList()
     Dim N As Integer, LoopC As Integer
@@ -281,6 +287,63 @@ Next i
 
 End Sub
 
+  Public Sub Propagandas()
+
+ 
+  TotalPropagandas = val(GetVar(App.Path & "\Dat\Propagandas.ini", "INIT", "TotalPropagandas"))
+ NumPropagandaActual = NumPropagandaActual + 1
+  frmMain.NumPropaganda.Caption = "Numero de propaganda:" & " " & NumPropagandaActual
+    If NumPropagandaActual <= TotalPropagandas Then
+   PropagandaActual = GetVar(App.Path & "\Dat\Propagandas.ini", "PROPAGANDAS", "Propaganda" & NumPropagandaActual)
+    frmMain.URLPropaganda.Caption = "URL de propaganda:" & " " & PropagandaActual
+    Rediccionable = GetVar(App.Path & "\Dat\Propagandas.ini", "REDICCIONABLES", "Propaganda" & NumPropagandaActual)
+    NamePropaganda = GetVar(App.Path & "\Dat\Propagandas.ini", "NOMBRES", "Propaganda" & NumPropagandaActual)
+  frmMain.NomPropaganda.Caption = "Nombre de propaganda:" & " " & NamePropaganda
+   Call SendData(ToAll, 0, 0, "=" & PropagandaActual)
+ If Rediccionable = "0" Then 'Rediccionable Desactivado
+  frmMain.RedicPropaganda.Caption = "Propaganda rediccionable:" & " " & "No rediccionable"
+   Call SendData(ToAll, 0, 0, "ª" & Rediccionable)
+   Else 'Rediccionable Activado
+  frmMain.RedicPropaganda.Caption = "Propaganda rediccionable:" & " " & "Rediccionable"
+   URLRediccionable = GetVar(App.Path & "\Dat\Propagandas.ini", "URLREDICCIONABLES", "Propaganda" & NumPropagandaActual)
+  frmMain.URLARediccionar.Caption = "URL a rediccionar:" & " " & URLRediccionable
+   Call SendData(ToAll, 0, 0, "'" & URLRediccionable)
+  End If
+   Else
+   NumPropagandaActual = 0
+   Call Propagandas
+   End If
+   End Sub
+Public Sub DarPremioCastillos()
+On Error GoTo handler
+Dim LoopC As Integer
+    For LoopC = 1 To LastUser
+        If UserList(LoopC).GuildIndex <> 0 Then
+            If Guilds(UserList(LoopC).GuildIndex).GuildName = CastilloNORTE Then
+                UserList(LoopC).Stats.GLD = UserList(LoopC).Stats.GLD + 100000
+                Call SendData(SendTarget.ToIndex, (LoopC), 0, "||Has Recibido 100.000 de oro por mantener el castillo Norte" & FONTTYPE_FENIX)
+                Call SendUserStatsBox(LoopC)
+                Call SendData(SendTarget.ToIndex, 0, 0, "TW")
+            End If
+            If Guilds(UserList(LoopC).GuildIndex).GuildName = CastilloSUR Then
+                UserList(LoopC).Stats.GLD = UserList(LoopC).Stats.GLD + 100000
+                Call SendData(SendTarget.ToIndex, (LoopC), 0, "||Has Recibido 100.000 de oro por mantener el castillo Sur" & FONTTYPE_FENIX)
+                Call SendUserStatsBox(LoopC)
+                Call SendData(SendTarget.ToIndex, 0, 0, "TW")
+            End If
+            If Guilds(UserList(LoopC).GuildIndex).GuildName = CastilloESTE Then
+                UserList(LoopC).Stats.GLD = UserList(LoopC).Stats.GLD + 100000
+                Call SendData(SendTarget.ToIndex, (LoopC), 0, "||Has Recibido 100.000 de oro por mantener el castillo Este" & FONTTYPE_FENIX)
+                Call SendUserStatsBox(LoopC)
+                Call SendData(SendTarget.ToIndex, 0, 0, "TW")
+            End If
+
+        End If
+    Next LoopC
+Exit Sub
+handler:
+Call LogError("Error en DarPremioCastillos.")
+End Sub
 Public Sub DoBackUp()
 'Call LogTarea("Sub DoBackUp")
 haciendoBK = True
@@ -549,6 +612,7 @@ For Object = 1 To NumObjDatas
     ObjData(Object).OBJType = val(Leer.GetValue("OBJ" & Object, "ObjType"))
     
     ObjData(Object).Newbie = val(Leer.GetValue("OBJ" & Object, "Newbie"))
+    ObjData(Object).Aura = val(Leer.GetValue("OBJ" & Object, "CreaAura"))
     Select Case ObjData(Object).OBJType
     
     'Tomamos el destino del pasaje.
@@ -602,6 +666,7 @@ For Object = 1 To NumObjDatas
             ObjData(Object).SkHerreria = val(Leer.GetValue("OBJ" & Object, "SkHerreria"))
             ObjData(Object).Real = val(Leer.GetValue("OBJ" & Object, "Real"))
             ObjData(Object).Caos = val(Leer.GetValue("OBJ" & Object, "Caos"))
+            ObjData(Object).Aura = val(Leer.GetValue("OBJ" & Object, "CreaAura"))
         
         Case eOBJType.otHerramientas
             ObjData(Object).LingH = val(Leer.GetValue("OBJ" & Object, "LingH"))
@@ -668,6 +733,8 @@ For Object = 1 To NumObjDatas
     
     ObjData(Object).Valor = val(Leer.GetValue("OBJ" & Object, "Valor"))
     
+    ObjData(Object).Minlvl = val(Leer.GetValue("OBJ" & Object, "Minlvl"))
+    
     ObjData(Object).Crucial = val(Leer.GetValue("OBJ" & Object, "Crucial"))
     
     ObjData(Object).Cerrada = val(Leer.GetValue("OBJ" & Object, "abierta"))
@@ -683,6 +750,7 @@ For Object = 1 To NumObjDatas
     ObjData(Object).GrhSecundario = val(Leer.GetValue("OBJ" & Object, "VGrande"))
     
     ObjData(Object).Agarrable = val(Leer.GetValue("OBJ" & Object, "Agarrable"))
+        ObjData(Object).NoSubasta = val(Leer.GetValue("OBJ" & Object, "NoSubasta"))
     ObjData(Object).ForoID = Leer.GetValue("OBJ" & Object, "ID")
     
     Dim i As Integer
@@ -736,6 +804,7 @@ Next LoopC
 
 UserList(UserIndex).Stats.GLD = CLng(UserFile.GetValue("STATS", "GLD"))
 UserList(UserIndex).Stats.PuntosTorneo = CLng(UserFile.GetValue("STATS", "PuntosTorneo"))
+UserList(UserIndex).Stats.Reward = CLng(UserFile.GetValue("STATS", "Reward"))
 UserList(UserIndex).Stats.Banco = CLng(UserFile.GetValue("STATS", "BANCO"))
 
 UserList(UserIndex).Stats.MET = CInt(UserFile.GetValue("STATS", "MET"))
@@ -1196,9 +1265,11 @@ Dim LoopC As Integer
 If frmMain.Visible Then frmMain.txStatus.Caption = "Cargando info de inicio del server."
 CastilloSUR = GetVar(App.Path & "\Castillos.ini", "CLANES", "SUR")
 CastilloNORTE = GetVar(App.Path & "\Castillos.ini", "CLANES", "NORTE")
+CastilloESTE = GetVar(App.Path & "\Castillos.ini", "CLANES", "ESTE")
 NPCReyCastle = val(GetVar(App.Path & "\Castillos.ini", "REY", "NUMERO"))
 SUR = val(GetVar(App.Path & "\Castillos.ini", "CASTILLO", "SUR"))
 NORTE = val(GetVar(App.Path & "\Castillos.ini", "CASTILLO", "NORTE"))
+ESTE = val(GetVar(App.Path & "\Castillos.ini", "CASTILLO", "ESTE"))
 BootDelBackUp = val(GetVar(IniPath & "Server.ini", "INIT", "IniciarDesdeBackUp"))
 
 'Misc
@@ -1324,9 +1395,6 @@ FrmInterv.txtTrabajo.Text = IntervaloUserPuedeTrabajar
 IntervaloUserPuedeAtacar = val(GetVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloUserPuedeAtacar"))
 FrmInterv.txtPuedeAtacar.Text = IntervaloUserPuedeAtacar
 
-frmMain.tLluvia.Interval = val(GetVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloPerdidaStaminaLluvia"))
-FrmInterv.txtIntervaloPerdidaStaminaLluvia.Text = frmMain.tLluvia.Interval
-
 frmMain.CmdExec.Interval = val(GetVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloTimerExec"))
 FrmInterv.txtCmdExec.Text = frmMain.CmdExec.Interval
 
@@ -1354,22 +1422,13 @@ If MaxUsers = 0 Then
     ReDim UserList(1 To MaxUsers) As User
 End If
 
-Nix.Map = "1"
-Nix.X = "71"
-Nix.Y = "30"
+Ullathorpe.Map = "233"
+Ullathorpe.X = "58"
+Ullathorpe.Y = "47"
 
-Ullathorpe.Map = "1"
-Ullathorpe.X = "71"
-Ullathorpe.Y = "30"
-
-Banderbill.Map = "Mapa"
-Banderbill.X = "X"
-Banderbill.Y = "Y"
-
-Lindos.Map = "Mapa"
-Lindos.X = "X"
-Lindos.Y = "Y"
-
+Ramx.Map = "1"
+Ramx.X = "71"
+Ramx.Y = "30"
 
 Call MD5sCarga
 
@@ -1503,12 +1562,13 @@ Call WriteVar(UserFile, "INIT", "Arma", CStr(UserList(UserIndex).Char.WeaponAnim
 Call WriteVar(UserFile, "INIT", "Escudo", CStr(UserList(UserIndex).Char.ShieldAnim))
 Call WriteVar(UserFile, "INIT", "Casco", CStr(UserList(UserIndex).Char.CascoAnim))
 
-Call WriteVar(UserFile, "INIT", "LastIP", UserList(UserIndex).ip)
+Call WriteVar(UserFile, "INIT", "LastIP", UserList(UserIndex).IP)
 Call WriteVar(UserFile, "INIT", "Position", UserList(UserIndex).Pos.Map & "-" & UserList(UserIndex).Pos.X & "-" & UserList(UserIndex).Pos.Y)
 
 
 Call WriteVar(UserFile, "STATS", "GLD", CStr(UserList(UserIndex).Stats.GLD))
 Call WriteVar(UserFile, "STATS", "PuntosTorneo", CStr(UserList(UserIndex).Stats.PuntosTorneo))
+Call WriteVar(UserFile, "STATS", "Reward", CStr(UserList(UserIndex).Stats.Reward))
 Call WriteVar(UserFile, "STATS", "BANCO", CStr(UserList(UserIndex).Stats.Banco))
 
 Call WriteVar(UserFile, "STATS", "MET", CStr(UserList(UserIndex).Stats.MET))
@@ -1539,7 +1599,7 @@ Call WriteVar(UserFile, "STATS", "ELV", CStr(UserList(UserIndex).Stats.ELV))
 'Standelf
 Call WriteVar(UserFile, "STATS", "PUNTOSTORNEO", CStr(UserList(UserIndex).Stats.PuntosTorneo))
 
-
+Call WriteVar(UserFile, "STATS", "Reward", CStr(UserList(UserIndex).Stats.Reward))
 
 
 Call WriteVar(UserFile, "STATS", "ELU", CStr(UserList(UserIndex).Stats.ELU))
@@ -1582,15 +1642,15 @@ Call WriteVar(UserFile, "REP", "Ladrones", val(UserList(UserIndex).Reputacion.La
 Call WriteVar(UserFile, "REP", "Nobles", val(UserList(UserIndex).Reputacion.NobleRep))
 Call WriteVar(UserFile, "REP", "Plebe", val(UserList(UserIndex).Reputacion.PlebeRep))
 
-Dim l As Long
-l = (-UserList(UserIndex).Reputacion.AsesinoRep) + _
+Dim L As Long
+L = (-UserList(UserIndex).Reputacion.AsesinoRep) + _
     (-UserList(UserIndex).Reputacion.BandidoRep) + _
     UserList(UserIndex).Reputacion.BurguesRep + _
     (-UserList(UserIndex).Reputacion.LadronesRep) + _
     UserList(UserIndex).Reputacion.NobleRep + _
     UserList(UserIndex).Reputacion.PlebeRep
-l = l / 6
-Call WriteVar(UserFile, "REP", "Promedio", val(l))
+L = L / 6
+Call WriteVar(UserFile, "REP", "Promedio", val(L))
 
 Dim cad As String
 
@@ -1633,15 +1693,15 @@ End Sub
 
 Function Criminal(ByVal UserIndex As Integer) As Boolean
 
-Dim l As Long
-l = (-UserList(UserIndex).Reputacion.AsesinoRep) + _
+Dim L As Long
+L = (-UserList(UserIndex).Reputacion.AsesinoRep) + _
     (-UserList(UserIndex).Reputacion.BandidoRep) + _
     UserList(UserIndex).Reputacion.BurguesRep + _
     (-UserList(UserIndex).Reputacion.LadronesRep) + _
     UserList(UserIndex).Reputacion.NobleRep + _
     UserList(UserIndex).Reputacion.PlebeRep
-l = l / 6
-Criminal = (l < 0)
+L = L / 6
+Criminal = (L < 0)
 
 End Function
 
@@ -1669,6 +1729,7 @@ Call WriteVar(npcfile, "NPC" & NpcNumero, "Heading", val(Npclist(NpcIndex).Char.
 Call WriteVar(npcfile, "NPC" & NpcNumero, "Movement", val(Npclist(NpcIndex).Movement))
 Call WriteVar(npcfile, "NPC" & NpcNumero, "Attackable", val(Npclist(NpcIndex).Attackable))
 Call WriteVar(npcfile, "NPC" & NpcNumero, "Comercia", val(Npclist(NpcIndex).Comercia))
+Call WriteVar(npcfile, "NPC" & NpcNumero, "Subasta", val(Npclist(NpcIndex).Subasta))
 Call WriteVar(npcfile, "NPC" & NpcNumero, "TipoItems", val(Npclist(NpcIndex).TipoItems))
 Call WriteVar(npcfile, "NPC" & NpcNumero, "Hostil", val(Npclist(NpcIndex).Hostile))
 Call WriteVar(npcfile, "NPC" & NpcNumero, "GiveEXP", val(Npclist(NpcIndex).GiveEXP))
@@ -1733,12 +1794,12 @@ Npclist(NpcIndex).Char.Heading = val(GetVar(npcfile, "NPC" & NpcNumber, "Heading
 
 Npclist(NpcIndex).Attackable = val(GetVar(npcfile, "NPC" & NpcNumber, "Attackable"))
 Npclist(NpcIndex).Comercia = val(GetVar(npcfile, "NPC" & NpcNumber, "Comercia"))
-
+Npclist(NpcIndex).Subasta = val(GetVar(npcfile, "NPC" & NpcNumber, "Subasta"))
 Npclist(NpcIndex).Hostile = val(GetVar(npcfile, "NPC" & NpcNumber, "Hostile"))
-Npclist(NpcIndex).GiveEXP = val(GetVar(npcfile, "NPC" & NpcNumber, "GiveEXP")) * 33
+Npclist(NpcIndex).GiveEXP = val(GetVar(npcfile, "NPC" & NpcNumber, "GiveEXP")) * 28
 
 
-Npclist(NpcIndex).GiveGLD = val(GetVar(npcfile, "NPC" & NpcNumber, "GiveGLD")) * 20
+Npclist(NpcIndex).GiveGLD = val(GetVar(npcfile, "NPC" & NpcNumber, "GiveGLD")) * 18
 
 Npclist(NpcIndex).InvReSpawn = val(GetVar(npcfile, "NPC" & NpcNumber, "InvReSpawn"))
 

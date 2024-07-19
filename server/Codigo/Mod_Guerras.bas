@@ -10,9 +10,9 @@ Private NPCGuerra As Integer 'Temporal: NPC Usado en Guerra
  
 'Facccion Real:
 Public Const NPC1 As Integer = 131 'NPC de La Faccion Real
-Private Const MapaGuerra1 As Integer = 70 'Mapa de la Faccion Real
+Private Const MapaGuerra1 As Integer = 170 'Mapa de la Faccion Real
 Private Const MapaGuerra1X As Byte = 48 'X del Mapa de la Faccion Real
-Private Const MapaGuerra1Y As Byte = 49 'Y del Mapa de la Faccion Caos
+Private Const MapaGuerra1Y As Byte = 44 'Y del Mapa de la Faccion Caos
  
 'Faccion Caos:
 Public Const NPC2 As Integer = 130 'NPC de La Faccion Caos
@@ -20,7 +20,7 @@ Private Const MapaGuerra2 As Integer = 43 'Mapa de la Faccion Caos
 Private Const MapaGuerra2X As Byte = 56 'X del Mapa de la Faccion Real
 Private Const MapaGuerra2Y As Byte = 58 'Y del Mapa de la Faccion Caos
  
-Private Const TiempoEntreGuerra As Byte = 60 'Duración de entre una Guerra y otra (Minutos)
+Private Const TiempoEntreGuerra As Integer = 300 'Duración de entre una Guerra y otra (Minutos)
 Private Const DuracionGuerra As Byte = 10 'Duración de Guerra (Minutos)
  
 Private Const OroRecompenza As Long = 500000 'Oro de Recompenz
@@ -28,10 +28,10 @@ Private Const OroRecompenza As Long = 500000 'Oro de Recompenz
 Private Const FONTGUERRA As String = "~255~180~180~1~0"
  
  
-Public Sub IniciarGuerra(ByVal Userindex As Integer)
-    If Userindex <> 0 Then
+Public Sub IniciarGuerra(ByVal UserIndex As Integer)
+    If UserIndex <> 0 Then
         If HayGuerra Then
-            Call SendData(SendTarget.ToIndex, Userindex, 0, "||Ya hay una Guerra Actualmente." & FONTGUERRA)
+            Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Ya hay una Guerra Actualmente." & FONTGUERRA)
             Exit Sub
         End If
     End If
@@ -65,7 +65,7 @@ Public Sub IniciarGuerra(ByVal Userindex As Integer)
                 NPCGuerra = NPC1
         End Select
        
-    Call SendData(SendTarget.ToAll, 0, 0, "||La Guerra ha Comenzado, Para participar envia /GUERRA" & FONTGUERRA)
+    Call SendData(SendTarget.ToAll, 0, 0, "||La Guerra ha Comenzado, Para participar envia /GUERRA (Se descontara 100000 Monedas de oro por el viaje)" & FONTGUERRA)
  
 Exit Sub
 End Sub
@@ -135,47 +135,47 @@ TiempoGuerra = TiempoGuerra + 1
                 TerminaGuerra "Real", False
             End If
         Else
-            Call SendData(SendTarget.ToAll, 0, 0, "||Quedan " & (DuracionGuerra - TiempoGuerra) & " Minutos de Guerra. Para defender a tu Reino Envia /Guerra." & FONTGUERRA)
+            Call SendData(SendTarget.ToAll, 0, 0, "||Quedan " & (DuracionGuerra - TiempoGuerra) & " Minutos de Guerra. Para defender a tu Reino Envia /Guerra (Se descontara 100000 Monedas de oro por el viaje)." & FONTGUERRA)
         End If
     End If
 Exit Sub
 End Sub
  
-Public Sub EntrarGuerra(ByVal Userindex As Integer)
+Public Sub EntrarGuerra(ByVal UserIndex As Integer)
     If Not HayGuerra Then
-        Call SendData(SendTarget.ToIndex, Userindex, 0, "||No Hay Ninguna Guerra Actualmente." & FONTGUERRA)
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No Hay Ninguna Guerra Actualmente." & FONTGUERRA)
         Exit Sub
     End If
        
-    If UserList(Userindex).flags.Guerra = True Then
-        Call SendData(SendTarget.ToIndex, Userindex, 0, "||Ya estas participando de la Guerra." & FONTGUERRA)
+    If UserList(UserIndex).flags.Guerra = True Then
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Ya estas participando de la Guerra." & FONTGUERRA)
         Exit Sub
     End If
  
     If CiudadGuerra = MapaGuerra1 Then
-        WarpUserChar Userindex, MapaGuerra1, MapaGuerra1X - 10, MapaGuerra1Y - 10, True
+        WarpUserChar UserIndex, MapaGuerra1, MapaGuerra1X - 10, MapaGuerra1Y - 10, True
     Else
-        WarpUserChar Userindex, MapaGuerra2, MapaGuerra2X - 10, MapaGuerra2Y - 10, True
+        WarpUserChar UserIndex, MapaGuerra2, MapaGuerra2X - 10, MapaGuerra2Y - 10, True
     End If
    
-    Call SendData(SendTarget.ToIndex, Userindex, 0, "||La Guerra ha Comenzado para ti, Defiende a tu faccion para recibir una recompenza." & FONTGUERRA)
-    Call SendData(SendTarget.ToIndex, Userindex, 0, "|G1")
-    UserList(Userindex).flags.Guerra = True
+    Call SendData(SendTarget.ToIndex, UserIndex, 0, "||La Guerra ha Comenzado para ti, Defiende a tu faccion para recibir una recompenza." & FONTGUERRA)
+    Call SendData(SendTarget.ToIndex, UserIndex, 0, "|G1")
+    UserList(UserIndex).flags.Guerra = True
 Exit Sub
 End Sub
  
-Public Sub GuerrasAuto(ByVal Userindex As Integer, OnOff As Integer)
+Public Sub GuerrasAuto(ByVal UserIndex As Integer, OnOff As Integer)
     If OnOff = 1 Then
-        Call SendData(SendTarget.ToIndex, Userindex, 0, "||Las Guerras Automaticas han sido Ativadas." & FONTGUERRA)
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Las Guerras Automaticas han sido Ativadas." & FONTGUERRA)
         GuerrasAutomaticas = True
     Else
-        Call SendData(SendTarget.ToIndex, Userindex, 0, "||Las Guerras Automaticas han sido Desativadas." & FONTGUERRA)
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Las Guerras Automaticas han sido Desativadas." & FONTGUERRA)
         GuerrasAutomaticas = False
     End If
 Exit Sub
 End Sub
  
-Public Sub EmpatarGuerra(ByVal Userindex As Integer)
+Public Sub EmpatarGuerra(ByVal UserIndex As Integer)
 Dim UI As Integer, X As Integer, Y As Integer
  
     Call SendData(SendTarget.ToAll, 0, 0, "||La Guerra ha terminado, Ninguna Facción resulto victoriosa." & FONTGUERRA)

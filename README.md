@@ -1,7 +1,9 @@
 # Winter-AO
-Winter AO Ultimate Mod de Argentum Online 0.11.5
+Winter AO Ultimate Mod de Argentum Online 0.11.5 con DX8
 
 ## Cambios:
+
+* Versión 1:
 
 - Añadido Global (; y el texto para hablar) Para activarlo hay que pone /Glob AC(Funcional)
 - Añadido Conectar directo desde el frmconnect (Funcional)
@@ -128,12 +130,19 @@ Winter AO Ultimate Mod de Argentum Online 0.11.5
 - Agregado Npc pegan menos a guerreros y cazadores. (Funcional)
 - Agregado luz al pasar el mouse por un objeto. (Funcional)
 
+Version 2.0
+
+-Eliminado el Engine DX7
+-Agregado nuevo Engine DX8
+-Agregado Fps libres
+
 ## Bug conocidos:
 
 - NPC de duelo no funciona.
 - En algunos mapas sale el minimapa cortado por la mitad
 - Bug en el casco de Hierro
 - Banderas de la Armada bugeadas
+- Inestabilidad del Motor Grafico
 
 ## Galeria
 

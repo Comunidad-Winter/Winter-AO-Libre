@@ -431,7 +431,7 @@ On Error GoTo errorh
     ''case 1 esta "harcodeado" en el doble for
     ''es remover invisibilidades
     Case 2          ''apocalipsis Rahma Nañarak O'al
-        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbCyan & "°" & Hechizos(Npclist(npcind).Spells(DAT_APOCALIPSIS)).PalabrasMagicas & "°" & str(Npclist(npcind).Char.CharIndex))
+        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbcyan & "°" & Hechizos(Npclist(npcind).Spells(DAT_APOCALIPSIS)).PalabrasMagicas & "°" & str(Npclist(npcind).Char.CharIndex))
         Call NpcLanzaSpellSobreUser2(npcind, BestTarget, Npclist(npcind).Spells(DAT_APOCALIPSIS)) ''SPELL 1 de Mago: Apocalipsis
     Case 3
     
@@ -903,11 +903,11 @@ On Error GoTo errorh
         ''fin quehacer = 0 (npc al cuete)
         
     Case 1  '' paralizar enemigo PJ
-        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbCyan & "°" & Hechizos(Npclist(npcind).Spells(DAT_PARALIZARPJ)).PalabrasMagicas & "°" & str(Npclist(npcind).Char.CharIndex))
+        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbcyan & "°" & Hechizos(Npclist(npcind).Spells(DAT_PARALIZARPJ)).PalabrasMagicas & "°" & str(Npclist(npcind).Char.CharIndex))
         Call NpcLanzaSpellSobreUser(npcind, BestTarget, Npclist(npcind).Spells(DAT_PARALIZARPJ)) ''SPELL 1 de Clerigo es PARALIZAR
         Exit Sub
     Case 2  '' ataque a usuarios (invisibles tambien)
-        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbCyan & "°" & Hechizos(Npclist(npcind).Spells(DAT_TORMENTAAVANZADA)).PalabrasMagicas & "°" & str(Npclist(npcind).Char.CharIndex))
+        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbcyan & "°" & Hechizos(Npclist(npcind).Spells(DAT_TORMENTAAVANZADA)).PalabrasMagicas & "°" & str(Npclist(npcind).Char.CharIndex))
         Call NpcLanzaSpellSobreUser2(npcind, BestTarget, Npclist(npcind).Spells(DAT_TORMENTAAVANZADA)) ''SPELL 2 de Clerigo es Vax On Tar avanzado
         Exit Sub
     Case 3  '' ataque a mascotas
@@ -999,7 +999,7 @@ On Error GoTo errorh
     
     indireccion = Npclist(npcind).Spells(indice)
     '' Envia las palabras magicas, fx y wav del indice-esimo hechizo del npc-hostiles.dat
-    Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbCyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(npcind).Char.CharIndex))
+    Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbcyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(npcind).Char.CharIndex))
     Call SendData(SendTarget.ToNPCArea, NPCAlInd, Npclist(NPCAlInd).Pos.Map, "CFX" & Npclist(NPCAlInd).Char.CharIndex & "," & Hechizos(indireccion).FXgrh & "," & Hechizos(indireccion).loops)
     Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "TW" & Hechizos(indireccion).WAV)
     Npclist(NPCAlInd).Veneno = 0
@@ -1018,7 +1018,7 @@ On Error GoTo errorh
     
     indireccion = Npclist(npcind).Spells(indice)
     '' Envia las palabras magicas, fx y wav del indice-esimo hechizo del npc-hostiles.dat
-    Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbCyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(npcind).Char.CharIndex))
+    Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbcyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(npcind).Char.CharIndex))
     Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "TW" & Hechizos(indireccion).WAV)
     Call SendData(SendTarget.ToNPCArea, NPCAlInd, Npclist(NPCAlInd).Pos.Map, "CFX" & Npclist(NPCAlInd).Char.CharIndex & "," & Hechizos(indireccion).FXgrh & "," & Hechizos(indireccion).loops)
     
@@ -1042,7 +1042,7 @@ On Error GoTo errorh
     
     indireccion = Npclist(npcind).Spells(indice)
     '' Envia las palabras magicas, fx y wav del indice-esimo hechizo del npc-hostiles.dat
-    Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbCyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(npcind).Char.CharIndex))
+    Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbcyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(npcind).Char.CharIndex))
     Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "TW" & Hechizos(indireccion).WAV)
     Call SendData(SendTarget.ToNPCArea, NPCAlInd, Npclist(NPCAlInd).Pos.Map, "CFX" & Npclist(NPCAlInd).Char.CharIndex & "," & Hechizos(indireccion).FXgrh & "," & Hechizos(indireccion).loops)
     
@@ -1061,10 +1061,10 @@ On Error GoTo errorh
     
     indireccion = Npclist(paralizador).Spells(indice)
     '' Envia las palabras magicas, fx y wav del indice-esimo hechizo del npc-hostiles.dat
-    Call SendData(SendTarget.ToNPCArea, paralizador, Npclist(paralizador).Pos.Map, "||" & vbCyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(paralizador).Char.CharIndex))
+    Call SendData(SendTarget.ToNPCArea, paralizador, Npclist(paralizador).Pos.Map, "||" & vbcyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(paralizador).Char.CharIndex))
     Call SendData(SendTarget.ToNPCArea, paralizador, Npclist(paralizador).Pos.Map, "TW" & Hechizos(indireccion).WAV)
     Call SendData(SendTarget.ToNPCArea, Paralizado, Npclist(Paralizado).Pos.Map, "CFX" & Npclist(Paralizado).Char.CharIndex & "," & Hechizos(indireccion).FXgrh & "," & Hechizos(indireccion).loops)
-    'Call SendData(SendTarget.ToNPCArea, paralizador, Npclist(paralizador).Pos.Map, "||" & vbCyan & "° HOAX MANTRA °" & Str(Npclist(paralizador).Char.CharIndex))
+    'Call SendData(SendTarget.ToNPCArea, paralizador, Npclist(paralizador).Pos.Map, "||" & vbcyan & "° HOAX MANTRA °" & Str(Npclist(paralizador).Char.CharIndex))
     'Call SendData(SendTarget.ToNPCArea, paralizador, Npclist(paralizador).Pos.Map, "TW" & Hechizos(Npclist(paralizador).Spells(1)).WAV)
     'Call SendData(SendTarget.ToNPCArea, Paralizado, Npclist(Paralizado).Pos.Map, "CFX" & Npclist(Paralizado).Char.CharIndex & "," & Hechizos(Npclist(paralizador).Spells(1)).FXgrh & "," & Hechizos(Npclist(paralizador).Spells(1)).loops)
     Npclist(Paralizado).flags.Paralizado = 1
@@ -1084,10 +1084,10 @@ On Error GoTo errorh
 
     indireccion = Npclist(curador).Spells(indice)
     '' Envia las palabras magicas, fx y wav del indice-esimo hechizo del npc-hostiles.dat
-    Call SendData(SendTarget.ToNPCArea, curador, Npclist(curador).Pos.Map, "||" & vbCyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(curador).Char.CharIndex))
+    Call SendData(SendTarget.ToNPCArea, curador, Npclist(curador).Pos.Map, "||" & vbcyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(curador).Char.CharIndex))
     Call SendData(SendTarget.ToNPCArea, curador, Npclist(curador).Pos.Map, "TW" & Hechizos(indireccion).WAV)
     Call SendData(SendTarget.ToNPCArea, curado, Npclist(curado).Pos.Map, "CFX" & Npclist(curado).Char.CharIndex & "," & Hechizos(indireccion).FXgrh & "," & Hechizos(indireccion).loops)
-    'Call SendData(SendTarget.ToNPCArea, curador, Npclist(curador).Pos.Map, "||" & vbCyan & "°EN CORP SANCTIS°" & Str(Npclist(curador).Char.CharIndex))
+    'Call SendData(SendTarget.ToNPCArea, curador, Npclist(curador).Pos.Map, "||" & vbcyan & "°EN CORP SANCTIS°" & Str(Npclist(curador).Char.CharIndex))
     'Call SendData(SendTarget.ToNPCArea, curador, Npclist(curador).Pos.Map, "TW" & Hechizos(Npclist(curador).Spells(3)).WAV)
     'Call SendData(SendTarget.ToNPCArea, curado, Npclist(curado).Pos.Map, "CFX" & Npclist(curado).Char.CharIndex & "," & Hechizos(Npclist(curador).Spells(3)).FXgrh & "," & Hechizos(Npclist(curador).Spells(3)).loops)
     If Npclist(curado).Stats.MinHP + 30 > Npclist(curado).Stats.MaxHP Then
@@ -1108,10 +1108,10 @@ On Error GoTo errorh
     
     indireccion = Npclist(npcind).Spells(indice)
     '' Envia las palabras magicas, fx y wav del indice-esimo hechizo del npc-hostiles.dat
-    Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbCyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(npcind).Char.CharIndex))
+    Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbcyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(npcind).Char.CharIndex))
     Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "TW" & Hechizos(indireccion).WAV)
     Call SendData(SendTarget.ToPCArea, PJEnInd, UserList(PJEnInd).Pos.Map, "CFX" & UserList(PJEnInd).Char.CharIndex & "," & Hechizos(indireccion).FXgrh & "," & Hechizos(indireccion).loops)
-    'Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbCyan & "°CAE XITÄ°" & Str(Npclist(npcind).Char.CharIndex))
+    'Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbcyan & "°CAE XITÄ°" & Str(Npclist(npcind).Char.CharIndex))
     'Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "TW" & Hechizos(3).WAV)
     'Call SendData(SendTarget.ToNPCArea, curado, Npclist(curado).Pos.Map, "CFX" & Npclist(curado).Char.CharIndex & "," & Hechizos(Npclist(curador).Spells(3)).FXgrh & "," & Hechizos(Npclist(curador).Spells(3)).loops)
     
@@ -1138,10 +1138,10 @@ On Error GoTo errorh
 
     indireccion = Npclist(npcind).Spells(indice)
     '' Envia las palabras magicas, fx y wav del indice-esimo hechizo del npc-hostiles.dat
-    Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbCyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(npcind).Char.CharIndex))
+    Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbcyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(npcind).Char.CharIndex))
     Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "TW" & Hechizos(indireccion).WAV)
     Call SendData(SendTarget.ToPCArea, PJEnInd, UserList(PJEnInd).Pos.Map, "CFX" & UserList(PJEnInd).Char.CharIndex & "," & Hechizos(indireccion).FXgrh & "," & Hechizos(indireccion).loops)
-    'Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbCyan & "°ASYNC GAM ALÚ°" & Str(Npclist(npcind).Char.CharIndex))
+    'Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbcyan & "°ASYNC GAM ALÚ°" & Str(Npclist(npcind).Char.CharIndex))
     'Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "TW" & Hechizos(3).WAV)
     'Call SendData(SendTarget.ToNPCArea, curado, Npclist(curado).Pos.Map, "CFX" & Npclist(curado).Char.CharIndex & "," & Hechizos(Npclist(curador).Spells(3)).FXgrh & "," & Hechizos(Npclist(curador).Spells(3)).loops)
     UserList(PJEnInd).flags.Estupidez = 1
@@ -1172,11 +1172,11 @@ On Error GoTo errorh
     
     indireccion = Npclist(npcind).Spells(indice)
     '' Envia las palabras magicas, fx y wav del indice-esimo hechizo del npc-hostiles.dat
-    Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbCyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(npcind).Char.CharIndex))
+    Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbcyan & "° " & Hechizos(indireccion).PalabrasMagicas & " °" & str(Npclist(npcind).Char.CharIndex))
     Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "TW" & Hechizos(indireccion).WAV)
     Call SendData(SendTarget.ToPCArea, PJEnInd, UserList(PJEnInd).Pos.Map, "CFX" & UserList(PJEnInd).Char.CharIndex & "," & Hechizos(indireccion).FXgrh & "," & Hechizos(indireccion).loops + 4)
 
-    'Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbCyan & "°AN ROHL ÙX MAÏO°" & Str(Npclist(npcind).Char.CharIndex))
+    'Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbcyan & "°AN ROHL ÙX MAÏO°" & Str(Npclist(npcind).Char.CharIndex))
     'Call SendData(SendTarget.ToPCArea, PJEnInd, UserList(PJEnInd).Pos.Map, "CFX" & UserList(PJEnInd).Char.CharIndex & "," & Hechizos(4).FXgrh & "," & Hechizos(4).loops + 4)
     'Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "TW" & Hechizos(4).WAV)
     
@@ -1471,7 +1471,7 @@ mapa = Map
             Else
                 ''si me muevo abajo entro en loop. Aca el algoritmo falla
                 If Npclist(npcorig).CanAttack = 1 And (RandomNumber(1, 100) > 95) Then
-                    Call SendData(SendTarget.ToNPCArea, npcorig, Npclist(npcorig).Pos.Map, "||" & vbYellow & "°Maldito bastardo, ¡ ven aquí !°" & str(Npclist(npcorig).Char.CharIndex))
+                    Call SendData(SendTarget.ToNPCArea, npcorig, Npclist(npcorig).Pos.Map, "||" & vbyellow & "°Maldito bastardo, ¡ ven aquí !°" & str(Npclist(npcorig).Char.CharIndex))
                     Npclist(npcorig).CanAttack = 0
                 End If
             End If
@@ -1564,7 +1564,7 @@ mapa = Map
             Else
                 ''si me muevo loopeo. aca falla el algoritmo
                 If Npclist(npcorig).CanAttack = 1 And (RandomNumber(1, 100) > 95) Then
-                    Call SendData(SendTarget.ToNPCArea, npcorig, Npclist(npcorig).Pos.Map, "||" & vbYellow & "°Maldito bastardo, ¡ ven aquí !°" & str(Npclist(npcorig).Char.CharIndex))
+                    Call SendData(SendTarget.ToNPCArea, npcorig, Npclist(npcorig).Pos.Map, "||" & vbyellow & "°Maldito bastardo, ¡ ven aquí !°" & str(Npclist(npcorig).Char.CharIndex))
                     Npclist(npcorig).CanAttack = 0
                 End If
             End If
@@ -1585,7 +1585,7 @@ mapa = Map
             Else
                 ''aca tambien falla el algoritmo
                 If Npclist(npcorig).CanAttack = 1 And (RandomNumber(1, 100) > 95) Then
-                    Call SendData(SendTarget.ToNPCArea, npcorig, Npclist(npcorig).Pos.Map, "||" & vbYellow & "°Maldito bastardo, ¡ ven aquí !°" & str(Npclist(npcorig).Char.CharIndex))
+                    Call SendData(SendTarget.ToNPCArea, npcorig, Npclist(npcorig).Pos.Map, "||" & vbyellow & "°Maldito bastardo, ¡ ven aquí !°" & str(Npclist(npcorig).Char.CharIndex))
                     Npclist(npcorig).CanAttack = 0
                 End If
             End If
@@ -1602,7 +1602,7 @@ mapa = Map
             Else
                 ''posible loop
                 If Npclist(npcorig).CanAttack = 1 And (RandomNumber(1, 100) > 95) Then
-                    Call SendData(SendTarget.ToNPCArea, npcorig, Npclist(npcorig).Pos.Map, "||" & vbYellow & "°Maldito bastardo, ¡ ven aquí !°" & str(Npclist(npcorig).Char.CharIndex))
+                    Call SendData(SendTarget.ToNPCArea, npcorig, Npclist(npcorig).Pos.Map, "||" & vbyellow & "°Maldito bastardo, ¡ ven aquí !°" & str(Npclist(npcorig).Char.CharIndex))
                     Npclist(npcorig).CanAttack = 0
                 End If
             End If
@@ -1847,7 +1847,7 @@ On Error GoTo errorh
         retvalue = retvalue Or retValue2
         'If retvalue = False Then
         '    If Npclist(npcind).CanAttack = 1 Then
-        '        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbYellow & "°¡ Cobarde !°" & str(Npclist(npcind).Char.CharIndex))
+        '        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbyellow & "°¡ Cobarde !°" & str(Npclist(npcind).Char.CharIndex))
         '        Npclist(npcind).CanAttack = 0
         '    End If
         'End If
@@ -1946,7 +1946,7 @@ On Error GoTo errorh
         Npclist(npcind).Pos.X = NPCPosX + 1
         Npclist(npcind).Char.Heading = eHeading.SOUTH
         MapData(NPCPosM, NPCPosX + 1, NPCPosY + 1).NpcIndex = npcind
-        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbYellow & "°¡¡JA JA JA JA!!°" & str(Npclist(npcind).Char.CharIndex))
+        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbyellow & "°¡¡JA JA JA JA!!°" & str(Npclist(npcind).Char.CharIndex))
         Exit Sub
     End If
 
@@ -1958,7 +1958,7 @@ On Error GoTo errorh
         Npclist(npcind).Pos.X = NPCPosX - 1
         Npclist(npcind).Char.Heading = eHeading.NORTH
         MapData(NPCPosM, NPCPosX - 1, NPCPosY - 1).NpcIndex = npcind
-        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbYellow & "°¡¡JA JA JA JA!!°" & str(Npclist(npcind).Char.CharIndex))
+        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbyellow & "°¡¡JA JA JA JA!!°" & str(Npclist(npcind).Char.CharIndex))
         Exit Sub
     End If
 
@@ -1970,7 +1970,7 @@ On Error GoTo errorh
         Npclist(npcind).Pos.X = NPCPosX + 1
         Npclist(npcind).Char.Heading = eHeading.EAST
         MapData(NPCPosM, NPCPosX + 1, NPCPosY - 1).NpcIndex = npcind
-        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbYellow & "°¡¡JA JA JA JA!!°" & str(Npclist(npcind).Char.CharIndex))
+        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbyellow & "°¡¡JA JA JA JA!!°" & str(Npclist(npcind).Char.CharIndex))
         Exit Sub
     End If
     
@@ -1982,13 +1982,13 @@ On Error GoTo errorh
         Npclist(npcind).Pos.X = NPCPosX - 1
         Npclist(npcind).Char.Heading = eHeading.WEST
         MapData(NPCPosM, NPCPosX - 1, NPCPosY + 1).NpcIndex = npcind
-        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbYellow & "°¡¡JA JA JA JA!!°" & str(Npclist(npcind).Char.CharIndex))
+        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbyellow & "°¡¡JA JA JA JA!!°" & str(Npclist(npcind).Char.CharIndex))
         Exit Sub
     End If
     
     ''si esta aca, estamos fritos!
     If Npclist(npcind).CanAttack = 1 Then
-        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbYellow & "°¡Por las barbas de los antiguos reyes! ¡Alejáos endemoniados espectros o sufriréis la furia de los dioses!°" & str(Npclist(npcind).Char.CharIndex))
+        Call SendData(SendTarget.ToNPCArea, npcind, Npclist(npcind).Pos.Map, "||" & vbyellow & "°¡Por las barbas de los antiguos reyes! ¡Alejáos endemoniados espectros o sufriréis la furia de los dioses!°" & str(Npclist(npcind).Char.CharIndex))
         Npclist(npcind).CanAttack = 0
     End If
     

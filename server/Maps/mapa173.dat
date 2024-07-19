@@ -1,0 +1,11 @@
+[MAPA173]
+Name=Bosques Costeros
+MusicNum=21
+MagiaSinefecto=0
+InviSinEfecto=0
+ResuSinEfecto=0
+NoEncriptarMP=0
+Terreno=BOSQUE
+Zona=CAMPO
+BackUp= 1
+Pk=0

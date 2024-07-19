@@ -1,0 +1,20 @@
+[MAPA307]
+Name=Arenas de Torneo
+MusicNum=0
+MagiaSinefecto=0
+InviSinEfecto=0
+ResuSinEfecto=0
+NoEncriptarMP=0
+Terreno=DESIERTO
+Zona=CIUDAD
+Restringir=No
+BackUp= 0
+Pk=0
+[MAPA308]
+Name=Arenas de Torneo
+MagiaSinefecto=0
+InviSinEfecto=0
+ResuSinEfecto=0
+NoEncriptarMP=0
+BackUp= 0
+Pk=0

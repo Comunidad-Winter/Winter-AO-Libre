@@ -636,7 +636,6 @@ frmMain.npcataca.Interval = val(txtNPCPuedeAtacar.Text)
 frmMain.TIMER_AI.Interval = val(txtAI.Text)
 IntervaloUserPuedeTrabajar = val(txtTrabajo.Text)
 IntervaloUserPuedeAtacar = val(txtPuedeAtacar.Text)
-frmMain.tLluvia.Interval = val(txtIntervaloPerdidaStaminaLluvia.Text)
 frmMain.CmdExec.Interval = val(txtCmdExec.Text)
 
 
@@ -674,7 +673,6 @@ Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloNpcAI", frmMain.TI
 Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloNpcPuedeAtacar", frmMain.npcataca.Interval)
 Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloTrabajo", str(IntervaloUserPuedeTrabajar))
 Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloUserPuedeAtacar", str(IntervaloUserPuedeAtacar))
-Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloPerdidaStaminaLluvia", frmMain.tLluvia.Interval)
 Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloTimerExec", frmMain.CmdExec.Interval)
 
 MsgBox "Los intervalos se han guardado sin problemas"

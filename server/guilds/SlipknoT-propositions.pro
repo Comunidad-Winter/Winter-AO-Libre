@@ -1,0 +1,10 @@
+[2]
+Pendiente=0
+[1]
+Tipo=A
+Pendiente=0
+[6]
+Tipo=A
+Pendiente=0
+[11]
+Pendiente=0

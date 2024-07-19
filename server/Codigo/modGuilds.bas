@@ -45,7 +45,7 @@ End Enum
 'numero de .wav del cliente
 
 Public Enum RELACIONES_GUILD
-    GUERRA = -1
+    Guerra = -1
     PAZ = 0
     ALIADOS = 1
 End Enum
@@ -389,10 +389,10 @@ Dim i               As Integer
 
     EnemiesCount = Guilds(GuildIndex).CantidadEnemys
     News = News & CStr(EnemiesCount) & "¬"
-    i = Guilds(GuildIndex).Iterador_ProximaRelacion(GUERRA)
+    i = Guilds(GuildIndex).Iterador_ProximaRelacion(Guerra)
     While i > 0
         News = News & Guilds(i).GuildName & "¬"
-        i = Guilds(GuildIndex).Iterador_ProximaRelacion(GUERRA)
+        i = Guilds(GuildIndex).Iterador_ProximaRelacion(Guerra)
     Wend
     AlliesCount = Guilds(GuildIndex).CantidadAllies
     News = News & CStr(AlliesCount) & "¬"
@@ -448,8 +448,8 @@ Public Function PuedeFundarUnClan(ByVal UserIndex As Integer, ByVal Alineacion A
     End If
 
     
-    If UserList(UserIndex).Stats.ELV < 25 Or UserList(UserIndex).Stats.UserSkills(eSkill.Liderazgo) < 90 Then
-        refError = "Para fundar un clan debes ser nivel 25 y tener 90 en liderazgo."
+    If UserList(UserIndex).Stats.ELV < 35 Or UserList(UserIndex).Stats.UserSkills(eSkill.Liderazgo) < 100 Then
+        refError = "Para fundar un clan debes ser nivel 35 y tener 100 en liderazgo."
         Exit Function
     End If
     
@@ -592,7 +592,7 @@ Public Function Relacion2String(ByVal Relacion As RELACIONES_GUILD) As String
     Select Case Relacion
         Case RELACIONES_GUILD.ALIADOS
             Relacion2String = "A"
-        Case RELACIONES_GUILD.GUERRA
+        Case RELACIONES_GUILD.Guerra
             Relacion2String = "G"
         Case RELACIONES_GUILD.PAZ
             Relacion2String = "P"
@@ -606,7 +606,7 @@ Public Function String2Relacion(ByVal S As String) As RELACIONES_GUILD
         Case vbNullString, "P"
             String2Relacion = PAZ
         Case "G"
-            String2Relacion = GUERRA
+            String2Relacion = Guerra
         Case "A"
             String2Relacion = ALIADOS
         Case Else
@@ -937,8 +937,8 @@ Dim GIG As Integer
 
     Call Guilds(GI).AnularPropuestas(GIG)
     Call Guilds(GIG).AnularPropuestas(GI)
-    Call Guilds(GI).SetRelacion(GIG, GUERRA)
-    Call Guilds(GIG).SetRelacion(GI, GUERRA)
+    Call Guilds(GI).SetRelacion(GIG, Guerra)
+    Call Guilds(GIG).SetRelacion(GI, Guerra)
 
     r_DeclararGuerra = GIG
 
@@ -975,7 +975,7 @@ Dim GIG     As Integer
         Exit Function
     End If
 
-    If Guilds(GI).GetRelacion(GIG) <> GUERRA Then
+    If Guilds(GI).GetRelacion(GIG) <> Guerra Then
         refError = "No estás en guerra con ese clan"
         Exit Function
     End If
@@ -1168,11 +1168,11 @@ Dim GI              As Integer
     
     'de acuerdo al tipo procedemos validando las transiciones
     If Tipo = PAZ Then
-        If Guilds(GI).GetRelacion(OtroClanGI) <> GUERRA Then
+        If Guilds(GI).GetRelacion(OtroClanGI) <> Guerra Then
             refError = "No estás en guerra con " & OtroClan
             Exit Function
         End If
-    ElseIf Tipo = GUERRA Then
+    ElseIf Tipo = Guerra Then
         'por ahora no hay propuestas de guerra
     ElseIf Tipo = ALIADOS Then
         If Guilds(GI).GetRelacion(OtroClanGI) <> PAZ Then

@@ -394,7 +394,6 @@ Next LoopC
 With frmMain
     .AutoClean.Enabled = True 'Standelf
     .AutoSave.Enabled = True
-   .tLluvia.Enabled = True
     .tPiqueteC.Enabled = True
     .Timer1.Enabled = True
     If ClientsCommandsQueue <> 0 Then
@@ -403,7 +402,6 @@ With frmMain
         .CmdExec.Enabled = False
     End If
     .GameTimer.Enabled = True
-    .tLluviaEvent.Enabled = False
     .FX.Enabled = True
     .Auditoria.Enabled = True
     .KillLog.Enabled = True
@@ -418,7 +416,7 @@ Call SecurityIp.InitIpTables(1000)
 
 #If UsarQueSocket = 1 Then
 
-Call IniciaWsApi(frmMain.hwnd)
+Call IniciaWsApi(frmMain.hWnd)
 SockListen = ListenForConnect(Puerto, hWndMsg, "")
 
 #ElseIf UsarQueSocket = 0 Then
@@ -519,6 +517,11 @@ If FieldNum = Pos Then
 End If
 
 End Function
+    Public Function Tilde(Data As String) As String
+   
+    Tilde = Replace(Replace(Replace(Replace(Replace(UCase$(Data), "Á", "A"), "É", "E"), "Í", "I"), "Ó", "O"), "Ú", "U")
+
+    End Function
 Function MapaValido(ByVal Map As Integer) As Boolean
 MapaValido = Map >= 1 And Map <= NumMaps
 End Function
@@ -951,26 +954,6 @@ Public Function Intemperie(ByVal UserIndex As Integer) As Boolean
     
 End Function
 
-Public Sub EfectoLluvia(ByVal UserIndex As Integer)
-On Error GoTo errhandler
-
-
-If UserList(UserIndex).flags.UserLogged Then
-    If Intemperie(UserIndex) Then
-                Dim modifi As Long
-                modifi = Porcentaje(UserList(UserIndex).Stats.MaxSta, 3)
-                Call QuitarSta(UserIndex, modifi)
-'                Call SendData(SendTarget.ToIndex, UserIndex, 0, "||¡¡Has perdido stamina, busca pronto refugio de la lluvia!!." & FONTTYPE_INFO)
-                Call SendUserStatsBox(UserIndex)
-    End If
-End If
-
-Exit Sub
-errhandler:
- LogError ("Error en EfectoLluvia")
-End Sub
-
-
 Public Sub TiempoInvocacion(ByVal UserIndex As Integer)
 Dim i As Integer
 For i = 1 To MAXMASCOTAS
@@ -1101,28 +1084,14 @@ End If
 
 
 End Sub
-
-
 Public Sub EfectoParalisisUser(ByVal UserIndex As Integer)
-Dim TiempoTranscurrido As Long
 
 If UserList(UserIndex).Counters.Paralisis > 0 Then
-UserList(UserIndex).Counters.Paralisis = UserList(UserIndex).Counters.Paralisis - 1
-TiempoTranscurrido = (IntervaloParalizado * frmMain.GameTimer.Interval) - (UserList(UserIndex).Counters.Paralisis * frmMain.GameTimer.Interval)
-
-If TiempoTranscurrido Mod 1000 = 0 Or TiempoTranscurrido = 40 Then
-If TiempoTranscurrido = 40 Then
-Call SendData(SendTarget.ToIndex, UserIndex, 0, "INMO" & ((IntervaloParalizado * frmMain.GameTimer.Interval) / 1000))
+    UserList(UserIndex).Counters.Paralisis = UserList(UserIndex).Counters.Paralisis - 1
 Else
-Call SendData(SendTarget.ToIndex, UserIndex, 0, "INMO" & (((IntervaloParalizado * frmMain.GameTimer.Interval) / 1000) - (TiempoTranscurrido / 1000)))
-End If
-End If
-Else
-UserList(UserIndex).flags.Paralizado = 0
-'UserList(UserIndex).Flags.AdministrativeParalisis = 0
-Call SendData(SendTarget.ToIndex, UserIndex, 0, "PARADOK")
-Call SendData(SendTarget.ToIndex, UserIndex, 0, "INMO0")
-Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Has recuperado la movilidad." & FONTTYPE_INFO)
+    UserList(UserIndex).flags.Paralizado = 0
+    'UserList(UserIndex).Flags.AdministrativeParalisis = 0
+    Call SendData(SendTarget.ToIndex, UserIndex, 0, "PARADOK")
 End If
 
 End Sub
@@ -1296,7 +1265,7 @@ Sub PasarSegundo()
                 Call CloseSocket(i)
                 Exit Sub
             End If
-        
+
         'ANTIEMPOLLOS
         ElseIf UserList(i).flags.EstaEmpo = 1 Then
              UserList(i).EmpoCont = UserList(i).EmpoCont + 1
@@ -1424,7 +1393,7 @@ Sub InicializaEstadisticas()
 Dim Ta As Long
 Ta = GetTickCount() And &H7FFFFFFF
 
-Call EstadisticasWeb.Inicializa(frmMain.hwnd)
+Call EstadisticasWeb.Inicializa(frmMain.hWnd)
 Call EstadisticasWeb.Informar(CANTIDAD_MAPAS, NumMaps)
 Call EstadisticasWeb.Informar(CANTIDAD_ONLINE, NumUsers)
 Call EstadisticasWeb.Informar(UPTIME_SERVER, (Ta - tInicioServer) / 1000)

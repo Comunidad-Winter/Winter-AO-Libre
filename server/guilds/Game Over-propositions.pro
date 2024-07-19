@@ -1,0 +1,12 @@
+[2]
+Pendiente=0
+[6]
+Pendiente=0
+[7]
+Pendiente=0
+[1]
+Pendiente=0
+[8]
+Pendiente=0
+[11]
+Pendiente=0
