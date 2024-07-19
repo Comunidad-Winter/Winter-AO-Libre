@@ -8,7 +8,7 @@ NombreOro=Lorwik
 
 [MaxDead]
 Muertes=0
-NombreDead=Lorwik
+NombreDead=BetaTester
 [Top15]
 Nivel1=0
 NivelName1=
@@ -17,8 +17,8 @@ Nivel2=0
 NivelName2=
 Muertes2=0
 [Top5]
-Nivel1=5
-NivelName1=Lorwik
+Nivel1=1
+NivelName1=BetaTester
 Muertes1=0
 Nivel2=0
 NivelName2=

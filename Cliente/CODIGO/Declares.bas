@@ -7,7 +7,7 @@ Public MiCabeza As Integer
 '**************************************************************
 
 '******IP & Puerto*******
-Public Const CurServerIp As String = "201.212.4.231"
+Public Const CurServerIp As String = "127.0.0.1"
 Public Const CurServerPort As Integer = 7666
 '************************
 
@@ -325,7 +325,7 @@ Public Const MENSAJE_NENE As String = "Cantidad de NPCs: "
 'Inventario
 Type Inventory
     OBJIndex As Integer
-    Name As String
+    name As String
     GrhIndex As Integer
     '[Alejo]: tipo de datos ahora es Long
     Amount As Long
@@ -341,7 +341,7 @@ End Type
 
 Type NpCinV
     OBJIndex As Integer
-    Name As String
+    name As String
     GrhIndex As Integer
     Amount As Integer
     Valor As Single
@@ -570,7 +570,7 @@ Public Type pjs
     PJLogged As Byte
 End Type
 Public Type acc
-    Name As String
+    name As String
     Pass As String
     Email As String
     preg As String
@@ -642,7 +642,7 @@ Public Type RGB
 End Type
  
 Public Type Stream
-    Name As String
+    name As String
     NumOfParticles As Long
     NumGrhs As Long
     ID As Long

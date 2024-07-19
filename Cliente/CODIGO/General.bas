@@ -564,18 +564,21 @@ Sub Main()
     OriginalClientName = "Winter AO Ultimate"
     ClientName = App.EXEName
     DetectName = App.EXEName
+    
+#If modoDebug = 0 Then
+    
     If ChangeName Then
         Call ClientOn
         End
     End If
    
-    If GetVar(App.Path & "\init\Config.CFG", "UPDATE", "Y") = 1 Then
-        Call WriteVar(App.Path & "\init\Config.CFG", "UPDATE", "Y", "0")
-    Else
-        MsgBox "¡Debes de ejecutar el cliente desde el Launcher!", vbInformation
-        End
-        Exit Sub
-    End If
+'    If GetVar(App.Path & "\init\Config.CFG", "UPDATE", "Y") = 1 Then
+'        Call WriteVar(App.Path & "\init\Config.CFG", "UPDATE", "Y", "0")
+'    Else
+'        MsgBox "¡Debes de ejecutar el cliente desde el Launcher!", vbInformation
+'        End
+'        Exit Sub
+'    End If
    
     If Debugger Then
         Call AntiDebugger
@@ -587,6 +590,8 @@ Sub Main()
         End
     End If
    
+#End If
+
     Call ModSeguridad.AntiShInitialize
    
     '[/Desactivar mientras se desarrolle]
