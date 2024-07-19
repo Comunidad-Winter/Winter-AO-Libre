@@ -134,3 +134,8 @@ Winter AO Ultimate Mod de Argentum Online 0.11.5
 - En algunos mapas sale el minimapa cortado por la mitad
 - Bug en el casco de Hierro
 - Banderas de la Armada bugeadas
+
+## Galeria
+
+![image](https://github.com/user-attachments/assets/452a45b1-14ad-4cb5-8031-8666bd95ed8b)
+
