@@ -1,42 +1,8 @@
 Attribute VB_Name = "modCentinela"
-'*****************************************************************
-'modCentinela.bas - ImperiumAO - v1.2
-'
-'Funciónes de control para usuarios que se encuentran trabajando
-'
-'*****************************************************************
-'Respective portions copyrighted by contributors listed below.
-'
-'This program is free software; you can redistribute it and/or modify
-'it under the terms of the Affero General Public License;
-'either version 1 of the License, or any later version.
-'
-'This program is distributed in the hope that it will be useful,
-'but WITHOUT ANY WARRANTY; without even the implied warranty of
-'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-'Affero General Public License for more details.
-'
-'You should have received a copy of the Affero General Public License
-'along with this program; if not, you can find it at http://www.affero.org/oagpl.html
-
-'*****************************************************************
-'Augusto Rando(barrin@imperiumao.com.ar)
-'   ImperiumAO 1.2
-'   - First Relase
-'
-'Juan Martín Sotuyo Dodero (juansotuyo@gmail.com)
-'   Alkon AO 0.11.5
-'   - Small improvements and added logs to detect possible cheaters
-'
-'Juan Martín Sotuyo Dodero (juansotuyo@gmail.com)
-'   Alkon AO 0.12.0
-'   - Added several messages to spam users until they reply
-'*****************************************************************
-
 Option Explicit
 
 Private Const NPC_CENTINELA_TIERRA As Integer = 16  'Índice del NPC en el .dat
-Private Const NPC_CENTINELA_AGUA As Integer = 16    'Ídem anterior, pero en mapas de agua
+Private Const NPC_CENTINELA_AGUA As Integer = 16     'Ídem anterior, pero en mapas de agua
 
 Public CentinelaNPCIndex As Integer                'Índice del NPC en el servidor
 
@@ -46,31 +12,11 @@ Private Type tCentinela
     RevisandoUserIndex As Integer   '¿Qué índice revisamos?
     TiempoRestante As Integer       '¿Cuántos minutos le quedan al usuario?
     clave As Integer                'Clave que debe escribir
-    spawnTime As Long
 End Type
 
 Public centinelaActivado As Boolean
 
 Public Centinela As tCentinela
-
-Public Sub CallUserAttention()
-'############################################################
-'Makes noise and FX to call the user's attention.
-'############################################################
-    If (GetTickCount() And &H7FFFFFFF) - Centinela.spawnTime >= 5000 Then
-        If Centinela.RevisandoUserIndex <> 0 And centinelaActivado Then
-            If Not UserList(Centinela.RevisandoUserIndex).flags.CentinelaOK Then
-                Call WritePlayWave(Centinela.RevisandoUserIndex, SND_WARP, Npclist(CentinelaNPCIndex).Pos.X, Npclist(CentinelaNPCIndex).Pos.Y)
-                Call WriteCreateFX(Centinela.RevisandoUserIndex, Npclist(CentinelaNPCIndex).Char.CharIndex, FXIDs.FXWARP, 0)
-                
-                'Resend the key
-                Call CentinelaSendClave(Centinela.RevisandoUserIndex)
-                
-                Call FlushBuffer(Centinela.RevisandoUserIndex)
-            End If
-        End If
-    End If
-End Sub
 
 Private Sub GoToNextWorkingChar()
 '############################################################
@@ -79,22 +25,20 @@ Private Sub GoToNextWorkingChar()
     Dim LoopC As Long
     
     For LoopC = 1 To LastUser
-        If UserList(LoopC).flags.UserLogged And UserList(LoopC).Counters.Trabajando > 0 And (UserList(LoopC).flags.Privilegios And PlayerType.User) Then
+        If UserList(LoopC).name <> "" And UserList(LoopC).Counters.Trabajando > 0 And UserList(LoopC).flags.Privilegios = PlayerType.User Then
             If Not UserList(LoopC).flags.CentinelaOK Then
                 'Inicializamos
                 Centinela.RevisandoUserIndex = LoopC
                 Centinela.TiempoRestante = TIEMPO_INICIAL
-                Centinela.clave = RandomNumber(1, 32000)
-                Centinela.spawnTime = GetTickCount() And &H7FFFFFFF
+                Centinela.clave = RandomNumber(1, 36000)
                 
                 'Ponemos al centinela en posición
                 Call WarpCentinela(LoopC)
                 
                 If CentinelaNPCIndex Then
-                    'Mandamos el mensaje (el centinela habla y aparece en consola para que no haya dudas)
-                    Call WriteChatOverHead(LoopC, "Saludos " & UserList(LoopC).Name & ", soy el Centinela de estas tierras. Me gustaría que escribas /CENTINELA " & Centinela.clave & " en no más de dos minutos.", CStr(Npclist(CentinelaNPCIndex).Char.CharIndex), vbGreen)
-                    Call WriteConsoleMsg(LoopC, "El centinela intenta llamar tu atención. ¡Respóndele rápido!", FontTypeNames.FONTTYPE_CENTINELA)
-                    Call FlushBuffer(LoopC)
+                    'Mandamos el mensaje (el centinela habla y aparece en consola para que no haya dudas
+                    Call SendData(SendTarget.ToIndex, LoopC, 0, "||" & vbGreen & "°" & "Saludos " & UserList(LoopC).name & ", soy el Centinela de estas tierras. Me gustaría que escribas /CENTINELA " & Centinela.clave & " en no más de dos minutos." & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
+                    Call SendData(SendTarget.ToIndex, LoopC, 0, "||" & "Saludos " & UserList(LoopC).name & ", soy el Centinela de estas tierras. Me gustaría que escribas /CENTINELA " & Centinela.clave & " en no más de dos minutos." & FONTTYPE_CENTINELA)
                 End If
                 Exit Sub
             End If
@@ -117,22 +61,34 @@ Private Sub CentinelaFinalCheck()
 'pertinente dependiendo del caso
 '############################################################
 On Error GoTo Error_Handler
-    Dim Name As String
+    Dim name As String
     Dim numPenas As Integer
     
     If Not UserList(Centinela.RevisandoUserIndex).flags.CentinelaOK Then
         'Logueamos el evento
-        Call LogCentinela("Centinela ejecuto a " & UserList(Centinela.RevisandoUserIndex).Name & " por uso de macro inasistido.")
+        Call LogCentinela("Centinela baneo a " & UserList(Centinela.RevisandoUserIndex).name & " por uso de macro inasistido")
         
         'Ponemos el ban
         UserList(Centinela.RevisandoUserIndex).flags.Ban = 1
         
-        Name = UserList(Centinela.RevisandoUserIndex).Name
+        name = UserList(Centinela.RevisandoUserIndex).name
         
         'Avisamos a los admins
-        Call SendData(SendTarget.ToAdmins, 0, PrepareMessageConsoleMsg("Servidor> El centinela ha ejecutado a " & Name, FontTypeNames.FONTTYPE_SERVER))
-                
-        Call UserDie(Name)
+        Call SendData(SendTarget.ToAdmins, 0, 0, "||Servidor> El centinela ha baneado a " & name & FONTTYPE_SERVER)
+        
+        'ponemos el flag de ban a 1
+        Call WriteVar(CharPath & name & ".chr", "FLAGS", "Ban", "1")
+        'ponemos la pena
+        numPenas = val(GetVar(CharPath & name & ".chr", "PENAS", "Cant"))
+        Call WriteVar(CharPath & name & ".chr", "PENAS", "Cant", numPenas + 1)
+        Call WriteVar(CharPath & name & ".chr", "PENAS", "P" & numPenas + 1, "CENTINELA : BAN POR MACRO INASISTIDO " & Date & " " & Time)
+        
+        'Evitamos loguear el logout
+        Dim Index As Integer
+        Index = Centinela.RevisandoUserIndex
+        Centinela.RevisandoUserIndex = 0
+        
+        Call CloseSocket(Index)
     End If
     
     Centinela.clave = 0
@@ -155,7 +111,7 @@ Error_Handler:
         CentinelaNPCIndex = 0
     End If
     
-    Call LogError("Error en el checkeo del centinela: " & Err.description)
+    Call LogError("Error en el checkeo del centinela: " & Err.Description)
 End Sub
 
 Public Sub CentinelaCheckClave(ByVal UserIndex As Integer, ByVal clave As Integer)
@@ -164,19 +120,14 @@ Public Sub CentinelaCheckClave(ByVal UserIndex As Integer, ByVal clave As Intege
 '############################################################
     If clave = Centinela.clave And UserIndex = Centinela.RevisandoUserIndex Then
         UserList(Centinela.RevisandoUserIndex).flags.CentinelaOK = True
-        Call WriteChatOverHead(UserIndex, "¡Muchas gracias " & UserList(Centinela.RevisandoUserIndex).Name & "! Espero no haber sido una molestia.", CStr(Npclist(CentinelaNPCIndex).Char.CharIndex), vbWhite)
         Centinela.RevisandoUserIndex = 0
-        Call FlushBuffer(UserIndex)
-        'Sacamos al Centinela (MaxTus)
-        Call QuitarNPC(CentinelaNPCIndex)
+        Call SendData(SendTarget.ToIndex, Centinela.RevisandoUserIndex, 0, "||" & vbWhite & "°" & "¡Muchas gracias " & UserList(Centinela.RevisandoUserIndex).name & "! Espero no haber sido una molestia" & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
     Else
         Call CentinelaSendClave(UserIndex)
         
-        'Logueamos el evento
         If UserIndex <> Centinela.RevisandoUserIndex Then
-            Call LogCentinela("El usuario " & UserList(UserIndex).Name & " respondió aunque no se le hablaba a él.")
-        Else
-            Call LogCentinela("El usuario " & UserList(UserIndex).Name & " respondió una clave incorrecta: " & clave & " - Se esperaba : " & Centinela.clave)
+            'Logueamos el evento
+            Call LogCentinela("El usuario " & UserList(UserIndex).name & " respondió aunque no se le hablaba a él.")
         End If
     End If
 End Sub
@@ -188,7 +139,7 @@ Public Sub ResetCentinelaInfo()
     Dim LoopC As Long
     
     For LoopC = 1 To LastUser
-        If (LenB(UserList(LoopC).Name) <> 0 And LoopC <> Centinela.RevisandoUserIndex) Then
+        If (UserList(LoopC).name <> "" And LoopC <> Centinela.RevisandoUserIndex) Then
             UserList(LoopC).flags.CentinelaOK = False
         End If
     Next LoopC
@@ -202,15 +153,14 @@ Public Sub CentinelaSendClave(ByVal UserIndex As Integer)
     
     If UserIndex = Centinela.RevisandoUserIndex Then
         If Not UserList(UserIndex).flags.CentinelaOK Then
-            Call WriteChatOverHead(UserIndex, "¡La clave que te he dicho es /CENTINELA " & Centinela.clave & ", escríbelo rápido!", CStr(Npclist(CentinelaNPCIndex).Char.CharIndex), vbGreen)
-            Call WriteConsoleMsg(UserIndex, "El centinela intenta llamar tu atención. ¡Respondele rápido!", FontTypeNames.FONTTYPE_CENTINELA)
+            Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & vbWhite & "°" & "¡La clave que te he dicho es " & "/CENTINELA " & Centinela.clave & " escríbelo rápido!" & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
         Else
             'Logueamos el evento
-            Call LogCentinela("El usuario " & UserList(Centinela.RevisandoUserIndex).Name & " respondió más de una vez la contraseña correcta.")
-            Call WriteChatOverHead(UserIndex, "Te agradezco, pero ya me has respondido. Me retiraré pronto.", CStr(Npclist(CentinelaNPCIndex).Char.CharIndex), vbGreen)
+            Call LogCentinela("El usuario " & UserList(Centinela.RevisandoUserIndex).name & " respondió más de una vez la contraseña correcta.")
+            Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & vbWhite & "°" & "Te agradezco, pero ya me has respondido. Me retiraré pronto." & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
         End If
     Else
-        Call WriteChatOverHead(UserIndex, "No es a ti a quien estoy hablando, ¿No ves?", CStr(Npclist(CentinelaNPCIndex).Char.CharIndex), vbWhite)
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & vbWhite & "°" & "No es a ti a quien estoy hablando, ¿no ves?" & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
     End If
 End Sub
 
@@ -235,9 +185,8 @@ Public Sub PasarMinutoCentinela()
             End If
             
             'El centinela habla y se manda a consola para que no quepan dudas
-            Call WriteChatOverHead(Centinela.RevisandoUserIndex, "¡" & UserList(Centinela.RevisandoUserIndex).Name & ", tienes un minuto más para responder! Debes escribir /CENTINELA " & Centinela.clave & ".", CStr(Npclist(CentinelaNPCIndex).Char.CharIndex), vbRed)
-            Call WriteConsoleMsg(Centinela.RevisandoUserIndex, "¡" & UserList(Centinela.RevisandoUserIndex).Name & ", tienes un minuto más para responder!", FontTypeNames.FONTTYPE_CENTINELA)
-            Call FlushBuffer(Centinela.RevisandoUserIndex)
+            Call SendData(SendTarget.ToIndex, Centinela.RevisandoUserIndex, 0, "||" & vbRed & "°¡" & UserList(Centinela.RevisandoUserIndex).name & ", tienes un minuto más para responder! Debes escribir /CENTINELA " & Centinela.clave & "." & "°" & CStr(Npclist(CentinelaNPCIndex).Char.CharIndex))
+            Call SendData(SendTarget.ToIndex, Centinela.RevisandoUserIndex, 0, "||" & "¡" & UserList(Centinela.RevisandoUserIndex).name & ", tienes un minuto más para responder! Debes escribir /CENTINELA " & Centinela.clave & "." & FONTTYPE_CENTINELA)
         End If
     End If
 End Sub
@@ -252,7 +201,7 @@ Private Sub WarpCentinela(ByVal UserIndex As Integer)
         CentinelaNPCIndex = 0
     End If
     
-    If HayAgua(UserList(UserIndex).Pos.map, UserList(UserIndex).Pos.X, UserList(UserIndex).Pos.Y) Then
+    If HayAgua(UserList(UserIndex).Pos.Map, UserList(UserIndex).Pos.X, UserList(UserIndex).Pos.Y) Then
         CentinelaNPCIndex = SpawnNpc(NPC_CENTINELA_AGUA, UserList(UserIndex).Pos, True, False)
     Else
         CentinelaNPCIndex = SpawnNpc(NPC_CENTINELA_TIERRA, UserList(UserIndex).Pos, True, False)
@@ -268,8 +217,11 @@ Public Sub CentinelaUserLogout()
 'El usuario al que revisabamos se desconectó
 '############################################################
     If Centinela.RevisandoUserIndex Then
+        'Revisamos si no respondió ya
+        If UserList(Centinela.RevisandoUserIndex).flags.CentinelaOK Then Exit Sub
+        
         'Logueamos el evento
-        Call LogCentinela("El usuario " & UserList(Centinela.RevisandoUserIndex).Name & " se desolgueó al pedirsele la contraseña.")
+        Call LogCentinela("El usuario " & UserList(Centinela.RevisandoUserIndex).name & " se desolgueó al pedirsele la contraseña")
         
         'Reseteamos y esperamos a otro PasarMinuto para ir al siguiente user
         Centinela.clave = 0
@@ -289,7 +241,7 @@ Private Sub LogCentinela(ByVal texto As String)
 'Last modified: 03/15/2006
 'Loguea un evento del centinela
 '*************************************************
-On Error GoTo Errhandler
+On Error GoTo errhandler
 
     Dim nfile As Integer
     nfile = FreeFile ' obtenemos un canal
@@ -299,7 +251,5 @@ On Error GoTo Errhandler
     Close #nfile
 Exit Sub
 
-Errhandler:
+errhandler:
 End Sub
-
-

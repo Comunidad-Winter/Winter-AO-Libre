@@ -1,0 +1,53 @@
+Bugs Reparados.
+
+-Al resucitar se ve el cuerpo del casper aveces (solucionado)
+-Al subirse a la montura aprece la espada y el escudo(solucionado)
+-Npc no tira 100k o mas (solucionado)
+-Bug en dungeon Crystal(solucionado)
+-Bug en camino del mapa 67 (solucionado)
+-Bug en el lago de un mapa...(solucionado)
+-Bug en costas en mapa 43, 85, 84 (solucionado)
+-En Ramx no hay yunque ni fragua (Solucionado)
+-Arreglar cartel de Armas de Winderbill (Solucionado)
+-Herrero de Winderbill no comercia (Solucionado)
+-En el mapa 2 de la Isla Newbie no deja bajar  (Solucionado)
+-Cuando bebo amarillas o verdes el pj se queda parado y va dando saltos(Solucionado)
+-El carpintero de Ramx no tiene techo (Solucionado)
+-Al salir del juego se queda el estado del msn (Solucionado)
+-Teleporte de la isla newbie no funciona (Solucionado)
+-Cuando entro al juego el efecto noche y la musica se desactiva automaticamente (solucionado)
+-Los herreros no comercian. Hay que poner /comerciar paraque comercien (Solo pasa si tienen un objeto delante)
+-Musica de la isla newbie se bugea (arreglado)
+-Cazadores no tiene armas (Solucionado)
+-Pendiente del sacrificio bugeado(Solucionado)
+-Al finalizar un duelo sacar al usuario del juego
+-Bug en Tunica celestial, tunica infernal, vara de la luz, casco de oro (solucionado menos el casco de oro)
+-Cuando se hacer click a un npc hostil siempre salia El castillo del norte esta en manos del clan: (solucionado)
+-Asesinos nacian con una espada que no les servia (Solucionado)
+-Los Skills se subian muy lentos (Solucionado)
+-Techo de carpintero de ramx bug (solucionado)
+-Techo de pociones de winley bug (solucionado)
+-Bug con los skills naturales (Solucionado)
+-No se puede pasar desde el mapa 15 al 22 (solucionado)
+-El FrmCuentas no se cierra al conectar con un pj.
+-Las maquinas del dungeon newbie mueren y atacan, la zona es insegura.
+-Winderbill es zona insegura. (Solucionado)
+-Al pulsar Q no sale el mapa.(Solucionado)
+-Bug e el castillo del norte.(Solucionado)
+-Posible bug en sistema de subasta.
+-Los npcs fuertes como el golem de hielo pega 40... y 10...  (Solucionado)
+-No se puede comprar nada. (Solucionado)
+-Castillo newbie inseguro,cambiar tambien el sonido de las maquinas (Solucionado)
+-Cuando un usuario esta en venenado cada vez que le resta vida le quita el gran poder diciendo que el usuario esta muerto.(Solucionado
+-No abre las estadisticas.(Solucionado)
+-Cuando te pegan la vida de tu personaje baja la barrita roja pero el número no.(Solucionado)
+-Cuando sales con montu no puedes volver a entrar(Solucionado)
+-Cuando invocas un elemental te expulsa(Solucionado)
+-Lluvia Bugeada(Solucionado)
+-Chat Privado bugeado.(Solucionado)
+
+Últimos bugs encontrados:
+-NPC de duelo no funciona.
+-En algunos mapas sale el minimapa cortado por la mitad
+-Bug en el casco de Hierro
+-Banderas de la Armada bugeadas

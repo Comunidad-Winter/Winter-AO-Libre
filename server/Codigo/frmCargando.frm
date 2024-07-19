@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Begin VB.Form frmCargando 
    BackColor       =   &H00C0C0C0&
    BorderStyle     =   0  'None
@@ -17,16 +17,17 @@ Begin VB.Form frmCargando
    ScaleWidth      =   430
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin MSComctlLib.ProgressBar cargar 
+   Begin ComctlLib.ProgressBar cargar 
       Height          =   255
       Left            =   120
       TabIndex        =   3
       Top             =   2760
-      Width           =   4695
-      _ExtentX        =   8281
+      Width           =   3855
+      _ExtentX        =   6800
       _ExtentY        =   450
-      _Version        =   393216
-      Appearance      =   0
+      _Version        =   327682
+      Appearance      =   1
+      Min             =   1e-4
    End
    Begin VB.PictureBox Picture1 
       BorderStyle     =   0  'None
@@ -45,9 +46,9 @@ Begin VB.Form frmCargando
          ForeColor       =   &H000000FF&
          Height          =   225
          Index           =   3
-         Left            =   2280
+         Left            =   2040
          TabIndex        =   2
-         Top             =   2040
+         Top             =   2520
          Width           =   2445
       End
    End
@@ -79,22 +80,24 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Winter-AO 0.12.2
+'Argentum Online 0.9.0.2
 'Copyright (C) 2002 Márquez Pablo Ignacio
 '
 'This program is free software; you can redistribute it and/or modify
-'it under the terms of the Affero General Public License;
-'either version 1 of the License, or any later version.
+'it under the terms of the GNU General Public License as published by
+'the Free Software Foundation; either version 2 of the License, or
+'any later version.
 '
 'This program is distributed in the hope that it will be useful,
 'but WITHOUT ANY WARRANTY; without even the implied warranty of
 'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-'Affero General Public License for more details.
+'GNU General Public License for more details.
 '
-'You should have received a copy of the Affero General Public License
-'along with this program; if not, you can find it at http://www.affero.org/oagpl.html
+'You should have received a copy of the GNU General Public License
+'along with this program; if not, write to the Free Software
+'Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 '
-'Winter-AO is based on Baronsoft's VB6 Online RPG
+'Argentum Online is based on Baronsoft's VB6 Online RPG
 'You can contact the original creator of ORE at aaron@baronsoft.com
 'for more information about ORE please visit http://www.baronsoft.com/
 '
@@ -113,3 +116,4 @@ Private Sub Form_Load()
 'Label1(1).Caption = Label1(1).Caption & " V." & App.Major & "." & App.Minor & "." & App.Revision
 Picture1.Picture = LoadPicture(App.Path & "\logo.jpg")
 End Sub
+

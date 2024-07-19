@@ -1,28 +1,26 @@
-[mapa]
-Name=Nuevo Mapa
-MusicNum=0
+[MAPA176]
+Name=Baby Long
+MusicNum=3
+MagiaSinefecto=0
+NoEncriptarMP=0
+Terreno=DESIERTO
+Zona=CIUDAD
+Restringir=No
+BackUp= 1
+Pk=1
+[MAPA131]
 MagiaSinefecto=0
 InviSinEfecto=0
 ResuSinEfecto=0
 NoEncriptarMP=0
-RoboNpcsPermitido=0
-Terreno=BOSQUE
-Zona=CAMPO
-Restringir=No
 BackUp= 0
-lvlMinimo=0
-Pk=0
-[MAPA77]
-Name=Nuevo Mapa
-MusicNum=0
-MagiaSinefecto=0
-InviSinEfecto=0
-ResuSinEfecto=0
-NoEncriptarMP=0
-RoboNpcsPermitido=0
+Pk=1
+Name=Isla Newbie Castillo de Combate
+MusicNum=7
 Terreno=BOSQUE
-Zona=CAMPO
-Restringir=No
-BackUp= 0
-lvlMinimo=0
-Pk=0
+Zona=CIUDAD
+Restringir=Si
+Light=0
+cRojo=0
+cVerde=0
+cAzul=0

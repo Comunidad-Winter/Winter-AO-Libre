@@ -1,0 +1,10 @@
+[INIT]
+NumLines=6
+
+[Help]
+Line1=* Si desea hablar por global tiene que pone ";" (sin las comillas) y poner el texto deseado
+Line2=* Manual del juego lo podras encontrar en la web 
+Line3=* Si estás muerto, dirígete a una ciudad y busca un Sacerdote, él te resucitará.
+Line4=* Para realizar una consulta a un GAME MASTER, debes utilizar el comando /GM y ellos acudirán a ti.
+Line5=* Para denunciar un acto ilegal de otro usuario utiliza el comando /DENUNCIAR, indicando -luego de la palabra denunciar- el nombre del personaje denunciado y qué acto iegal está cometiendo. 
+Line6=* Recuerden que en la página oficial de Winter-AO encontrarán toda la información que necesiten para jugar y las noticias actualizadas sobre el juego y su comunidad. (www.winter-ao.com.ar)

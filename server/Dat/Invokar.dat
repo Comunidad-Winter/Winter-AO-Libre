@@ -1,6 +1,6 @@
 '#################### LISTA DE SPAWN #############################
 [INIT]
-NumNPCs=20
+NumNPCs=34
 
 
 [LIST]
@@ -65,12 +65,44 @@ NI20=534
 NN20=Hormiga Gigante
 
 
+NI21=5
+NN21=Sacerdote
 
+NI22=7
+NN22=Herrero
 
+NI23=14
+NN23=Hechizera
 
+NI24=15
+NN24=Tabernero
 
+NI25=24
+NN25=Banquero
 
+NI26=13
+NN26=Sastre Gay
 
+NI27=109
+NN27=Sastre Enanos
 
+NI28=930
+NN28=Yeti
 
+NI29=100
+NN29=Guardia Imperial
 
+NI30=105
+NN30=Guardia Caos
+
+NI31=111
+NN31=Sastre 1
+
+NI32=112
+NN32=Sastre 2
+
+NI33=113
+NN33=Sastre 3
+
+NI34=9
+NN34=Comidas

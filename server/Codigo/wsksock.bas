@@ -1,42 +1,6 @@
 Attribute VB_Name = "WSKSOCK"
 #If UsarQueSocket = 1 Then
 
-'date stamp: sept 1, 1996 (for version control, please don't remove)
-
-'Visual Basic 4.0 Winsock "Header"
-'   Alot of the information contained inside this file was originally
-'   obtained from ALT.WINSOCK.PROGRAMMING and most of it has since been
-'   modified in some way.
-'
-'Disclaimer: This file is public domain, updated periodically by
-'   Topaz, SigSegV@mail.utexas.edu, Use it at your own risk.
-'   Neither myself(Topaz) or anyone related to alt.programming.winsock
-'   may be held liable for its use, or misuse.
-'
-'Declare check Aug 27, 1996. (Topaz, SigSegV@mail.utexas.edu)
-'   All 16 bit declarations appear correct, even the odd ones that
-'   pass longs inplace of in_addr and char buffers. 32 bit functions
-'   also appear correct. Some are declared to return integers instead of
-'   longs (breaking MS's rules.) however after testing these functions I
-'   have come to the conclusion that they do not work properly when declared
-'   following MS's rules.
-'
-'NOTES:
-'   (1) I have never used WS_SELECT (select), therefore I must warn that I do
-'       not know if fd_set and timeval are properly defined.
-'   (2) Alot of the functions are declared with "buf as any", when calling these
-'       functions you may either pass strings, byte arrays or UDT's. For 32bit I
-'       I recommend Byte arrays and the use of memcopy to copy the data back out
-'   (3) The async functions (wsaAsync*) require the use of a message hook or
-'       message window control to capture messages sent by the winsock stack. This
-'       is not to be confused with a CallBack control, The only function that uses
-'       callbacks is WSASetBlockingHook()
-'   (4) Alot of "helper" functions are provided in the file for various things
-'       before attempting to figure out how to call a function, look and see if
-'       there is already a helper function for it.
-'   (5) Data types (hostent etc) have kept there 16bit definitions, even under 32bit
-'       windows due to the problem of them not working when redfined following the
-'       suggested rules.
 Option Explicit
 
 Public Const FD_SETSIZE = 64
@@ -132,11 +96,6 @@ Public Const WSA_FLAG_OVERLAPPED = &H1
 Public Const CF_ACCEPT = &H0
 Public Const CF_REJECT = &H1
 
-'Agregado por Maraxus
-Public Const SD_RECEIVE As Long = &H0&
-Public Const SD_SEND As Long = &H1&
-Public Const SD_BOTH As Long = &H2&
-
 Public Const INVALID_SOCKET = -1
 Public Const SOCKET_ERROR = -1
 
@@ -213,7 +172,7 @@ Global Const WSANO_ADDRESS = 11004
 
 #If Win16 Then
 '---Windows System functions
-    Public Declare Function PostMessage Lib "User" (ByVal hWnd As Integer, ByVal wMsg As Integer, ByVal wParam As Integer, lParam As Any) As Integer
+    Public Declare Function PostMessage Lib "User" (ByVal hwnd As Integer, ByVal wMsg As Integer, ByVal wParam As Integer, lParam As Any) As Integer
     Public Declare Sub MemCopy Lib "Kernel" Alias "hmemcpy" (Dest As Any, Src As Any, ByVal cb&)
     Public Declare Function lstrlen Lib "Kernel" (ByVal lpString As Any) As Integer
 '---async notification constants
@@ -244,7 +203,7 @@ Global Const WSANO_ADDRESS = 11004
     Public Declare Function listen Lib "ws2_32.DLL" (ByVal S As Integer, ByVal backlog As Integer) As Integer
     Public Declare Function ntohl Lib "ws2_32.DLL" (ByVal netlong As Long) As Long
     Public Declare Function ntohs Lib "ws2_32.DLL" (ByVal netshort As Integer) As Integer
-    Public Declare Function recv Lib "ws2_32.DLL" (ByVal S As Integer, ByRef buf As Any, ByVal buflen As Integer, ByVal flags As Integer) As Integer
+    Public Declare Function recv Lib "ws2_32.DLL" (ByVal S As Integer, ByVal buf As Any, ByVal buflen As Integer, ByVal flags As Integer) As Integer
     Public Declare Function recvfrom Lib "ws2_32.DLL" (ByVal S As Integer, buf As Any, ByVal buflen As Integer, ByVal flags As Integer, from As sockaddr, fromlen As Integer) As Integer
     Public Declare Function ws_select Lib "ws2_32.DLL" Alias "select" (ByVal nfds As Integer, readfds As Any, writefds As Any, exceptfds As Any, timeout As timeval) As Integer
     Public Declare Function send Lib "ws2_32.DLL" (ByVal S As Integer, buf As Any, ByVal buflen As Integer, ByVal flags As Integer) As Integer
@@ -269,14 +228,14 @@ Global Const WSANO_ADDRESS = 11004
     Public Declare Function WSAUnhookBlockingHook Lib "ws2_32.DLL" () As Integer
     Public Declare Function WSASetBlockingHook Lib "ws2_32.DLL" (ByVal lpBlockFunc As Long) As Long
     Public Declare Function WSACancelBlockingCall Lib "ws2_32.DLL" () As Integer
-    Public Declare Function WSAAsyncGetServByName Lib "ws2_32.DLL" (ByVal hWnd As Integer, ByVal wMsg As Integer, ByVal serv_name As String, ByVal proto As String, buf As Any, ByVal buflen As Integer) As Integer
-    Public Declare Function WSAAsyncGetServByPort Lib "ws2_32.DLL" (ByVal hWnd As Integer, ByVal wMsg As Integer, ByVal Port As Integer, ByVal proto As String, buf As Any, ByVal buflen As Integer) As Integer
-    Public Declare Function WSAAsyncGetProtoByName Lib "ws2_32.DLL" (ByVal hWnd As Integer, ByVal wMsg As Integer, ByVal proto_name As String, buf As Any, ByVal buflen As Integer) As Integer
-    Public Declare Function WSAAsyncGetProtoByNumber Lib "ws2_32.DLL" (ByVal hWnd As Integer, ByVal wMsg As Integer, ByVal Number As Integer, buf As Any, ByVal buflen As Integer) As Integer
-    Public Declare Function WSAAsyncGetHostByName Lib "ws2_32.DLL" (ByVal hWnd As Integer, ByVal wMsg As Integer, ByVal host_name As String, buf As Any, ByVal buflen As Integer) As Integer
-    Public Declare Function WSAAsyncGetHostByAddr Lib "ws2_32.DLL" (ByVal hWnd As Integer, ByVal wMsg As Integer, addr As Long, ByVal addr_len As Integer, ByVal addr_type As Integer, buf As Any, ByVal buflen As Integer) As Integer
+    Public Declare Function WSAAsyncGetServByName Lib "ws2_32.DLL" (ByVal hwnd As Integer, ByVal wMsg As Integer, ByVal serv_name As String, ByVal proto As String, buf As Any, ByVal buflen As Integer) As Integer
+    Public Declare Function WSAAsyncGetServByPort Lib "ws2_32.DLL" (ByVal hwnd As Integer, ByVal wMsg As Integer, ByVal Port As Integer, ByVal proto As String, buf As Any, ByVal buflen As Integer) As Integer
+    Public Declare Function WSAAsyncGetProtoByName Lib "ws2_32.DLL" (ByVal hwnd As Integer, ByVal wMsg As Integer, ByVal proto_name As String, buf As Any, ByVal buflen As Integer) As Integer
+    Public Declare Function WSAAsyncGetProtoByNumber Lib "ws2_32.DLL" (ByVal hwnd As Integer, ByVal wMsg As Integer, ByVal Number As Integer, buf As Any, ByVal buflen As Integer) As Integer
+    Public Declare Function WSAAsyncGetHostByName Lib "ws2_32.DLL" (ByVal hwnd As Integer, ByVal wMsg As Integer, ByVal host_name As String, buf As Any, ByVal buflen As Integer) As Integer
+    Public Declare Function WSAAsyncGetHostByAddr Lib "ws2_32.DLL" (ByVal hwnd As Integer, ByVal wMsg As Integer, addr As Long, ByVal addr_len As Integer, ByVal addr_type As Integer, buf As Any, ByVal buflen As Integer) As Integer
     Public Declare Function WSACancelAsyncRequest Lib "ws2_32.DLL" (ByVal hAsyncTaskHandle As Integer) As Integer
-    Public Declare Function WSAAsyncSelect Lib "ws2_32.DLL" (ByVal S As Integer, ByVal hWnd As Integer, ByVal wMsg As Integer, ByVal lEvent As Long) As Integer
+    Public Declare Function WSAAsyncSelect Lib "ws2_32.DLL" (ByVal S As Integer, ByVal hwnd As Integer, ByVal wMsg As Integer, ByVal lEvent As Long) As Integer
     Public Declare Function WSARecvEx Lib "ws2_32.DLL" (ByVal S As Integer, buf As Any, ByVal buflen As Integer, ByVal flags As Integer) As Integer
 'Agregado por Maraxus
     Declare Function WSAAccept Lib "ws2_32.DLL" (ByVal S As Integer, pSockAddr As sockaddr, AddrLen As Integer, ByVal lpfnCondition As Long, ByVal dwCallbackData As Long) As Integer
@@ -285,7 +244,7 @@ Global Const WSANO_ADDRESS = 11004
 
 #ElseIf Win32 Then
 '---Windows System Functions
-    Public Declare Function PostMessage Lib "user32" Alias "PostMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
+    Public Declare Function PostMessage Lib "user32" Alias "PostMessageA" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Long) As Long
     Public Declare Sub MemCopy Lib "kernel32" Alias "RtlMoveMemory" (Dest As Any, Src As Any, ByVal cb&)
     Public Declare Function lstrlen Lib "kernel32" Alias "lstrlenA" (ByVal lpString As Any) As Long
 '---async notification constants
@@ -316,7 +275,7 @@ Global Const WSANO_ADDRESS = 11004
     Public Declare Function listen Lib "wsock32.dll" (ByVal S As Long, ByVal backlog As Long) As Long
     Public Declare Function ntohl Lib "wsock32.dll" (ByVal netlong As Long) As Long
     Public Declare Function ntohs Lib "wsock32.dll" (ByVal netshort As Long) As Integer
-    Public Declare Function recv Lib "wsock32.dll" (ByVal S As Long, ByRef buf As Any, ByVal buflen As Long, ByVal flags As Long) As Long
+    Public Declare Function recv Lib "wsock32.dll" (ByVal S As Long, ByVal buf As Any, ByVal buflen As Long, ByVal flags As Long) As Long
     Public Declare Function recvfrom Lib "wsock32.dll" (ByVal S As Long, buf As Any, ByVal buflen As Long, ByVal flags As Long, from As sockaddr, fromlen As Long) As Long
     Public Declare Function ws_select Lib "wsock32.dll" Alias "select" (ByVal nfds As Long, readfds As fd_set, writefds As fd_set, exceptfds As fd_set, timeout As timeval) As Long
     Public Declare Function send Lib "wsock32.dll" (ByVal S As Long, buf As Any, ByVal buflen As Long, ByVal flags As Long) As Long
@@ -341,14 +300,14 @@ Global Const WSANO_ADDRESS = 11004
     Public Declare Function WSAUnhookBlockingHook Lib "wsock32.dll" () As Long
     Public Declare Function WSASetBlockingHook Lib "wsock32.dll" (ByVal lpBlockFunc As Long) As Long
     Public Declare Function WSACancelBlockingCall Lib "wsock32.dll" () As Long
-    Public Declare Function WSAAsyncGetServByName Lib "wsock32.dll" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal serv_name As String, ByVal proto As String, buf As Any, ByVal buflen As Long) As Long
-    Public Declare Function WSAAsyncGetServByPort Lib "wsock32.dll" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal Port As Long, ByVal proto As String, buf As Any, ByVal buflen As Long) As Long
-    Public Declare Function WSAAsyncGetProtoByName Lib "wsock32.dll" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal proto_name As String, buf As Any, ByVal buflen As Long) As Long
-    Public Declare Function WSAAsyncGetProtoByNumber Lib "wsock32.dll" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal Number As Long, buf As Any, ByVal buflen As Long) As Long
-    Public Declare Function WSAAsyncGetHostByName Lib "wsock32.dll" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal host_name As String, buf As Any, ByVal buflen As Long) As Long
-    Public Declare Function WSAAsyncGetHostByAddr Lib "wsock32.dll" (ByVal hWnd As Long, ByVal wMsg As Long, addr As Long, ByVal addr_len As Long, ByVal addr_type As Long, buf As Any, ByVal buflen As Long) As Long
+    Public Declare Function WSAAsyncGetServByName Lib "wsock32.dll" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal serv_name As String, ByVal proto As String, buf As Any, ByVal buflen As Long) As Long
+    Public Declare Function WSAAsyncGetServByPort Lib "wsock32.dll" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal Port As Long, ByVal proto As String, buf As Any, ByVal buflen As Long) As Long
+    Public Declare Function WSAAsyncGetProtoByName Lib "wsock32.dll" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal proto_name As String, buf As Any, ByVal buflen As Long) As Long
+    Public Declare Function WSAAsyncGetProtoByNumber Lib "wsock32.dll" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal Number As Long, buf As Any, ByVal buflen As Long) As Long
+    Public Declare Function WSAAsyncGetHostByName Lib "wsock32.dll" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal host_name As String, buf As Any, ByVal buflen As Long) As Long
+    Public Declare Function WSAAsyncGetHostByAddr Lib "wsock32.dll" (ByVal hwnd As Long, ByVal wMsg As Long, addr As Long, ByVal addr_len As Long, ByVal addr_type As Long, buf As Any, ByVal buflen As Long) As Long
     Public Declare Function WSACancelAsyncRequest Lib "wsock32.dll" (ByVal hAsyncTaskHandle As Long) As Long
-    Public Declare Function WSAAsyncSelect Lib "wsock32.dll" (ByVal S As Long, ByVal hWnd As Long, ByVal wMsg As Long, ByVal lEvent As Long) As Long
+    Public Declare Function WSAAsyncSelect Lib "wsock32.dll" (ByVal S As Long, ByVal hwnd As Long, ByVal wMsg As Long, ByVal lEvent As Long) As Long
     Public Declare Function WSARecvEx Lib "wsock32.dll" (ByVal S As Long, buf As Any, ByVal buflen As Long, ByVal flags As Long) As Long
 'Agregado por Maraxus
     Declare Function WSAAccept Lib "ws2_32.DLL" (ByVal S As Long, pSockAddr As sockaddr, AddrLen As Long, ByVal lpfnCondition As Long, ByVal dwCallbackData As Long) As Long
@@ -408,7 +367,7 @@ End Function
     Dim S&, SelectOps&, dummy&
 #End If
     Dim sockin As sockaddr
-    SockReadBuffer$ = vbNullString
+    SockReadBuffer$ = ""
     sockin = saZero
     sockin.sin_family = AF_INET
     sockin.sin_port = htons(Port)
@@ -519,7 +478,7 @@ Public Function GetAscIP(ByVal inn As Long) As String
         nStr = lstrlen(lpStr)
         If nStr > 32 Then nStr = 32
         MemCopy ByVal retString, ByVal lpStr, nStr
-        retString = Left$(retString, nStr)
+        retString = Left(retString, nStr)
         GetAscIP = retString
     Else
         GetAscIP = "255.255.255.255"
@@ -527,7 +486,7 @@ Public Function GetAscIP(ByVal inn As Long) As String
 End Function
 
 Public Function GetHostByAddress(ByVal addr As Long) As String
-    Dim phe&
+    Dim phe&, Ret&
     Dim heDestHost As HostEnt
     Dim HostName$
     phe = gethostbyaddr(addr, 4, PF_INET)
@@ -535,7 +494,7 @@ Public Function GetHostByAddress(ByVal addr As Long) As String
         MemCopy heDestHost, ByVal phe, hostent_size
         HostName = String(256, 0)
         MemCopy ByVal HostName, ByVal heDestHost.h_name, 256
-        GetHostByAddress = Left$(HostName, InStr(HostName, Chr$(0)) - 1)
+        GetHostByAddress = Left(HostName, InStr(HostName, Chr(0)) - 1)
     Else
         GetHostByAddress = WSA_NoName
     End If
@@ -569,8 +528,8 @@ Public Function GetLocalHostName() As String
     If gethostname(sName, 256) Then
         sName = WSA_NoName
     Else
-        If InStr(sName, Chr$(0)) Then
-            sName = Left$(sName, InStr(sName, Chr$(0)) - 1)
+        If InStr(sName, Chr(0)) Then
+            sName = Left(sName, InStr(sName, Chr(0)) - 1)
         End If
     End If
     GetLocalHostName = sName
@@ -586,7 +545,7 @@ End Function
     Dim sa As sockaddr
     AddrLen = sockaddr_size
     If getpeername(S, sa, AddrLen) Then
-        GetPeerAddress = vbNullString
+        GetPeerAddress = ""
     Else
         GetPeerAddress = SockAddressToString(sa)
     End If
@@ -670,7 +629,7 @@ End Function
     szRet = String(32, 0)
     AddrLen = sockaddr_size
     If getsockname(S, sa, AddrLen) Then
-        GetSockAddress = vbNullString
+        GetSockAddress = ""
     Else
         GetSockAddress = SockAddressToString(sa)
     End If
@@ -770,7 +729,7 @@ Function IrcGetAscIp(ByVal IPL$) As String
     nStr = lstrlen(lpStr)
     If nStr > 32 Then nStr = 32
     MemCopy ByVal retString, ByVal lpStr, nStr
-    retString = Left$(retString, nStr)
+    retString = Left(retString, nStr)
     IrcGetAscIp = retString
     Exit Function
 IrcGetAscIPError:
@@ -824,7 +783,7 @@ Public Function ListenForConnect(ByVal Port&, ByVal HWndToMsg&, ByVal Enlazar As
         ListenForConnect = INVALID_SOCKET
         Exit Function
     End If
-    If LenB(Enlazar) = 0 Then
+    If Enlazar = "" Then
         sockin.sin_addr = htonl(INADDR_ANY)
     Else
         sockin.sin_addr = inet_addr(Enlazar)
@@ -883,7 +842,7 @@ Public Function kSendData(ByVal S%, vMessage As Variant) As Integer
 Public Function kSendData(ByVal S&, vMessage As Variant) As Long
 #End If
     Dim TheMsg() As Byte, sTemp$
-    TheMsg = vbNullString
+    TheMsg = ""
     Select Case VarType(vMessage)
         Case 8209   'byte array
             sTemp = vMessage

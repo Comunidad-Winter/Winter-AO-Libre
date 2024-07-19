@@ -1,28 +1,26 @@
-[mapa]
-Name=Nuevo Mapa
-MusicNum=0
+[MAPA83]
+Name=Desierto
+MusicNum=28
 MagiaSinefecto=0
-InviSinEfecto=0
-ResuSinEfecto=0
 NoEncriptarMP=0
-RoboNpcsPermitido=0
-Terreno=BOSQUE
+Terreno=DESIERTO
 Zona=CAMPO
 Restringir=No
-BackUp= 0
-lvlMinimo=0
+BackUp=0
 Pk=0
-[MAPA77]
-Name=Nuevo Mapa
-MusicNum=0
+[MAPA84]
 MagiaSinefecto=0
-InviSinEfecto=0
-ResuSinEfecto=0
 NoEncriptarMP=0
-RoboNpcsPermitido=0
-Terreno=BOSQUE
+BackUp= 0
+Pk=0
+Name=Desierto
+MusicNum=28
+Terreno=DESIERTO
 Zona=CAMPO
 Restringir=No
-BackUp= 0
-lvlMinimo=0
-Pk=0
+InviSinEfecto=0
+ResuSinEfecto=0
+Light=0
+cRojo=0
+cVerde=0
+cAzul=0

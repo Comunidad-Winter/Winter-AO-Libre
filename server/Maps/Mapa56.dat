@@ -1,14 +1,26 @@
-[MAPA56]
+[mapa]
+Name=Oceano Glaciar
+MusicNum=80
 MagiaSinefecto=0
+NoEncriptarMP=0
+Terreno=NIEVE
+Zona=CAMPO
+Restringir=No
+BackUp=0
+Pk=0
+[MAPA56]
+Name=Oceano Glaciar
+MusicNum=80
+MagiaSinefecto=0
+NoEncriptarMP=0
+Terreno=NIEVE
+Zona=CAMPO
+Restringir=No
+BackUp= 0
+Pk=0
 InviSinEfecto=0
 ResuSinEfecto=0
-NoEncriptarMP=0
-RoboNpcsPermitido=0
-BackUp= 0
-Pk=1
-lvlMinimo=0
-Name=Carcel de Winter
-MusicNum=11
-Terreno=BOSQUE
-Zona=CAMPO
-Restringir=NO
+Light=0
+cRojo=0
+cVerde=0
+cAzul=0
