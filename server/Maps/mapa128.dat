@@ -1,28 +1,41 @@
-[mapa]
+[MAPA250]
 Name=Nuevo Mapa
 MusicNum=0
 MagiaSinefecto=0
 InviSinEfecto=0
 ResuSinEfecto=0
 NoEncriptarMP=0
-RoboNpcsPermitido=0
 Terreno=BOSQUE
 Zona=CAMPO
 Restringir=No
-BackUp= 0
-lvlMinimo=0
+BackUp=0
 Pk=0
-[MAPA77]
-Name=Nuevo Mapa
-MusicNum=0
+
+[MAPA225]
 MagiaSinefecto=0
 InviSinEfecto=0
 ResuSinEfecto=0
 NoEncriptarMP=0
-RoboNpcsPermitido=0
-Terreno=BOSQUE
-Zona=CAMPO
-Restringir=No
 BackUp= 0
-lvlMinimo=0
 Pk=0
+Name=Jardines secretos
+MusicNum=6
+Terreno=BOSQUE
+Zona=CIUDAD
+Restringir=No
+[MAPA128]
+MagiaSinefecto=0
+InviSinEfecto=0
+ResuSinEfecto=0
+NoEncriptarMP=0
+BackUp= 0
+Pk=0
+Name=Mansion Secreta
+MusicNum=17
+Terreno=BOSQUE
+Zona=CIUDAD
+Restringir=No
+Light=0
+cRojo=0
+cVerde=0
+cAzul=0

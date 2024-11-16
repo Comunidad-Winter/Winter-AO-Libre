@@ -1,22 +1,14 @@
 VERSION 5.00
 Begin VB.Form FrmInterv 
    Caption         =   "Intervalos"
-   ClientHeight    =   4920
+   ClientHeight    =   4710
    ClientLeft      =   60
    ClientTop       =   345
-   ClientWidth     =   7650
+   ClientWidth     =   7695
    LinkTopic       =   "Form1"
-   ScaleHeight     =   4920
-   ScaleWidth      =   7650
+   ScaleHeight     =   4710
+   ScaleWidth      =   7695
    StartUpPosition =   3  'Windows Default
-   Begin VB.CommandButton Command3 
-      Caption         =   "Re - LoadAntiCheat"
-      Height          =   195
-      Left            =   1680
-      TabIndex        =   55
-      Top             =   4680
-      Width           =   3855
-   End
    Begin VB.CommandButton Command2 
       Caption         =   "Guardar Intervalos"
       BeginProperty Font 
@@ -147,10 +139,10 @@ Begin VB.Form FrmInterv
             Strikethrough   =   0   'False
          EndProperty
          Height          =   1650
-         Left            =   120
+         Left            =   165
          TabIndex        =   40
-         Top             =   240
-         Width           =   2625
+         Top             =   300
+         Width           =   2580
          Begin VB.TextBox txtCmdExec 
             Height          =   285
             Left            =   1320
@@ -644,6 +636,9 @@ frmMain.npcataca.Interval = val(txtNPCPuedeAtacar.Text)
 frmMain.TIMER_AI.Interval = val(txtAI.Text)
 IntervaloUserPuedeTrabajar = val(txtTrabajo.Text)
 IntervaloUserPuedeAtacar = val(txtPuedeAtacar.Text)
+frmMain.tLluvia.Interval = val(txtIntervaloPerdidaStaminaLluvia.Text)
+frmMain.CmdExec.Interval = val(txtCmdExec.Text)
+
 
 End Sub
 
@@ -679,17 +674,14 @@ Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloNpcAI", frmMain.TI
 Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloNpcPuedeAtacar", frmMain.npcataca.Interval)
 Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloTrabajo", str(IntervaloUserPuedeTrabajar))
 Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloUserPuedeAtacar", str(IntervaloUserPuedeAtacar))
-
+Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloPerdidaStaminaLluvia", frmMain.tLluvia.Interval)
+Call WriteVar(IniPath & "Server.ini", "INTERVALOS", "IntervaloTimerExec", frmMain.CmdExec.Interval)
 
 MsgBox "Los intervalos se han guardado sin problemas"
 
 Exit Sub
 Err:
     MsgBox "Error al intentar grabar los intervalos"
-End Sub
-
-Private Sub Command3_Click()
-Call LoadAntiCheat
 End Sub
 
 Private Sub ok_Click()

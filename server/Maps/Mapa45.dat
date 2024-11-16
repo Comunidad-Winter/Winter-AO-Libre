@@ -1,13 +1,22 @@
-[MAPA46]
-Name=Nuevo Mapa
-MusicNum=0
+[45]
+Name=45
 MagiaSinefecto=0
-InviSinEfecto=0
-ResuSinEfecto=0
 NoEncriptarMP=0
-RoboNpcsPermitido=0
+BackUp=0
+Pk=0
+[MAPA45]
+MagiaSinefecto=0
+NoEncriptarMP=0
+BackUp= 0
+Pk=0
+Name=Bosques Oscuros
+MusicNum=81
 Terreno=BOSQUE
 Zona=CAMPO
 Restringir=No
-BackUp= 0
-Pk=0
+InviSinEfecto=0
+ResuSinEfecto=0
+Light=0
+cRojo=0
+cVerde=0
+cAzul=0

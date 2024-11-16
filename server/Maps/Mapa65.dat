@@ -1,27 +1,26 @@
-[MAPA64]
-Name=Tierras Devastadas
-MusicNum=0
+[AFUERAS]
+Name=Afueras de Winderbill
+MusicNum=76
 MagiaSinefecto=0
-InviSinEfecto=0
-ResuSinEfecto=0
 NoEncriptarMP=0
-RoboNpcsPermitido=0
 Terreno=BOSQUE
 Zona=CAMPO
 Restringir=No
-BackUp= 1
+BackUp=0
 Pk=0
 [MAPA65]
 MagiaSinefecto=0
-InviSinEfecto=0
-ResuSinEfecto=0
 NoEncriptarMP=0
-RoboNpcsPermitido=0
-BackUp= 1
+BackUp= 0
 Pk=0
-Name=Campamento Orco
+Name=Afueras de Winderbill
+MusicNum=76
 Terreno=BOSQUE
 Zona=CIUDAD
-lvlMinimo=0
-MusicNum=23
-Restringir=NO
+Restringir=No
+InviSinEfecto=0
+ResuSinEfecto=0
+Light=0
+cRojo=0
+cVerde=0
+cAzul=0

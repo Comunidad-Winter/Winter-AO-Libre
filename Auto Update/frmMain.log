@@ -1,0 +1,7 @@
+Line 58: Class vbalProgBarLib6.vbalProgressBar of control Psb1 was not a loaded control class.
+Line 65: The property name _ExtentX in Psb1 is invalid.
+Line 66: The property name _ExtentY in Psb1 is invalid.
+Line 69: The property name BarPicture in Psb1 is invalid.
+Line 70: The property name BarPictureMode in Psb1 is invalid.
+Line 80: The property name Segments in Psb1 is invalid.
+Line 58: Property Picture in Psb1 could not be set.

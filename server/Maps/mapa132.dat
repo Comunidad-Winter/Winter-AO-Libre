@@ -1,28 +1,40 @@
-[mapa]
-Name=Nuevo Mapa
-MusicNum=0
+[MAPA169]
+Name=Estadio
+MusicNum=18-1
+MagiaSinefecto=0
+NoEncriptarMP=0
+Terreno=BOSQUE
+Zona=CAMPO
+Restringir=No
+BackUp= 1
+Pk=0
+[MAPA TORNEO COMUN]
 MagiaSinefecto=0
 InviSinEfecto=0
 ResuSinEfecto=0
 NoEncriptarMP=0
-RoboNpcsPermitido=0
-Terreno=BOSQUE
-Zona=CAMPO
-Restringir=No
 BackUp= 0
-lvlMinimo=0
 Pk=0
-[MAPA77]
-Name=Nuevo Mapa
-MusicNum=0
+[MAPA132]
 MagiaSinefecto=0
 InviSinEfecto=0
 ResuSinEfecto=0
 NoEncriptarMP=0
-RoboNpcsPermitido=0
-Terreno=BOSQUE
-Zona=CAMPO
-Restringir=No
 BackUp= 0
-lvlMinimo=0
 Pk=0
+Light=0
+cRojo=0
+cVerde=0
+cAzul=0
+[DF]
+MagiaSinefecto=0
+InviSinEfecto=1
+ResuSinEfecto=1
+NoEncriptarMP=0
+BackUp= 0
+Pk=0
+Name=Zona de Juegos
+MusicNum=11
+Terreno=BOSQUE
+Zona=CIUDAD
+Restringir=No

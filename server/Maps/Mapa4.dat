@@ -1,26 +1,16 @@
-[Mapa]
-Name=Nuevo Mapa
-MusicNum=0
+[MAPA4]
+Name=Costas de Ramx
+MusicNum=75
 MagiaSinefecto=0
-InviSinEfecto=0
-ResuSinEfecto=0
 NoEncriptarMP=0
-RoboNpcsPermitido=0
 Terreno=BOSQUE
 Zona=CAMPO
 Restringir=No
 BackUp= 0
 Pk=0
-[MAPA4]
-MagiaSinefecto=0
 InviSinEfecto=0
 ResuSinEfecto=0
-NoEncriptarMP=0
-RoboNpcsPermitido=0
-Terreno=NIEVE
-Zona=CAMPO
-Restringir=NO
-BackUp= 0
-Pk=0
-MusicNum=17
-lvlMinimo=0
+Light=0
+cRojo=0
+cVerde=0
+cAzul=0

@@ -1,14 +1,21 @@
-[MAPA119]
+[MAP]
 MagiaSinefecto=0
+NoEncriptarMP=0
+BackUp= 0
+Pk=0
+[MAPA119]
+Name=Dungeon Desert
+MusicNum=4
+MagiaSinefecto=0
+NoEncriptarMP=0
+Terreno=DESIERTO
+Zona=DUNGEON
+Restringir=No
+BackUp= 0
+Pk=0
 InviSinEfecto=0
 ResuSinEfecto=0
-NoEncriptarMP=0
-RoboNpcsPermitido=0
-BackUp= 0
-Pk=1
-Name=Isla Newbie
-Terreno=BOSQUE
-Zona=CAMPO
-Restringir=NEWBIE
-MusicNum=9
-lvlMinimo=0
+Light=0
+cRojo=0
+cVerde=0
+cAzul=0
