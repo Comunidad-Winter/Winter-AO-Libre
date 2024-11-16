@@ -1,98 +1,73 @@
 VERSION 5.00
 Begin VB.Form frmQuests 
-   BorderStyle     =   1  'Fixed Single
+   BorderStyle     =   0  'None
    Caption         =   "Misiones"
-   ClientHeight    =   3675
-   ClientLeft      =   45
-   ClientTop       =   330
-   ClientWidth     =   6675
-   BeginProperty Font 
-      Name            =   "Tahoma"
-      Size            =   8.25
-      Charset         =   0
-      Weight          =   400
-      Underline       =   0   'False
-      Italic          =   0   'False
-      Strikethrough   =   0   'False
-   EndProperty
+   ClientHeight    =   4920
+   ClientLeft      =   0
+   ClientTop       =   0
+   ClientWidth     =   7725
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   3675
-   ScaleWidth      =   6675
-   StartUpPosition =   2  'CenterScreen
-   Begin VB.CommandButton cmdAbandonar 
-      Caption         =   "&Abandonar misión"
-      Height          =   315
-      Left            =   60
-      TabIndex        =   1
-      Top             =   3300
-      Width           =   2535
-   End
+   ScaleHeight     =   328
+   ScaleMode       =   3  'Pixel
+   ScaleWidth      =   515
+   ShowInTaskbar   =   0   'False
+   StartUpPosition =   1  'CenterOwner
    Begin VB.ListBox lstQuests 
-      Height          =   3180
-      Left            =   60
+      Appearance      =   0  'Flat
+      BackColor       =   &H00000000&
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   9.75
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFFFF&
+      Height          =   3870
+      Left            =   405
       TabIndex        =   0
-      Top             =   60
-      Width           =   2535
+      Top             =   510
+      Width           =   3435
    End
-   Begin VB.Label lblCriaturas 
-      Alignment       =   2  'Center
-      Caption         =   "-"
+   Begin VB.Label QuestNum 
+      BackStyle       =   0  'Transparent
+      Caption         =   "0/15"
       BeginProperty Font 
          Name            =   "Tahoma"
-         Size            =   8.25
+         Size            =   6.75
          Charset         =   0
          Weight          =   700
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
+      ForeColor       =   &H00FFFFFF&
       Height          =   255
-      Left            =   2700
-      TabIndex        =   7
-      Top             =   840
-      Width           =   3855
+      Left            =   960
+      TabIndex        =   2
+      Top             =   4470
+      Width           =   495
    End
-   Begin VB.Label Label 
-      Caption         =   "Criaturas matadas:"
-      Height          =   255
-      Index           =   2
-      Left            =   2700
-      TabIndex        =   6
-      Top             =   600
-      Width           =   3855
-   End
-   Begin VB.Label lblDescripcion 
-      Alignment       =   2  'Center
-      Caption         =   "-"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      Height          =   2055
-      Left            =   2700
-      TabIndex        =   5
-      Top             =   1500
-      Width           =   3855
-   End
-   Begin VB.Label Label 
-      Caption         =   "Descripción de la misión:"
+   Begin VB.Image cmdOptions 
       Height          =   255
       Index           =   1
-      Left            =   2700
-      TabIndex        =   4
-      Top             =   1200
-      Width           =   3855
+      Left            =   5880
+      Top             =   4560
+      Width           =   1335
    End
-   Begin VB.Label lblNombre 
-      Alignment       =   2  'Center
-      Caption         =   "-"
+   Begin VB.Image cmdOptions 
+      Height          =   375
+      Index           =   0
+      Left            =   4320
+      Top             =   4440
+      Width           =   1455
+   End
+   Begin VB.Label txtInfo 
+      BackStyle       =   0  'Transparent
       BeginProperty Font 
          Name            =   "Tahoma"
          Size            =   8.25
@@ -102,20 +77,12 @@ Begin VB.Form frmQuests
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   255
-      Left            =   2700
-      TabIndex        =   3
-      Top             =   240
-      Width           =   3855
-   End
-   Begin VB.Label Label 
-      Caption         =   "Nombre de la misión:"
-      Height          =   255
-      Index           =   0
-      Left            =   2700
-      TabIndex        =   2
-      Top             =   60
-      Width           =   3855
+      ForeColor       =   &H00000000&
+      Height          =   3495
+      Left            =   4080
+      TabIndex        =   1
+      Top             =   720
+      Width           =   3135
    End
 End
 Attribute VB_Name = "frmQuests"
@@ -123,36 +90,53 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Amra
 Option Explicit
 
-Private Sub cmdAbandonar_Click()
-    If lstQuests.listIndex < 1 Or lstQuests.List(lstQuests.listIndex) = "NADA" Then Exit Sub
-    
-    If MsgBox("¿Estás seguro que deseas abandonar la misión " & Chr(34) & lstQuests.List(lstQuests.listIndex) & Chr(34) & "?", vbCritical + vbYesNo, "Argentum Online") = vbYes Then
-        Call SendData("QA" & lstQuests.listIndex + 1)
-    End If
-End Sub
-
-Private Sub cmdCerrar_Click()
-    Unload Me
+Private Sub cmdOptions_Click(Index As Integer)
+'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+'Maneja el click de los CommandButtons cmdOptions.
+'Last modified: 31/01/2010 by Amraphen
+'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    Select Case Index
+        Case 0 'Botón ABANDONAR MISIÓN
+            'Chequeamos si hay items.
+            If lstQuests.ListCount = 0 Then
+                MsgBox "¡No tienes ninguna misión!", vbOKOnly + vbExclamation
+                Exit Sub
+            End If
+            
+            'Chequeamos si tiene algun item seleccionado.
+            If lstQuests.ListIndex < 0 Then
+                MsgBox "¡Primero debes seleccionar una misión!", vbOKOnly + vbExclamation
+                Exit Sub
+            End If
+            
+            Select Case MsgBox("¿Estás seguro que deseas abandonar la misión?", vbYesNo + vbExclamation)
+                Case vbYes  'Botón SÍ.
+                    'Enviamos el paquete para abandonar la quest
+                    Call WriteQuestAbandon(lstQuests.ListIndex + 1)
+                    
+                Case vbNo   'Botón NO.
+                    'Como seleccionó que no, no hace nada.
+                    Exit Sub
+            End Select
+            
+        Case 1 'Botón VOLVER
+            Unload Me
+    End Select
 End Sub
 
 Private Sub Form_Load()
-    If lstQuests.List(0) <> "NADA" Then
-        Call SendData("QIR1")
-    End If
+Me.Picture = General_Load_Picture_From_Resource("70.gif")
+Call General_Set_Wav("256.wav")
 End Sub
 
 Private Sub lstQuests_Click()
-    If lstQuests.listIndex < 1 Then Exit Sub
+'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+'Maneja el click del ListBox lstQuests.
+'Last modified: 31/01/2010 by Amraphen
+'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    If lstQuests.ListIndex < 0 Then Exit Sub
     
-    If lstQuests.List(lstQuests.listIndex) = "NADA" Then
-        lblCriaturas.Caption = "-"
-        lblDescripcion.Caption = "-"
-        lblNombre.Caption = "-"
-    Else
-        Call SendData("QIR" & lstQuests.listIndex + 1)
-    End If
+    Call WriteQuestDetailsRequest(lstQuests.ListIndex + 1)
 End Sub
-'/Amra

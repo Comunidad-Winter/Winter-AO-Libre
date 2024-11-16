@@ -1,26 +1,28 @@
-[MAPA145]
+[mapa]
 Name=Nuevo Mapa
 MusicNum=0
 MagiaSinefecto=0
-NoEncriptarMP=0
-Terreno=BOSQUE
-Zona=CAMPO
-Restringir=No
-BackUp=0
-Pk=0
-[MAPA87]
-MagiaSinefecto=0
-NoEncriptarMP=0
-BackUp= 0
-Pk=0
-Name=Rio Ragar
-MusicNum=55
-Terreno=BOSQUE
-Zona=CAMPO
-Restringir=No
 InviSinEfecto=0
 ResuSinEfecto=0
-Light=0
-cRojo=0
-cVerde=0
-cAzul=0
+NoEncriptarMP=0
+RoboNpcsPermitido=0
+Terreno=BOSQUE
+Zona=CAMPO
+Restringir=No
+BackUp= 0
+lvlMinimo=0
+Pk=0
+[MAPA77]
+Name=Nuevo Mapa
+MusicNum=0
+MagiaSinefecto=0
+InviSinEfecto=0
+ResuSinEfecto=0
+NoEncriptarMP=0
+RoboNpcsPermitido=0
+Terreno=BOSQUE
+Zona=CAMPO
+Restringir=No
+BackUp= 0
+lvlMinimo=0
+Pk=0

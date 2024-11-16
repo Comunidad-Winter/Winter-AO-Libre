@@ -1,11 +1,12 @@
 VERSION 5.00
 Begin VB.Form frmGuildSol 
-   BorderStyle     =   1  'Fixed Single
+   BorderStyle     =   0  'None
    Caption         =   "Ingreso"
-   ClientHeight    =   3630
-   ClientLeft      =   45
-   ClientTop       =   330
-   ClientWidth     =   4680
+   ClientHeight    =   3420
+   ClientLeft      =   0
+   ClientTop       =   -45
+   ClientWidth     =   4785
+   ClipControls    =   0   'False
    ControlBox      =   0   'False
    BeginProperty Font 
       Name            =   "Tahoma"
@@ -19,50 +20,34 @@ Begin VB.Form frmGuildSol
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   Picture         =   "frmSolicitud.frx":0000
-   ScaleHeight     =   3630
-   ScaleWidth      =   4680
+   ScaleHeight     =   3420
+   ScaleWidth      =   4785
+   ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
-   Begin VB.CommandButton Command2 
-      Cancel          =   -1  'True
-      Caption         =   "Cancelar"
-      Height          =   495
-      Left            =   240
-      MouseIcon       =   "frmSolicitud.frx":1A9AB
-      MousePointer    =   99  'Custom
-      TabIndex        =   3
-      Top             =   3000
-      Width           =   855
-   End
-   Begin VB.CommandButton Command1 
-      Caption         =   "Enviar"
-      Height          =   495
-      Left            =   3360
-      MouseIcon       =   "frmSolicitud.frx":1AAFD
-      MousePointer    =   99  'Custom
-      TabIndex        =   2
-      Top             =   3000
-      Width           =   975
-   End
    Begin VB.TextBox Text1 
-      Height          =   1215
-      Left            =   240
+      Appearance      =   0  'Flat
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      ForeColor       =   &H00FFFFFF&
+      Height          =   735
+      Left            =   480
       MaxLength       =   400
       MultiLine       =   -1  'True
-      TabIndex        =   1
-      Top             =   1560
-      Width           =   4095
-   End
-   Begin VB.Label Label1 
-      Alignment       =   2  'Center
-      BackStyle       =   0  'Transparent
-      Caption         =   $"frmSolicitud.frx":1AC4F
-      ForeColor       =   &H00FFFFFF&
-      Height          =   1215
-      Left            =   240
       TabIndex        =   0
-      Top             =   120
-      Width           =   3975
+      Top             =   1960
+      Width           =   3735
+   End
+   Begin VB.Image Command2 
+      Height          =   255
+      Left            =   3120
+      Top             =   3000
+      Width           =   1335
+   End
+   Begin VB.Image Command1 
+      Height          =   255
+      Left            =   240
+      Top             =   3000
+      Width           =   1455
    End
 End
 Attribute VB_Name = "frmGuildSol"
@@ -75,24 +60,21 @@ Option Explicit
 Dim CName As String
 
 Private Sub Command1_Click()
-Dim f$
+Call General_Set_Wav(SND_CLICK)
+    Call WriteGuildRequestMembership(CName, Replace(Replace(Text1.Text, ",", ";"), vbCrLf, "º"))
 
-f$ = "SOLICITUD" & CName
-f$ = f$ & "," & Replace(Replace(Text1.Text, ",", ";"), vbCrLf, "º")
-
-Call SendData(f$)
-
-Unload Me
-
+    Unload Me
 End Sub
 
 Private Sub Command2_Click()
-Unload Me
+Call General_Set_Wav(SND_CLICK)
+    Unload Me
 End Sub
 
 Public Sub RecieveSolicitud(ByVal GuildName As String)
-
-CName = GuildName
-
+    CName = GuildName
 End Sub
 
+Private Sub Form_Load()
+Me.Picture = General_Load_Picture_From_Resource("54.gif")
+End Sub

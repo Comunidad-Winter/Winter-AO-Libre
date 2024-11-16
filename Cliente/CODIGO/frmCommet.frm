@@ -6,6 +6,7 @@ Begin VB.Form frmCommet
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   4680
+   ClipControls    =   0   'False
    ControlBox      =   0   'False
    BeginProperty Font 
       Name            =   "Tahoma"
@@ -59,7 +60,9 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
-Public Nombre As String
+Private Const MAX_PROPOSAL_LENGTH As Integer = 520
+
+Public nombre As String
 Public T As TIPO
 Public Enum TIPO
     ALIANZA = 1
@@ -87,23 +90,23 @@ Private Sub Command1_Click()
 
 If Text1 = "" Then
     If T = PAZ Or T = ALIANZA Then
-        MsgBox "Debes redactar un mensaje solicitando la paz o alianza al líder de " & Nombre
+        MsgBox "Debes redactar un mensaje solicitando la paz o alianza al líder de " & nombre
     Else
-        MsgBox "Debes indicar el motivo por el cual rechazas la membresía de " & Nombre
+        MsgBox "Debes indicar el motivo por el cual rechazas la membresía de " & nombre
     End If
     Exit Sub
 End If
 
 If T = PAZ Then
-    Call SendData("PEACEOFF" & Nombre & "," & Replace(Text1, vbCrLf, "º"))
+    Call WriteGuildOfferPeace(nombre, Replace(Text1, vbCrLf, "º"))
 ElseIf T = ALIANZA Then
-    Call SendData("ALLIEOFF" & Nombre & "," & Replace(Text1, vbCrLf, "º"))
+    Call WriteGuildOfferAlliance(nombre, Replace(Text1, vbCrLf, "º"))
 ElseIf T = RECHAZOPJ Then
-    Call SendData("RECHAZAR" & Nombre & "," & Replace(Replace(Text1.Text, ",", " "), vbCrLf, " "))
+    Call WriteGuildRejectNewMember(nombre, Replace(Replace(Text1.Text, ",", " "), vbCrLf, " "))
     'Sacamos el char de la lista de aspirantes
     Dim i As Long
     For i = 0 To frmGuildLeader.solicitudes.ListCount - 1
-        If frmGuildLeader.solicitudes.List(i) = Nombre Then
+        If frmGuildLeader.solicitudes.List(i) = nombre Then
             frmGuildLeader.solicitudes.RemoveItem i
             Exit For
         End If
@@ -121,3 +124,7 @@ Private Sub Command2_Click()
 Unload Me
 End Sub
 
+Private Sub Text1_Change()
+    If Len(Text1.Text) > MAX_PROPOSAL_LENGTH Then _
+        Text1.Text = Left$(Text1.Text, MAX_PROPOSAL_LENGTH)
+End Sub

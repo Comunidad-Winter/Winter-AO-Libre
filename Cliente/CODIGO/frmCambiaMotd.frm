@@ -6,6 +6,7 @@ Begin VB.Form frmCambiaMotd
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   5175
+   ClipControls    =   0   'False
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -136,6 +137,25 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+'**************************************************************
+' frmCambiarMotd.frm
+'
+'**************************************************************
+
+'**************************************************************************
+'This program is free software; you can redistribute it and/or modify
+'it under the terms of the Affero General Public License;
+'either version 1 of the License, or any later version.
+'
+'This program is distributed in the hope that it will be useful,
+'but WITHOUT ANY WARRANTY; without even the implied warranty of
+'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+'Affero General Public License for more details.
+'
+'You should have received a copy of the Affero General Public License
+'along with this program; if not, you can find it at http://www.affero.org/oagpl.html
+'**************************************************************************
+
 Option Explicit
 
 Private Sub cmdOk_Click()
@@ -163,44 +183,39 @@ Private Sub cmdOk_Click()
         End If
     Next i
     
-    Call SendData("ZMOTD" & txtMotd.Text)
-    Unload Me
-End Sub
-
-Private Sub Command1_Click()
+    Call WriteSetMOTD(txtMotd.Text)
     Unload Me
 End Sub
 
 'A partir de Command2_Click son todos buttons para agregar color al texto
 Private Sub cmdAzul_Click()
-    txtMotd.Text = txtMotd & "50~70~250~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
+    txtMotd.Text = txtMotd & "~50~70~250~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub
 
 Private Sub cmdRojo_Click()
-    txtMotd.Text = txtMotd & "255~0~0~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
+    txtMotd.Text = txtMotd & "~255~0~0~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub
 
 Private Sub cmdBlanco_Click()
-    txtMotd.Text = txtMotd & "255~255~255~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
+    txtMotd.Text = txtMotd & "~255~255~255~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub
 
 Private Sub cmdGris_Click()
-    txtMotd.Text = txtMotd & "157~157~157~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
+    txtMotd.Text = txtMotd & "~157~157~157~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub
 
 Private Sub cmdAmarillo_Click()
-    txtMotd.Text = txtMotd & "244~244~0~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
+    txtMotd.Text = txtMotd & "~244~244~0~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub
 
 Private Sub cmdMorado_Click()
-    txtMotd.Text = txtMotd & "128~0~128~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
+    txtMotd.Text = txtMotd & "~128~0~128~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub
 
 Private Sub cmdVerde_Click()
-  txtMotd.Text = txtMotd & "23~104~26~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
+  txtMotd.Text = txtMotd & "~23~104~26~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub
 
 Private Sub cmdMarron_Click()
-    txtMotd.Text = txtMotd & "97~58~31~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
+    txtMotd.Text = txtMotd & "~97~58~31~" & CStr(chkBold.value) & "~" & CStr(chkItalic.value)
 End Sub
-

@@ -7,6 +7,7 @@ Begin VB.Form frmPres
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   4680
+   ClipControls    =   0   'False
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
@@ -25,7 +26,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Argentum Online 0.9.0.9
+'Argentum Online 0.11.6
 '
 'Copyright (C) 2002 Márquez Pablo Ignacio
 'Copyright (C) 2002 Otto Perez
@@ -33,18 +34,16 @@ Attribute VB_Exposed = False
 'Copyright (C) 2002 Matías Fernando Pequeño
 '
 'This program is free software; you can redistribute it and/or modify
-'it under the terms of the GNU General Public License as published by
-'the Free Software Foundation; either version 2 of the License, or
-'any later version.
+'it under the terms of the Affero General Public License;
+'either version 1 of the License, or any later version.
 '
 'This program is distributed in the hope that it will be useful,
 'but WITHOUT ANY WARRANTY; without even the implied warranty of
 'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-'GNU General Public License for more details.
+'Affero General Public License for more details.
 '
-'You should have received a copy of the GNU General Public License
-'along with this program; if not, write to the Free Software
-'Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+'You should have received a copy of the Affero General Public License
+'along with this program; if not, you can find it at http://www.affero.org/oagpl.html
 '
 'Argentum Online is based on Baronsoft's VB6 Online RPG
 'You can contact the original creator of ORE at aaron@baronsoft.com
@@ -68,8 +67,8 @@ Private Sub Form_KeyPress(KeyAscii As Integer)
 End Sub
 
 Private Sub Form_Load()
-    Me.width = 800 * Screen.TwipsPerPixelX
-    Me.height = 600 * Screen.TwipsPerPixelY
+    Me.Width = 800 * Screen.TwipsPerPixelX
+    Me.Height = 600 * Screen.TwipsPerPixelY
     puedo = False
 End Sub
 
@@ -79,10 +78,10 @@ Static ticks As Long
 ticks = ticks + 1
 
 If ticks = 1 Then
-    Me.Picture = LoadPicture(App.Path & "\Graficos\alkonao2.jpg")
+    Me.Picture = LoadPicture(App.path & "\Graficos\argentum.jpg")
     puedo = True
-ElseIf ticks = 2 Then
-    Me.Picture = LoadPicture(App.Path & "\Graficos\newfinal.jpg")
+'ElseIf ticks = 2 Then
+'    Me.Picture = LoadPicture(App.path & "\Graficos\newfinal.jpg")
 Else
     Unload Me
 End If

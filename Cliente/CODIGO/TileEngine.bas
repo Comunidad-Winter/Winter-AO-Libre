@@ -1,55 +1,55 @@
 Attribute VB_Name = "Mod_TileEngine"
 Option Explicit
 
-'¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
-'¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
-'    C       O       N       S      T
-'¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
-'¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
+Dim map_current As Map
+Dim char_list() As Char
+
+'Screen positioning
+Public minY As Integer          'Start Y pos on current screen + tilebuffer
+Public maxY As Integer          'End Y pos on current screen
+Public minX As Integer          'Start X pos on current screen
+Public maxX As Integer          'End X pos on current screen
+
+Public movSpeed As Single
+
 'Map sizes in tiles
-Public Const XMaxMapSize = 100
-Public Const XMinMapSize = 1
-Public Const YMaxMapSize = 100
-Public Const YMinMapSize = 1
+Public Const XMaxMapSize As Byte = 100
+Public Const XMinMapSize As Byte = 1
+Public Const YMaxMapSize As Byte = 100
+Public Const YMinMapSize As Byte = 1
 
-Public Const GrhFogata = 1521
-
-'bltbit constant
-Public Const SRCCOPY = &HCC0020 ' (DWORD) dest = source
-
-
-'¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
-'    T       I      P      O      S
-'¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
+''
+'Sets a Grh animation to loop indefinitely.
+Private Const INFINITE_LOOPS As Integer = -1
 
 'Encabezado bmp
 Type BITMAPFILEHEADER
-        bfType As Integer
-        bfSize As Long
-        bfReserved1 As Integer
-        bfReserved2 As Integer
-        bfOffBits As Long
+    bfType As Integer
+    bfSize As Long
+    bfReserved1 As Integer
+    bfReserved2 As Integer
+    bfOffBits As Long
 End Type
 
 'Info del encabezado del bmp
-Type BITMAPINFOHEADER
-        biSize As Long
-        biWidth As Long
-        biHeight As Long
-        biPlanes As Integer
-        biBitCount As Integer
-        biCompression As Long
-        biSizeImage As Long
-        biXPelsPerMeter As Long
-        biYPelsPerMeter As Long
-        biClrUsed As Long
-        biClrImportant As Long
+Private Type BITMAPINFOHEADER
+    biSize As Long
+    biWidth As Long
+    biHeight As Long
+    biPlanes As Integer
+    biBitCount As Integer
+    biCompression As Long
+    biSizeImage As Long
+    biXPelsPerMeter As Long
+    biYPelsPerMeter As Long
+    biClrUsed As Long
+    biClrImportant As Long
 End Type
 
 'Posicion en un mapa
 Public Type Position
-    X As Integer
-    Y As Integer
+    X As Long
+    Y As Long
 End Type
 
 'Posicion en el Mundo
@@ -59,19 +59,24 @@ Public Type WorldPos
     Y As Integer
 End Type
 
-'Contiene info acerca de donde se puede encontrar un grh
-'tamaño y animacion
+'Contiene info acerca de donde se puede encontrar un grh tamaño y animacion
 Public Type GrhData
-    sX As Integer
-    sY As Integer
-    FileNum As Integer
+    SX As Integer
+    SY As Integer
+    
+    FileNum As Long
+    
     pixelWidth As Integer
     pixelHeight As Integer
+    
     TileWidth As Single
     TileHeight As Single
+    
     NumFrames As Integer
-    Frames(1 To 25) As Integer
-    Speed As Integer
+    Frames() As Long
+    
+    Speed As Single
+    
     Active As Boolean
     MiniMap_color As Long
 End Type
@@ -79,73 +84,259 @@ End Type
 'apunta a una estructura grhdata y mantiene la animacion
 Public Type Grh
     GrhIndex As Integer
-    FrameCounter As Byte
-    SpeedCounter As Byte
+    FrameCounter As Single
+    Speed As Single
     Started As Byte
+    Loops As Integer
+    angle As Single
 End Type
+
+Private Type Particle
+    friction As Single
+    X As Single
+    Y As Single
+    vector_x As Single
+    vector_y As Single
+    angle As Single
+    Grh As Grh
+    alive_counter As Long
+    x1 As Long
+    x2 As Long
+    y1 As Long
+    y2 As Long
+    vecx1 As Long
+    vecx2 As Long
+    vecy1 As Long
+    vecy2 As Long
+    life1 As Long
+    life2 As Long
+    fric As Long
+    spin_speedL As Single
+    spin_speedH As Single
+    gravity As Boolean
+    grav_strength As Long
+    bounce_strength As Long
+    spin As Boolean
+    XMove As Boolean
+    YMove As Boolean
+    move_x1 As Integer
+    move_x2 As Integer
+    move_y1 As Integer
+    move_y2 As Integer
+    Radio As Integer
+    rgb_list(0 To 3) As Long
+End Type
+ 
+Dim base_tile_size As Integer
+
+Private Type decoration
+    Grh As Grh
+    Render_On_Top As Boolean
+    subtile_pos As Byte
+End Type
+
+Private Type Map_Tile
+    Grh(1 To 3) As Grh
+    decoration(1 To 5) As decoration
+    decoration_count As Byte
+    blocked As Boolean
+    particle_group_index As Long
+    char_index As Long
+    light_base_value(0 To 3) As Long
+    light_value(0 To 3) As Long
+   
+    exit_index As Long
+    npc_index As Long
+    item_index As Long
+   
+    Trigger As Byte
+End Type
+
+Private Type Map
+    map_grid() As Map_Tile
+    map_x_max As Long
+    map_x_min As Long
+    map_y_max As Long
+    map_y_min As Long
+    map_description As String
+    'Added by Juan Martín Sotuyo Dodero
+    base_light_color As Long
+End Type
+
+'*********************************
+'Particulas
+'*********************************
+Private Type Stream
+    name As String
+    NumOfParticles As Long
+    NumGrhs As Long
+    ID As Long
+    x1 As Long
+    y1 As Long
+    x2 As Long
+    y2 As Long
+    angle As Long
+    vecx1 As Long
+    vecx2 As Long
+    vecy1 As Long
+    vecy2 As Long
+    life1 As Long
+    life2 As Long
+    friction As Long
+    spin As Byte
+    spin_speedL As Single
+    spin_speedH As Single
+    AlphaBlend As Byte
+    gravity As Byte
+    grav_strength As Long
+    bounce_strength As Long
+    XMove As Byte
+    YMove As Byte
+    move_x1 As Long
+    move_x2 As Long
+    move_y1 As Long
+    move_y2 As Long
+    grh_list() As Long
+    colortint(0 To 3) As RGB
+   
+    Speed As Single
+    life_counter As Long
+End Type
+
+Private Type particle_group
+    Active As Boolean
+    ID As Long
+    map_x As Long
+    map_y As Long
+    char_index As Long
+
+    frame_counter As Single
+    frame_speed As Single
+    
+    stream_type As Byte
+
+    particle_stream() As Particle
+    particle_count As Long
+    
+    grh_index_list() As Long
+    grh_index_count As Long
+    
+    alpha_blend As Boolean
+    
+    alive_counter As Long
+    never_die As Boolean
+    
+    live As Long
+    liv1 As Integer
+    liveend As Long
+    
+    x1 As Long
+    x2 As Long
+    y1 As Long
+    y2 As Long
+    angle As Long
+    vecx1 As Long
+    vecx2 As Long
+    vecy1 As Long
+    vecy2 As Long
+    life1 As Long
+    life2 As Long
+    fric As Long
+    spin_speedL As Single
+    spin_speedH As Single
+    gravity As Boolean
+    grav_strength As Long
+    bounce_strength As Long
+    spin As Boolean
+    XMove As Boolean
+    YMove As Boolean
+    move_x1 As Long
+    move_x2 As Long
+    move_y1 As Long
+    move_y2 As Long
+    rgb_list(0 To 3) As Long
+    
+    Speed As Single
+    life_counter As Long
+    
+    Radio As Integer
+End Type
+'Particle system
+ 
+'Dim StreamData() As particle_group
+Dim TotalStreams As Long
+Dim particle_group_list() As particle_group
+Dim particle_group_count As Long
+Dim particle_group_last As Long
+
+'*********************************
+'*********************************
 
 'Lista de cuerpos
 Public Type BodyData
-    Walk(1 To 4) As Grh
+    Walk(E_Heading.NORTH To E_Heading.WEST) As Grh
     HeadOffset As Position
 End Type
 
 'Lista de cabezas
 Public Type HeadData
-    Head(1 To 4) As Grh
+    Head(E_Heading.NORTH To E_Heading.WEST) As Grh
 End Type
 
 'Lista de las animaciones de las armas
 Type WeaponAnimData
-    WeaponWalk(1 To 4) As Grh
-    '[ANIM ATAK]
+    WeaponWalk(E_Heading.NORTH To E_Heading.WEST) As Grh
+        '[ANIM ATAK]
     WeaponAttack As Byte
 End Type
 
 'Lista de las animaciones de los escudos
 Type ShieldAnimData
-    ShieldWalk(1 To 4) As Grh
-End Type
-
-
-'Lista de cuerpos
-Public Type FxData
-    Fx As Grh
-    OffsetX As Long
-    OffsetY As Long
+    ShieldWalk(E_Heading.NORTH To E_Heading.WEST) As Grh
 End Type
 
 'Apariencia del personaje
 Public Type Char
-Aura As Grh
-    AuraIndex As Integer
     Active As Byte
-    Heading As Byte ' As E_Heading ?
+    Heading As E_Heading
     Pos As Position
     
     iHead As Integer
     iBody As Integer
     Body As BodyData
     Head As HeadData
-    Casco As HeadData
-    Arma As WeaponAnimData
-    Escudo As ShieldAnimData
+    casco As HeadData
+    arma As WeaponAnimData
+    escudo As ShieldAnimData
     UsandoArma As Boolean
-    Fx As Integer
-    FxLoopTimes As Integer
-    Criminal As Byte
     
-    Nombre As String
+    fX As Grh
+    FxIndex As Integer
+    
+    Aura_Index As Integer
+    Aura As Grh
+    
+    ParticulaIndex As Integer 'se usa
+
+    particle_count As Integer
+    particle_group() As Long
+    
+    Criminal As Byte
+    Atacable As Boolean
+    
+    nombre As String
+    
+    scrollDirectionX As Integer
+    scrollDirectionY As Integer
     
     Moving As Byte
-    MoveOffset As Position
-    ServerIndex As Integer
+    MoveOffsetX As Single
+    MoveOffsetY As Single
     
     pie As Boolean
-    muerto As Boolean
+    Muerto As Boolean
     invisible As Boolean
     priv As Byte
-    
 End Type
 
 'Info de un objeto
@@ -154,8 +345,19 @@ Public Type Obj
     Amount As Integer
 End Type
 
+'Sistema de sangre
+Public Type BloodPool
+    LifeTime As Integer
+    Active As Byte
+    Grh As Grh
+    Alpha As Integer
+    color(3) As Long
+    Head As E_Heading
+End Type
+
 'Tipo de las celdas del mapa
 Public Type MapBlock
+    particle_group_index As Long
     Graphic(1 To 4) As Grh
     CharIndex As Integer
     ObjGrh As Grh
@@ -163,26 +365,41 @@ Public Type MapBlock
     NPCIndex As Integer
     OBJInfo As Obj
     TileExit As WorldPos
-    Blocked As Byte
+    blocked As Byte
+    
+    light_value(3) As Long
+    base_light(0 To 3) As Boolean 'Indica si el tile tiene luz propia.
+    
+    color(3) As Long
     
     Trigger As Integer
+    Blood As BloodPool
 End Type
 
 'Info de cada mapa
 Public Type MapInfo
     Music As String
-    Name As String
+    name As String
     StartPos As WorldPos
     MapVersion As Integer
-    
-    'ME Only
-    Changed As Byte
 End Type
 
+'DX8 Objects
+Public DirectX As New DirectX8
+Public DirectD3D8 As D3DX8
+Public DirectD3D As Direct3D8
+Public DirectDevice As Direct3DDevice8
 
-Public IniPath As String
-Public MapPath As String
-
+Public Type TLVERTEX
+    X As Single
+    Y As Single
+    z As Single
+    rhw As Single
+    color As Long
+    Specular As Long
+    tu As Single
+    tv As Single
+End Type
 
 'Bordes del mapa
 Public MinXBorder As Byte
@@ -190,8 +407,6 @@ Public MaxXBorder As Byte
 Public MinYBorder As Byte
 Public MaxYBorder As Byte
 
-'Status del user
-Public CurMap As Integer 'Mapa actual
 Public UserIndex As Integer
 Public UserMoving As Byte
 Public UserBody As Integer
@@ -200,40 +415,43 @@ Public UserPos As Position 'Posicion
 Public AddtoUserPos As Position 'Si se mueve
 Public UserCharIndex As Integer
 
-Public UserMaxAGU As Integer
-Public UserMinAGU As Integer
-Public UserMaxHAM As Integer
-Public UserMinHAM As Integer
-
-Public UserGuerra As Boolean 'Guerras
-
 Public EngineRun As Boolean
-Public FramesPerSec As Integer
+
+Public FPS As Long
 Public FramesPerSecCounter As Long
+Private fpsLastCheck As Long
 
 'Tamaño del la vista en Tiles
-Public WindowTileWidth As Integer
-Public WindowTileHeight As Integer
+Private WindowTileWidth As Integer
+Private WindowTileHeight As Integer
+
+Private HalfWindowTileWidth As Integer
+Private HalfWindowTileHeight As Integer
 
 'Offset del desde 0,0 del main view
-Public MainViewTop As Integer
-Public MainViewLeft As Integer
+Private MainViewTop As Integer
+Private MainViewLeft As Integer
 
 'Cuantos tiles el engine mete en el BUFFER cuando
 'dibuja el mapa. Ojo un tamaño muy grande puede
 'volver el engine muy lento
 Public TileBufferSize As Integer
 
-'Handle to where all the drawing is going to take place
-Public DisplayFormhWnd As Long
+Private TileBufferPixelOffsetX As Integer
+Private TileBufferPixelOffsetY As Integer
 
 'Tamaño de los tiles en pixels
 Public TilePixelHeight As Integer
 Public TilePixelWidth As Integer
 
-'?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿Totales?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
+'Number of pixels the engine scrolls per frame. MUST divide evenly into pixels per tile
+Public ScrollPixelsPerFrameX As Integer
+Public ScrollPixelsPerFrameY As Integer
 
-Public NumBodies As Integer
+Public timerElapsedTime As Single
+Dim timerTicksPerFrame As Double
+Public engineBaseSpeed As Single
+
 Public Numheads As Integer
 Public NumFxs As Integer
 
@@ -242,32 +460,26 @@ Public LastChar As Integer
 Public NumWeaponAnims As Integer
 Public NumShieldAnims As Integer
 
-'¿?¿?¿?¿?¿?¿?¿?¿?¿?¿Graficos¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
 
-Public lastTime As Long 'Para controlar la velocidad
+Private MainDestRect   As RECT
+Private MainViewRect   As RECT
+Private BackBufferRect As RECT
+Private SetConnect     As RECT
 
+Private MainViewWidth As Integer
+Private MainViewHeight As Integer
 
-'[CODE]:MatuX'
-Public MainDestRect   As RECT
-'[END]'
-Public MainViewRect   As RECT
-Public BackBufferRect As RECT
-
-Public MainViewWidth As Integer
-Public MainViewHeight As Integer
-
-
-
+Private MouseTileX As Byte
+Private MouseTileY As Byte
 
 '¿?¿?¿?¿?¿?¿?¿?¿?¿?¿Graficos¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
 Public GrhData() As GrhData 'Guarda todos los grh
 Public BodyData() As BodyData
 Public HeadData() As HeadData
-Public FxData() As FxData
+Public FxData() As tIndiceFx
 Public WeaponAnimData() As WeaponAnimData
 Public ShieldAnimData() As ShieldAnimData
 Public CascoAnimData() As HeadData
-Public Grh() As Grh 'Animaciones publicas
 '¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
 
 '¿?¿?¿?¿?¿?¿?¿?¿?¿?¿Mapa?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
@@ -275,481 +487,266 @@ Public MapData() As MapBlock ' Mapa
 Public MapInfo As MapInfo ' Info acerca del mapa en uso
 '¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
 
-'¿?¿?¿?¿?¿?¿?¿?¿?¿?¿Usuarios?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
-'
-'epa ;)
-'¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
-
-'¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿API?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
-'Blt
-Public Declare Function BitBlt Lib "gdi32" (ByVal hDestDC As Long, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hSrcDC As Long, ByVal xSrc As Long, ByVal ySrc As Long, ByVal dwRop As Long) As Long
-'¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
-
-
-'¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
-'       [CODE 000]: MatuX
-'
-Public bRain        As Boolean 'está raineando?
 Public bTecho       As Boolean 'hay techo?
-Public brstTick     As Long
-
-Private iFrameIndex As Byte  'Frame actual de la LL
-Private llTick      As Long  'Contador
+Public bTechoAB As Byte
 
 Public charlist(1 To 10000) As Char
 
-#If SeguridadAlkon Then
+' Used by GetTextExtentPoint32
+Private Type Size
+    cx As Long
+    cy As Long
+End Type
 
-Public MI(1 To 1233) As clsManagerInvisibles
-Public CualMI As Integer
-
-#End If
-
-'estados internos del surface (read only)
-Public Enum TextureStatus
-    tsOriginal = 0
-    tsNight = 1
-    tsFog = 2
+Public Enum PlayLoop
+    plNone = 0
+    plAmbient = 1
 End Enum
-
-
-'[END]'
 '
 '       [END]
 '¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?
 
-#If ConAlfaB Then
+'Very percise counter 64bit system counter
+Private Declare Function QueryPerformanceFrequency Lib "kernel32" (lpFrequency As Currency) As Long
+Private Declare Function QueryPerformanceCounter Lib "kernel32" (lpPerformanceCount As Currency) As Long
 
-Private Declare Function BltAlphaFast Lib "vbabdx" (ByRef lpDDSDest As Any, ByRef lpDDSSource As Any, ByVal iWidth As Long, ByVal iHeight As Long, _
-        ByVal pitchSrc As Long, ByVal pitchDst As Long, ByVal dwMode As Long) As Long
-Private Declare Function BltEfectoNoche Lib "vbabdx" (ByRef lpDDSDest As Any, ByVal iWidth As Long, ByVal iHeight As Long, _
-        ByVal pitchDst As Long, ByVal dwMode As Long) As Long
+'Text width computation. Needed to center text.
+Private Declare Function GetTextExtentPoint32 Lib "gdi32" Alias "GetTextExtentPoint32A" (ByVal hDC As Long, ByVal lpsz As String, ByVal cbString As Long, lpSize As Size) As Long
+Private Declare Function GetPixel Lib "gdi32" (ByVal hDC As Long, ByVal X As Long, ByVal Y As Long) As Long
+Private Declare Function TransparentBlt Lib "msimg32" (ByVal hdcDest As Long, ByVal nXOriginDest As Long, ByVal nYOriginDest As Long, ByVal nWidthDest As Long, ByVal nHeightDest As Long, ByVal hdcsrc As Long, ByVal nXOriginSrc As Long, ByVal nYOriginSrc As Long, ByVal nWidthSrc As Long, ByVal nHeightSrc As Long, ByVal crTransparent As Long) As Long
+Public Const PI As Single = 3.14159265358979
+
+'*****************************
+Public base_light As Long
+Public LightIluminado(3) As Long
+Public LightOscurito(3) As Long
+Public NoPuedeUsar(3) As Long
+
+Private Sub InitColor()
+'*******************************
+'By Lorwik
+'Iniciamos los colores
+'*******************************
+Dim i As Long
+    bTechoAB = 255
+    
+    For i = 0 To 3
+        LightIluminado(i) = RGB(255, 255, 255)
+        LightOscurito(i) = RGB(150, 150, 150)
+        NoPuedeUsar(i) = RGB(0, 0, 255)
+    Next i
+End Sub
+
+Sub ConvertCPtoTP(ByVal viewPortX As Integer, ByVal viewPortY As Integer, ByRef tX As Byte, ByRef tY As Byte)
+'******************************************
+'Converts where the mouse is in the main window to a tile position. MUST be called eveytime the mouse moves.
+'******************************************
+    tX = UserPos.X + viewPortX \ TilePixelWidth - WindowTileWidth \ 2
+    tY = UserPos.Y + viewPortY \ TilePixelHeight - WindowTileHeight \ 2
+End Sub
+
+Sub MakeChar(ByVal CharIndex As Integer, ByVal Body As Integer, ByVal Head As Integer, ByVal Heading As Byte, ByVal X As Integer, ByVal Y As Integer, ByVal arma As Integer, ByVal escudo As Integer, ByVal casco As Integer, ByVal Aura_Index As Integer)
+On Error Resume Next
+    'Apuntamos al ultimo Char
+    If CharIndex > LastChar Then LastChar = CharIndex
+    
+    With charlist(CharIndex)
+        'If the char wasn't allready active (we are rewritting it) don't increase char count
+        If .Active = 0 Then _
+            NumChars = NumChars + 1
         
-Public Declare Function vbDABLalphablend16 Lib "vbDABL" (ByVal iMode As Integer, ByVal bColorKey As Integer, _
-ByRef sPtr As Any, ByRef dPtr As Any, ByVal iAlphaVal As Integer, ByVal iWidth As Integer, ByVal iHeight As Integer, _
-ByVal isPitch As Integer, ByVal idPitch As Integer, ByVal iColorKey As Integer) As Integer
-Public Declare Function vbDABLcolorblend16555 Lib "vbDABL" (ByRef sPtr As Any, ByRef dPtr As Any, ByVal alpha_val%, _
-ByVal Width%, ByVal Height%, ByVal sPitch%, ByVal dPitch%, ByVal rVal%, ByVal gVal%, ByVal bVal%) As Long
-Public Declare Function vbDABLcolorblend16565 Lib "vbDABL" (ByRef sPtr As Any, ByRef dPtr As Any, ByVal alpha_val%, _
-ByVal Width%, ByVal Height%, ByVal sPitch%, ByVal dPitch%, ByVal rVal%, ByVal gVal%, ByVal bVal%) As Long
-Public Declare Function vbDABLcolorblend16555ck Lib "vbDABL" (ByRef sPtr As Any, ByRef dPtr As Any, ByVal alpha_val%, _
-ByVal Width%, ByVal Height%, ByVal sPitch%, ByVal dPitch%, ByVal rVal%, ByVal gVal%, ByVal bVal%) As Long
-Public Declare Function vbDABLcolorblend16565ck Lib "vbDABL" (ByRef sPtr As Any, ByRef dPtr As Any, ByVal alpha_val%, _
-ByVal Width%, ByVal Height%, ByVal sPitch%, ByVal dPitch%, ByVal rVal%, ByVal gVal%, ByVal bVal%) As Long
-#End If
-
-Private Declare Function GetWindowRect Lib "user32" (ByVal hwnd As Long, lpRect As RECT) As Long
-
-Sub CargarCabezas()
-On Error Resume Next
-Dim N As Integer, i As Integer, Numheads As Integer, index As Integer
-
-Dim Miscabezas() As tIndiceCabeza
-
-N = FreeFile
-Open App.Path & "\init\Cabezas.ind" For Binary Access Read As #N
-
-'cabecera
-Get #N, , MiCabecera
-
-'num de cabezas
-Get #N, , Numheads
-
-'Resize array
-ReDim HeadData(0 To Numheads + 1) As HeadData
-ReDim Miscabezas(0 To Numheads + 1) As tIndiceCabeza
-
-For i = 1 To Numheads
-    Get #N, , Miscabezas(i)
-    InitGrh HeadData(i).Head(1), Miscabezas(i).Head(1), 0
-    InitGrh HeadData(i).Head(2), Miscabezas(i).Head(2), 0
-    InitGrh HeadData(i).Head(3), Miscabezas(i).Head(3), 0
-    InitGrh HeadData(i).Head(4), Miscabezas(i).Head(4), 0
-Next i
-
-Close #N
-
-End Sub
-
-Sub CargarCascos()
-On Error Resume Next
-Dim N As Integer, i As Integer, NumCascos As Integer, index As Integer
-
-Dim Miscabezas() As tIndiceCabeza
-
-N = FreeFile
-Open App.Path & "\init\Cascos.ind" For Binary Access Read As #N
-
-'cabecera
-Get #N, , MiCabecera
-
-'num de cabezas
-Get #N, , NumCascos
-
-'Resize array
-ReDim CascoAnimData(0 To NumCascos + 1) As HeadData
-ReDim Miscabezas(0 To NumCascos + 1) As tIndiceCabeza
-
-For i = 1 To NumCascos
-    Get #N, , Miscabezas(i)
-    InitGrh CascoAnimData(i).Head(1), Miscabezas(i).Head(1), 0
-    InitGrh CascoAnimData(i).Head(2), Miscabezas(i).Head(2), 0
-    InitGrh CascoAnimData(i).Head(3), Miscabezas(i).Head(3), 0
-    InitGrh CascoAnimData(i).Head(4), Miscabezas(i).Head(4), 0
-Next i
-
-Close #N
-
-End Sub
-
-Sub CargarCuerpos()
-On Error Resume Next
-Dim N As Integer, i As Integer
-Dim NumCuerpos As Integer
-Dim MisCuerpos() As tIndiceCuerpo
-
-N = FreeFile
-Open App.Path & "\init\Personajes.ind" For Binary Access Read As #N
-
-'cabecera
-Get #N, , MiCabecera
-
-'num de cabezas
-Get #N, , NumCuerpos
-
-'Resize array
-ReDim BodyData(0 To NumCuerpos + 1) As BodyData
-ReDim MisCuerpos(0 To NumCuerpos + 1) As tIndiceCuerpo
-
-For i = 1 To NumCuerpos
-    Get #N, , MisCuerpos(i)
-    InitGrh BodyData(i).Walk(1), MisCuerpos(i).Body(1), 0
-    InitGrh BodyData(i).Walk(2), MisCuerpos(i).Body(2), 0
-    InitGrh BodyData(i).Walk(3), MisCuerpos(i).Body(3), 0
-    InitGrh BodyData(i).Walk(4), MisCuerpos(i).Body(4), 0
-    BodyData(i).HeadOffset.X = MisCuerpos(i).HeadOffsetX
-    BodyData(i).HeadOffset.Y = MisCuerpos(i).HeadOffsetY
-Next i
-
-Close #N
-
-End Sub
-Sub CargarFxs()
-On Error Resume Next
-Dim N As Integer, i As Integer
-Dim NumFxs As Integer
-Dim MisFxs() As tIndiceFx
-
-N = FreeFile
-Open App.Path & "\init\Fxs.ind" For Binary Access Read As #N
-
-'cabecera
-Get #N, , MiCabecera
-
-'num de cabezas
-Get #N, , NumFxs
-
-'Resize array
-ReDim FxData(0 To NumFxs + 1) As FxData
-ReDim MisFxs(0 To NumFxs + 1) As tIndiceFx
-
-For i = 1 To NumFxs
-    Get #N, , MisFxs(i)
-    Call InitGrh(FxData(i).Fx, MisFxs(i).Animacion, 1)
-    FxData(i).OffsetX = MisFxs(i).OffsetX
-    FxData(i).OffsetY = MisFxs(i).OffsetY
-Next i
-
-Close #N
-
-End Sub
-
-Sub CargarTips()
-On Error Resume Next
-Dim N As Integer, i As Integer
-Dim NumTips As Integer
-
-N = FreeFile
-Open App.Path & "\init\Tips.ayu" For Binary Access Read As #N
-
-'cabecera
-Get #N, , MiCabecera
-
-'num de cabezas
-Get #N, , NumTips
-
-'Resize array
-ReDim Tips(1 To NumTips) As String * 255
-
-For i = 1 To NumTips
-    Get #N, , Tips(i)
-Next i
-
-Close #N
-
-End Sub
-
-Sub ConvertCPtoTP(StartPixelLeft As Integer, StartPixelTop As Integer, ByVal CX As Single, ByVal CY As Single, tX As Integer, tY As Integer)
-'******************************************
-'Converts where the user clicks in the main window
-'to a tile position
-'******************************************
-Dim HWindowX As Integer
-Dim HWindowY As Integer
-
-CX = CX - StartPixelLeft
-CY = CY - StartPixelTop
-
-HWindowX = (WindowTileWidth \ 2)
-HWindowY = (WindowTileHeight \ 2)
-
-'Figure out X and Y tiles
-CX = (CX \ TilePixelWidth)
-CY = (CY \ TilePixelHeight)
-
-If CX > HWindowX Then
-    CX = (CX - HWindowX)
-
-Else
-    If CX < HWindowX Then
-        CX = (0 - (HWindowX - CX))
-    Else
-        CX = 0
-    End If
-End If
-
-If CY > HWindowY Then
-    CY = (0 - (HWindowY - CY))
-Else
-    If CY < HWindowY Then
-        CY = (CY - HWindowY)
-    Else
-        CY = 0
-    End If
-End If
-
-tX = UserPos.X + CX
-tY = UserPos.Y + CY
-
-End Sub
-
-
-
-
-
-
-Sub MakeChar(ByVal CharIndex As Integer, ByVal Body As Integer, ByVal Head As Integer, ByVal Heading As Byte, ByVal X As Integer, ByVal Y As Integer, ByVal Arma As Integer, ByVal Escudo As Integer, ByVal Casco As Integer)
-
-On Error Resume Next
-
-'Apuntamos al ultimo Char
-If CharIndex > LastChar Then LastChar = CharIndex
-
-NumChars = NumChars + 1
-
-If Arma = 0 Then Arma = 2
-If Escudo = 0 Then Escudo = 2
-If Casco = 0 Then Casco = 2
-
-charlist(CharIndex).iHead = Head
-charlist(CharIndex).iBody = Body
-charlist(CharIndex).Head = HeadData(Head)
-charlist(CharIndex).Body = BodyData(Body)
-charlist(CharIndex).Arma = WeaponAnimData(Arma)
-'[ANIM ATAK]
-charlist(CharIndex).Arma.WeaponAttack = 0
-
-charlist(CharIndex).Escudo = ShieldAnimData(Escudo)
-charlist(CharIndex).Casco = CascoAnimData(Casco)
-
-charlist(CharIndex).Heading = Heading
-
-'Reset moving stats
-charlist(CharIndex).Moving = 0
-charlist(CharIndex).MoveOffset.X = 0
-charlist(CharIndex).MoveOffset.Y = 0
-
-'Update position
-charlist(CharIndex).Pos.X = X
-charlist(CharIndex).Pos.Y = Y
-
-'Make active
-charlist(CharIndex).Active = 1
-
-'Plot on map
-MapData(X, Y).CharIndex = CharIndex
-
+        If arma = 0 Then arma = 2
+        If escudo = 0 Then escudo = 2
+        If casco = 0 Then casco = 2
+        
+        .iHead = Head
+        .iBody = Body
+        .Head = HeadData(Head)
+        .Body = BodyData(Body)
+        .arma = WeaponAnimData(arma)
+        
+        If Aura_Index > 0 Then _
+            Call InitGrh(.Aura, Aura_Index)
+        
+        '[ANIM ATAK]
+        .arma.WeaponAttack = 0
+                
+        .escudo = ShieldAnimData(escudo)
+        .casco = CascoAnimData(casco)
+        
+        .Heading = Heading
+        
+        'Reset moving stats
+        .Moving = 0
+        .MoveOffsetX = 0
+        .MoveOffsetY = 0
+        
+        'Update position
+        .Pos.X = X
+        .Pos.Y = Y
+        
+        'Make active
+        .Active = 1
+    End With
+    
+    'Plot on map
+    MapData(X, Y).CharIndex = CharIndex
 End Sub
 
 Sub ResetCharInfo(ByVal CharIndex As Integer)
-
-    charlist(CharIndex).Active = 0
-    charlist(CharIndex).Criminal = 0
-    charlist(CharIndex).Fx = 0
-    charlist(CharIndex).FxLoopTimes = 0
-    charlist(CharIndex).invisible = False
-
-#If SeguridadAlkon Then
-    Call MI(CualMI).ResetInvisible(CharIndex)
-#End If
-
-    charlist(CharIndex).Moving = 0
-    charlist(CharIndex).muerto = False
-    charlist(CharIndex).Nombre = ""
-    charlist(CharIndex).pie = False
-    charlist(CharIndex).Pos.X = 0
-    charlist(CharIndex).Pos.Y = 0
-    charlist(CharIndex).UsandoArma = False
-
+    With charlist(CharIndex)
+        .Active = 0
+        .Criminal = 0
+        .Atacable = False
+        Char_Particle_Group_Remove_All (CharIndex)
+        .FxIndex = 0
+        .invisible = False
+        .Moving = 0
+        .Muerto = False
+        .nombre = ""
+        .pie = False
+        .Pos.X = 0
+        .Pos.Y = 0
+        .UsandoArma = False
+    End With
 End Sub
 
-
 Sub EraseChar(ByVal CharIndex As Integer)
-On Error Resume Next
-
 '*****************************************************************
 'Erases a character from CharList and map
 '*****************************************************************
-
-charlist(CharIndex).Active = 0
-
-'Update lastchar
-If CharIndex = LastChar Then
-    Do Until charlist(LastChar).Active = 1
-        LastChar = LastChar - 1
-        If LastChar = 0 Then Exit Do
-    Loop
-End If
-
-
-MapData(charlist(CharIndex).Pos.X, charlist(CharIndex).Pos.Y).CharIndex = 0
-
-Call ResetCharInfo(CharIndex)
-
-'Update NumChars
-NumChars = NumChars - 1
-
+On Error Resume Next
+    Call Char_Particle_Group_Remove_All(CharIndex)
+    charlist(CharIndex).Active = 0
+    
+    'Update lastchar
+    If CharIndex = LastChar Then
+        Do Until charlist(LastChar).Active = 1
+            LastChar = LastChar - 1
+            If LastChar = 0 Then Exit Do
+        Loop
+    End If
+    
+    MapData(charlist(CharIndex).Pos.X, charlist(CharIndex).Pos.Y).CharIndex = 0
+    
+    'Remove char's dialog
+    Call Dialogos.RemoveDialog(CharIndex)
+    
+    Call ResetCharInfo(CharIndex)
+    
+    'Update NumChars
+    NumChars = NumChars - 1
 End Sub
 
-Sub InitGrh(ByRef Grh As Grh, ByVal GrhIndex As Integer, Optional Started As Byte = 2)
+Public Sub InitGrh(ByRef Grh As Grh, ByVal GrhIndex As Integer, Optional ByVal Started As Byte = 2)
 '*****************************************************************
 'Sets up a grh. MUST be done before rendering
 '*****************************************************************
-
-Grh.GrhIndex = GrhIndex
-
-If Started = 2 Then
-    If GrhData(Grh.GrhIndex).NumFrames > 1 Then
-        Grh.Started = 1
+If GrhIndex = 0 Then Exit Sub
+    Grh.GrhIndex = GrhIndex
+    
+    If Started = 2 Then
+        If GrhData(Grh.GrhIndex).NumFrames > 1 Then
+            Grh.Started = 1
+        Else
+            Grh.Started = 0
+        End If
     Else
-        Grh.Started = 0
+        'Make sure the graphic can be started
+        If GrhData(Grh.GrhIndex).NumFrames = 1 Then Started = 0
+        Grh.Started = Started
     End If
-Else
-    Grh.Started = Started
-End If
-
-Grh.FrameCounter = 1
-'[CODE 000]:MatuX
-'
-'  La linea generaba un error en la IDE, (no ocurría debido al
-' on error)
-'
-'   Grh.SpeedCounter = GrhData(Grh.GrhIndex).Speed
-'
-If Grh.GrhIndex <> 0 Then Grh.SpeedCounter = GrhData(Grh.GrhIndex).Speed
-'
-'[END]'
-
+    
+    
+    If Grh.Started Then
+        Grh.Loops = INFINITE_LOOPS
+    Else
+        Grh.Loops = 0
+    End If
+    
+    Grh.FrameCounter = 1
+    Grh.Speed = GrhData(Grh.GrhIndex).Speed
 End Sub
 
 Sub MoveCharbyHead(ByVal CharIndex As Integer, ByVal nHeading As E_Heading)
 '*****************************************************************
 'Starts the movement of a character in nHeading direction
 '*****************************************************************
-Dim addX As Integer
-Dim addY As Integer
-Dim X As Integer
-Dim Y As Integer
-Dim nX As Integer
-Dim nY As Integer
-
-X = charlist(CharIndex).Pos.X
-Y = charlist(CharIndex).Pos.Y
-
-'Figure out which way to move
-Select Case nHeading
-
-    Case E_Heading.NORTH
-        addY = -1
-
-    Case E_Heading.EAST
-        addX = 1
-
-    Case E_Heading.SOUTH
-        addY = 1
+    Dim addx As Integer
+    Dim addy As Integer
+    Dim X As Integer
+    Dim Y As Integer
+    Dim nX As Integer
+    Dim nY As Integer
     
-    Case E_Heading.WEST
-        addX = -1
+    With charlist(CharIndex)
+        X = .Pos.X
+        Y = .Pos.Y
         
-End Select
-
-nX = X + addX
-nY = Y + addY
-
-MapData(nX, nY).CharIndex = CharIndex
-charlist(CharIndex).Pos.X = nX
-charlist(CharIndex).Pos.Y = nY
-MapData(X, Y).CharIndex = 0
-
-charlist(CharIndex).MoveOffset.X = -1 * (TilePixelWidth * addX)
-charlist(CharIndex).MoveOffset.Y = -1 * (TilePixelHeight * addY)
-
-charlist(CharIndex).Moving = 1
-charlist(CharIndex).Heading = nHeading
-
-If UserEstado <> 1 Then Call DoPasosFx(CharIndex)
-
-'areas viejos
-If (nY < MinLimiteY) Or (nY > MaxLimiteY) Or (nX < MinLimiteX) Or (nX > MaxLimiteX) Then
-    Debug.Print UserCharIndex
-    Call EraseChar(CharIndex)
-End If
-
+        'Figure out which way to move
+        Select Case nHeading
+            Case E_Heading.NORTH
+                addy = -1
+        
+            Case E_Heading.EAST
+                addx = 1
+        
+            Case E_Heading.SOUTH
+                addy = 1
+            
+            Case E_Heading.WEST
+                addx = -1
+        End Select
+        
+        nX = X + addx
+        nY = Y + addy
+        
+        MapData(nX, nY).CharIndex = CharIndex
+        .Pos.X = nX
+        .Pos.Y = nY
+        MapData(X, Y).CharIndex = 0
+        
+        .MoveOffsetX = -1 * (TilePixelWidth * addx)
+        .MoveOffsetY = -1 * (TilePixelHeight * addy)
+        
+        .Moving = 1
+        .Heading = nHeading
+        
+        .scrollDirectionX = addx
+        .scrollDirectionY = addy
+    End With
+    
+    If UserEstado = 0 Then Call DoPasosFx(CharIndex)
+    
+    'areas viejos
+    If (nY < MinLimiteY) Or (nY > MaxLimiteY) Or (nX < MinLimiteX) Or (nX > MaxLimiteX) Then
+        If CharIndex <> UserCharIndex Then
+            Call EraseChar(CharIndex)
+        End If
+    End If
 End Sub
 
 Public Sub DoFogataFx()
-If Sound Then
+    Dim location As Position
+    
     If bFogata Then
-        bFogata = HayFogata()
+        bFogata = HayFogata(location)
         If Not bFogata Then
             Call Audio.StopWave(FogataBufferIndex)
             FogataBufferIndex = 0
         End If
     Else
-        bFogata = HayFogata()
-        If bFogata And FogataBufferIndex = 0 Then FogataBufferIndex = Audio.PlayWave("fuego.wav", LoopStyle.Enabled)
+        bFogata = HayFogata(location)
+        If bFogata And FogataBufferIndex = 0 Then FogataBufferIndex = General_Set_Wav("fuego.wav", location.X, location.Y, LoopStyle.Enabled)
     End If
-End If
 End Sub
 
-Function EstaPCarea(ByVal Index2 As Integer) As Boolean
-
-Dim X As Integer, Y As Integer
-
-For Y = UserPos.Y - MinYBorder + 1 To UserPos.Y + MinYBorder - 1
-  For X = UserPos.X - MinXBorder + 1 To UserPos.X + MinXBorder - 1
-            
-            If MapData(X, Y).CharIndex = Index2 Then
-                EstaPCarea = True
-                Exit Function
-            End If
-        
-  Next X
-Next Y
-
-EstaPCarea = False
-
+Private Function EstaPCarea(ByVal CharIndex As Integer) As Boolean
+    With charlist(CharIndex).Pos
+        EstaPCarea = .X > UserPos.X - MinXBorder And .X < UserPos.X + MinXBorder And .Y > UserPos.Y - MinYBorder And .Y < UserPos.Y + MinYBorder
+    End With
 End Function
+
 Public Function TickON(Cual As Integer, Cont As Integer) As Boolean
 Static tickCount(200) As Integer
 If Cont = 999 Then Exit Function
@@ -761,1838 +758,2317 @@ Else
     TickON = True
 End If
 End Function
-Sub DoPasosFx(ByVal CharIndex As Integer)
- 
-    If Not UserNavegando Then
-    If UserEquitando = True And CharIndex = UserCharIndex And EstaPCarea(CharIndex) Then
-        If TickON(0, 3) Then Call Audio.PlayWave(SND_GALOPE)
-    Else
-        With charlist(CharIndex)
-            If Not .muerto And EstaPCarea(CharIndex) Then
-                .pie = Not .pie
-        'Si esta en una superficie de pasto?
-                If MapData(.Pos.X, .Pos.Y).Graphic(1).GrhIndex >= 6000 And MapData(.Pos.X, .Pos.Y).Graphic(1).GrhIndex <= 6559 Then
-                    If .pie Then
-                        Call Audio.PlayWave(SND_PASOS3)
-                    Else
-                        Call Audio.PlayWave(SND_PASOS4)
-                    End If
-                Else
-                    If .pie Then
-                        Call Audio.PlayWave(SND_PASOS1)
-                    Else
-                        Call Audio.PlayWave(SND_PASOS2)
-                    End If
-                End If
-            End If
-        End With
 
-    If UserNavegando Then
-' TODO : Actually we would have to check if the CharIndex char is in the water or not....
-        Call Audio.PlayWave(SND_NAVEGANDO)
+Sub DoPasosFx(ByVal CharIndex As Integer)
+Dim Music As String
+
+    With charlist(CharIndex)
+   
+    If Not .Muerto And EstaPCarea(CharIndex) Then
+        If UserNavegando Then
+            If TickON(0, 8) Then General_Set_Wav "50.wav", .Pos.X, .Pos.Y
+            Exit Sub
+        End If
+        
+        'En Bosque
+        If MapData(.Pos.X, .Pos.Y).Graphic(1).GrhIndex >= 6000 And MapData(.Pos.X, .Pos.Y).Graphic(1).GrhIndex <= 6307 Then
+            If Not UserNavegando And .pie Then Music = "237.Wav"
+            If Not UserNavegando And Not .pie Then Music = "238.Wav"
+                
+        'En Nieve
+        ElseIf MapData(.Pos.X, .Pos.Y).Graphic(1).GrhIndex >= 22563 And MapData(.Pos.X, .Pos.Y).Graphic(1).GrhIndex <= 22883 Then
+            If Not UserNavegando And .pie Then Music = "240.Wav"
+            If Not UserNavegando And Not .pie Then Music = "241.Wav"
+            
+        'En Desierto
+        ElseIf MapData(.Pos.X, .Pos.Y).Graphic(1).GrhIndex >= 7704 And MapData(.Pos.X, .Pos.Y).Graphic(1).GrhIndex <= 7719 Then
+            If Not UserNavegando And .pie Then Music = "238.Wav"
+            If Not UserNavegando And Not .pie Then Music = "239.Wav"
+        Else
+            If Not UserNavegando And .pie Then Music = "23.wav"
+            If Not UserNavegando And Not .pie Then Music = "24.Wav"
+        End If
+            
+        General_Set_Wav Music, .Pos.X, .Pos.Y
+        .pie = Not .pie
     End If
-    
-    End If
-    End If
+    End With
 End Sub
 
-
-
 Sub MoveCharbyPos(ByVal CharIndex As Integer, ByVal nX As Integer, ByVal nY As Integer)
-
 On Error Resume Next
-
-Dim X As Integer
-Dim Y As Integer
-Dim addX As Integer
-Dim addY As Integer
-Dim nHeading As E_Heading
-
-
-
-X = charlist(CharIndex).Pos.X
-Y = charlist(CharIndex).Pos.Y
-
-MapData(X, Y).CharIndex = 0
-
-addX = nX - X
-addY = nY - Y
-
-If Sgn(addX) = 1 Then
-    nHeading = E_Heading.EAST
-End If
-
-If Sgn(addX) = -1 Then
-    nHeading = E_Heading.WEST
-End If
-
-If Sgn(addY) = -1 Then
-    nHeading = E_Heading.NORTH
-End If
-
-If Sgn(addY) = 1 Then
-    nHeading = E_Heading.SOUTH
-End If
-
-MapData(nX, nY).CharIndex = CharIndex
-
-
-charlist(CharIndex).Pos.X = nX
-charlist(CharIndex).Pos.Y = nY
-
-charlist(CharIndex).MoveOffset.X = -1 * (TilePixelWidth * addX)
-charlist(CharIndex).MoveOffset.Y = -1 * (TilePixelHeight * addY)
-
-charlist(CharIndex).Moving = 1
-charlist(CharIndex).Heading = nHeading
-
-'parche para que no medite cuando camina
-Dim fxCh As Integer
-fxCh = charlist(CharIndex).Fx
-If fxCh = FxMeditar.CHICO Or fxCh = FxMeditar.GRANDE Or fxCh = FxMeditar.MEDIANO Or fxCh = FxMeditar.XGRANDE Then
-    charlist(CharIndex).Fx = 0
-    charlist(CharIndex).FxLoopTimes = 0
-End If
-
-If Not EstaPCarea(CharIndex) Then Dialogos.QuitarDialogo (CharIndex)
-
-If (nY < MinLimiteY) Or (nY > MaxLimiteY) Or (nX < MinLimiteX) Or (nX > MaxLimiteX) Then
-    Call EraseChar(CharIndex)
-End If
-
+    Dim X As Integer
+    Dim Y As Integer
+    Dim addx As Integer
+    Dim addy As Integer
+    Dim nHeading As E_Heading
+    
+    With charlist(CharIndex)
+        X = .Pos.X
+        Y = .Pos.Y
+        
+        MapData(X, Y).CharIndex = 0
+        
+        addx = nX - X
+        addy = nY - Y
+        
+        If Sgn(addx) = 1 Then
+            nHeading = E_Heading.EAST
+        ElseIf Sgn(addx) = -1 Then
+            nHeading = E_Heading.WEST
+        ElseIf Sgn(addy) = -1 Then
+            nHeading = E_Heading.NORTH
+        ElseIf Sgn(addy) = 1 Then
+            nHeading = E_Heading.SOUTH
+        End If
+        
+        MapData(nX, nY).CharIndex = CharIndex
+        
+        .Pos.X = nX
+        .Pos.Y = nY
+        
+        .MoveOffsetX = -1 * (TilePixelWidth * addx)
+        .MoveOffsetY = -1 * (TilePixelHeight * addy)
+        
+        .Moving = 1
+        .Heading = nHeading
+        
+        .scrollDirectionX = Sgn(addx)
+        .scrollDirectionY = Sgn(addy)
+    End With
+    
+    If Not EstaPCarea(CharIndex) Then Call Dialogos.RemoveDialog(CharIndex)
+    
+    If (nY < MinLimiteY) Or (nY > MaxLimiteY) Or (nX < MinLimiteX) Or (nX > MaxLimiteX) Then
+        Call EraseChar(CharIndex)
+    End If
 End Sub
 
 Sub MoveScreen(ByVal nHeading As E_Heading)
 '******************************************
 'Starts the screen moving in a direction
 '******************************************
-Dim X As Integer
-Dim Y As Integer
-Dim tX As Integer
-Dim tY As Integer
-
-'Figure out which way to move
-Select Case nHeading
-
-    Case E_Heading.NORTH
-        Y = -1
-
-    Case E_Heading.EAST
-        X = 1
-
-    Case E_Heading.SOUTH
-        Y = 1
+    Dim X As Integer
+    Dim Y As Integer
+    Dim tX As Integer
+    Dim tY As Integer
     
-    Case E_Heading.WEST
-        X = -1
+    'Figure out which way to move
+    Select Case nHeading
+        Case E_Heading.NORTH
+            Y = -1
+        Case E_Heading.EAST
+            X = 1
+        Case E_Heading.SOUTH
+            Y = 1
+        Case E_Heading.WEST
+            X = -1
+    End Select
+    
+    'Fill temp pos
+    tX = UserPos.X + X
+    tY = UserPos.Y + Y
+    
+    'Check to see if its out of bounds
+    If tX < MinXBorder Or tX > MaxXBorder Or tY < MinYBorder Or tY > MaxYBorder Then
+        Exit Sub
+    Else
+        'Start moving... MainLoop does the rest
+        AddtoUserPos.X = X
+        UserPos.X = tX
+        AddtoUserPos.Y = Y
+        UserPos.Y = tY
+        UserMoving = 1
         
-End Select
-
-'Fill temp pos
-tX = UserPos.X + X
-tY = UserPos.Y + Y
-
-'Check to see if its out of bounds
-If tX < MinXBorder Or tX > MaxXBorder Or tY < MinYBorder Or tY > MaxYBorder Then
-    Exit Sub
-Else
-    'Start moving... MainLoop does the rest
-    AddtoUserPos.X = X
-    UserPos.X = tX
-    AddtoUserPos.Y = Y
-    UserPos.Y = tY
-    UserMoving = 1
-   
-End If
-
-
-    
-
+        bTecho = IIf(MapData(UserPos.X, UserPos.Y).Trigger = 1 Or _
+                MapData(UserPos.X, UserPos.Y).Trigger = 2 Or _
+                MapData(UserPos.X, UserPos.Y).Trigger = 4, True, False)
+    End If
 End Sub
 
-
-Function HayFogata() As Boolean
-Dim j As Integer, k As Integer
-For j = UserPos.X - 8 To UserPos.X + 8
-    For k = UserPos.Y - 6 To UserPos.Y + 6
-        If InMapBounds(j, k) Then
-            If MapData(j, k).ObjGrh.GrhIndex = GrhFogata Then
+Private Function HayFogata(ByRef location As Position) As Boolean
+    Dim j As Long
+    Dim k As Long
+    
+    For j = UserPos.X - 8 To UserPos.X + 8
+        For k = UserPos.Y - 6 To UserPos.Y + 6
+            If InMapBounds(j, k) Then
+                If MapData(j, k).ObjGrh.GrhIndex = FOgata Then
+                    location.X = j
+                    location.Y = k
+                    
                     HayFogata = True
                     Exit Function
+                End If
             End If
-        End If
-    Next k
-Next j
+        Next k
+    Next j
 End Function
 
 Function NextOpenChar() As Integer
 '*****************************************************************
 'Finds next open char slot in CharList
 '*****************************************************************
-Dim loopc As Integer
-Dim Dale As Boolean
-
-loopc = 1
-Do While charlist(loopc).Active And Dale
-    loopc = loopc + 1
-    Dale = (loopc <= UBound(charlist))
-Loop
-
-NextOpenChar = loopc
-
+    Dim loopc As Long
+    Dim Dale As Boolean
+    
+    loopc = 1
+    Do While charlist(loopc).Active And Dale
+        loopc = loopc + 1
+        Dale = (loopc <= UBound(charlist))
+    Loop
+    
+    NextOpenChar = loopc
 End Function
-
-
-Sub LoadGrhData()
+Function MoveToLegalPos(ByVal X As Integer, ByVal Y As Integer) As Boolean
 '*****************************************************************
-'Loads Grh.dat
-'*****************************************************************
-
-On Error GoTo ErrorHandler
-
-Dim Grh As Integer
-Dim Frame As Integer
-Dim tempint As Integer
-
-
-
-
-'Resize arrays
-ReDim GrhData(1 To Config_Inicio.NumeroDeBMPs) As GrhData
-
-'Open files
-Open IniPath & "Graficos.ind" For Binary Access Read As #1
-Seek #1, 1
-
-Get #1, , MiCabecera
-Get #1, , tempint
-Get #1, , tempint
-Get #1, , tempint
-Get #1, , tempint
-Get #1, , tempint
-
-'Fill Grh List
-
-'Get first Grh Number
-Get #1, , Grh
-
-Do Until Grh <= 0
-        GrhData(Grh).Active = True
-    'Get number of frames
-    Get #1, , GrhData(Grh).NumFrames
-    If GrhData(Grh).NumFrames <= 0 Then GoTo ErrorHandler
+'Author: Lorwik
+'Last Modify Date: 09/01/2011
+'******************************************************
+    Dim CharIndex As Integer
     
-    If GrhData(Grh).NumFrames > 1 Then
-    
-        'Read a animation GRH set
-        For Frame = 1 To GrhData(Grh).NumFrames
-        
-            Get #1, , GrhData(Grh).Frames(Frame)
-            If GrhData(Grh).Frames(Frame) <= 0 Or GrhData(Grh).Frames(Frame) > Config_Inicio.NumeroDeBMPs Then
-                GoTo ErrorHandler
-            End If
-        
-        Next Frame
-    
-        Get #1, , GrhData(Grh).Speed
-        If GrhData(Grh).Speed <= 0 Then GoTo ErrorHandler
-        
-        'Compute width and height
-        GrhData(Grh).pixelHeight = GrhData(GrhData(Grh).Frames(1)).pixelHeight
-        If GrhData(Grh).pixelHeight <= 0 Then GoTo ErrorHandler
-        
-        GrhData(Grh).pixelWidth = GrhData(GrhData(Grh).Frames(1)).pixelWidth
-        If GrhData(Grh).pixelWidth <= 0 Then GoTo ErrorHandler
-        
-        GrhData(Grh).TileWidth = GrhData(GrhData(Grh).Frames(1)).TileWidth
-        If GrhData(Grh).TileWidth <= 0 Then GoTo ErrorHandler
-        
-        GrhData(Grh).TileHeight = GrhData(GrhData(Grh).Frames(1)).TileHeight
-        If GrhData(Grh).TileHeight <= 0 Then GoTo ErrorHandler
-    
-    Else
-    
-        'Read in normal GRH data
-        Get #1, , GrhData(Grh).FileNum
-        If GrhData(Grh).FileNum <= 0 Then GoTo ErrorHandler
-        
-        Get #1, , GrhData(Grh).sX
-        If GrhData(Grh).sX < 0 Then GoTo ErrorHandler
-        
-        Get #1, , GrhData(Grh).sY
-        If GrhData(Grh).sY < 0 Then GoTo ErrorHandler
-            
-        Get #1, , GrhData(Grh).pixelWidth
-        If GrhData(Grh).pixelWidth <= 0 Then GoTo ErrorHandler
-        
-        Get #1, , GrhData(Grh).pixelHeight
-        If GrhData(Grh).pixelHeight <= 0 Then GoTo ErrorHandler
-        
-        'Compute width and height
-        GrhData(Grh).TileWidth = GrhData(Grh).pixelWidth / TilePixelHeight
-        GrhData(Grh).TileHeight = GrhData(Grh).pixelHeight / TilePixelWidth
-        
-        GrhData(Grh).Frames(1) = Grh
-            
+    'Limites del mapa
+    If X < MinXBorder Or X > MaxXBorder Or Y < MinYBorder Or Y > MaxYBorder Then
+        Exit Function
     End If
-
-    'Get Next Grh Number
-    Get #1, , Grh
-
-Loop
-'************************************************
-
-Close #1
-
-Dim Count As Long
- 
-Open IniPath & "minimap.dat" For Binary As #1
-    Seek #1, 1
-    For Count = 1 To 22907
-        If GrhData(Count).Active Then
-            Get #1, , GrhData(Count).MiniMap_color
-        End If
-    Next Count
-Close #1
-
-Exit Sub
-
-ErrorHandler:
-Close #1
-MsgBox "Error while loading the Grh.dat! Stopped at GRH number: " & Grh
-
-End Sub
-
-Function LegalPos(ByVal X As Integer, ByVal Y As Integer) As Boolean
-'*****************************************************************
-'Checks to see if a tile position is legal
-'*****************************************************************
-
-'Limites del mapa
-If X < MinXBorder Or X > MaxXBorder Or Y < MinYBorder Or Y > MaxYBorder Then
-    LegalPos = False
-    Exit Function
-End If
-
+    
     'Tile Bloqueado?
-    If MapData(X, Y).Blocked = 1 Then
-        LegalPos = False
+    If MapData(X, Y).blocked = 1 Then
         Exit Function
     End If
     
+    CharIndex = MapData(X, Y).CharIndex
     '¿Hay un personaje?
-    If MapData(X, Y).CharIndex > 0 Then
-        LegalPos = False
-        Exit Function
+    If CharIndex > 0 Then
+    
+        If MapData(UserPos.X, UserPos.Y).blocked = 1 Then
+            Exit Function
+        End If
+        
+        With charlist(CharIndex)
+            ' Si no es casper, no puede pasar
+            If .iHead <> CASPER_HEAD And .iBody <> FRAGATA_FANTASMAL Then
+                Exit Function
+            Else
+                ' No puedo intercambiar con un casper que este en la orilla (Lado tierra)
+                If HayAgua(UserPos.X, UserPos.Y) Then
+                    If Not HayAgua(X, Y) Then Exit Function
+                Else
+                    ' No puedo intercambiar con un casper que este en la orilla (Lado agua)
+                    If HayAgua(X, Y) Then Exit Function
+                End If
+                
+                ' Los admins no pueden intercambiar pos con caspers cuando estan invisibles
+                If charlist(UserCharIndex).priv > 0 And charlist(UserCharIndex).priv < 6 Then
+                    If charlist(UserCharIndex).invisible = True Then Exit Function
+                End If
+            End If
+        End With
     End If
    
-    If Not UserNavegando Then
-        If HayAgua(X, Y) Then
-            LegalPos = False
-            Exit Function
-        End If
-    Else
-        If Not HayAgua(X, Y) Then
-            LegalPos = False
+    If UserNavegando <> HayAgua(X, Y) Then
+        Exit Function
+    End If
+    
+        '¿Esta el usuario Equitando bajo un techo?
+    If UserEquitando Then
+        If bTecho = True Then
+            MoveToLegalPos = False
             Exit Function
         End If
     End If
-            If UserEquitando Then
-            If bTecho = True Then
-                LegalPos = False
-                Exit Function
-            End If
-            End If
-        
-LegalPos = True
-
-End Function
-
-
-
-
-Function InMapLegalBounds(ByVal X As Integer, ByVal Y As Integer) As Boolean
-'*****************************************************************
-'Checks to see if a tile position is in the maps
-'LEGAL/Walkable bounds
-'*****************************************************************
-
-If X < MinXBorder Or X > MaxXBorder Or Y < MinYBorder Or Y > MaxYBorder Then
-    InMapLegalBounds = False
-    Exit Function
-End If
-
-InMapLegalBounds = True
-
+    
+    MoveToLegalPos = True
 End Function
 
 Function InMapBounds(ByVal X As Integer, ByVal Y As Integer) As Boolean
 '*****************************************************************
 'Checks to see if a tile position is in the maps bounds
 '*****************************************************************
-
-If X < XMinMapSize Or X > XMaxMapSize Or Y < YMinMapSize Or Y > YMaxMapSize Then
-    InMapBounds = False
-    Exit Function
-End If
-
-InMapBounds = True
-
+    If X < XMinMapSize Or X > XMaxMapSize Or Y < YMinMapSize Or Y > YMaxMapSize Then
+        Exit Function
+    End If
+    
+    InMapBounds = True
 End Function
 
-Sub DDrawGrhtoSurface(Surface As DirectDrawSurface7, Grh As Grh, ByVal X As Integer, ByVal Y As Integer, center As Byte, Animate As Byte)
-
-Dim CurrentGrh As Grh
-Dim destRect As RECT
-Dim SourceRect As RECT
-Dim SurfaceDesc As DDSURFACEDESC2
-
-If Animate Then
-    If Grh.Started = 1 Then
-        If Grh.SpeedCounter > 0 Then
-            Grh.SpeedCounter = Grh.SpeedCounter - 1
-            If Grh.SpeedCounter = 0 Then
-                Grh.SpeedCounter = GrhData(Grh.GrhIndex).Speed
-                Grh.FrameCounter = Grh.FrameCounter + 1
-                If Grh.FrameCounter > GrhData(Grh.GrhIndex).NumFrames Then
-                    Grh.FrameCounter = 1
+'******************************************************
+'======================================================
+'*LORWIK> PARA DIBUJAR COSITAS CON DX :)              *
+'======================================================
+'******************************************************
+Private Sub DDrawGrhtoSurface(ByRef Grh As Grh, ByVal X As Integer, ByVal Y As Integer, ByVal center As Byte, ByVal Animate As Byte, ByRef Light() As Long)
+    Dim CurrentGrhIndex As Integer
+    Dim SourceRect As RECT
+On Error GoTo error
+        
+    If Animate Then
+        If Grh.Started = 1 Then
+            Grh.FrameCounter = Grh.FrameCounter + (timerElapsedTime * GrhData(Grh.GrhIndex).NumFrames / Grh.Speed)
+            If Grh.FrameCounter > GrhData(Grh.GrhIndex).NumFrames Then
+                Grh.FrameCounter = (Grh.FrameCounter Mod GrhData(Grh.GrhIndex).NumFrames) + 1
+                
+                If Grh.Loops <> INFINITE_LOOPS Then
+                    If Grh.Loops > 0 Then
+                        Grh.Loops = Grh.Loops - 1
+                    Else
+                        Grh.Started = 0
+                    End If
                 End If
             End If
         End If
     End If
-End If
-'Figure out what frame to draw (always 1 if not animated)
-CurrentGrh.GrhIndex = GrhData(Grh.GrhIndex).Frames(Grh.FrameCounter)
-'Center Grh over X,Y pos
-If center Then
-    If GrhData(CurrentGrh.GrhIndex).TileWidth <> 1 Then
-        X = X - Int(GrhData(CurrentGrh.GrhIndex).TileWidth * 16) + 16 'hard coded for speed
-    End If
-    If GrhData(CurrentGrh.GrhIndex).TileHeight <> 1 Then
-        Y = Y - Int(GrhData(CurrentGrh.GrhIndex).TileHeight * 32) + 32 'hard coded for speed
-    End If
-End If
-With SourceRect
-        .Left = GrhData(CurrentGrh.GrhIndex).sX
-        .Top = GrhData(CurrentGrh.GrhIndex).sY
-        .Right = .Left + GrhData(CurrentGrh.GrhIndex).pixelWidth
-        .Bottom = .Top + GrhData(CurrentGrh.GrhIndex).pixelHeight
-End With
-Surface.BltFast X, Y, SurfaceDB(GrhData(CurrentGrh.GrhIndex).FileNum), SourceRect, DDBLTFAST_WAIT
-End Sub
-
-Sub DDrawTransGrhIndextoSurface(Surface As DirectDrawSurface7, Grh As Integer, ByVal X As Integer, ByVal Y As Integer, center As Byte, Animate As Byte)
-Dim CurrentGrh As Grh
-Dim destRect As RECT
-Dim SourceRect As RECT
-Dim SurfaceDesc As DDSURFACEDESC2
-
-With destRect
-    .Left = X
-    .Top = Y
-    .Right = .Left + GrhData(Grh).pixelWidth
-    .Bottom = .Top + GrhData(Grh).pixelHeight
-End With
-
-Surface.GetSurfaceDesc SurfaceDesc
-
-'Draw
-If destRect.Left >= 0 And destRect.Top >= 0 And destRect.Right <= SurfaceDesc.lWidth And destRect.Bottom <= SurfaceDesc.lHeight Then
-    With SourceRect
-        .Left = GrhData(Grh).sX
-        .Top = GrhData(Grh).sY
-        .Right = .Left + GrhData(Grh).pixelWidth
-        .Bottom = .Top + GrhData(Grh).pixelHeight
+    
+    'Figure out what frame to draw (always 1 if not animated)
+    CurrentGrhIndex = GrhData(Grh.GrhIndex).Frames(Grh.FrameCounter)
+    
+    With GrhData(CurrentGrhIndex)
+        'Center Grh over X,Y pos
+        If center Then
+            If .TileWidth <> 1 Then
+                X = X - Int(.TileWidth * TilePixelWidth / 2) + TilePixelWidth \ 2
+            End If
+            
+            If .TileHeight <> 1 Then
+                Y = Y - Int(.TileHeight * TilePixelHeight) + TilePixelHeight
+            End If
+        End If
+        
+        SourceRect.Left = .SX
+        SourceRect.Top = .SY
+        SourceRect.Right = SourceRect.Left + .pixelWidth
+        SourceRect.bottom = SourceRect.Top + .pixelHeight
+        
+        'Draw
+        Call Device_Textured_Render(X, Y, SurfaceDB.Surface(.FileNum), SourceRect, Light)
     End With
-    
-    Surface.BltFast destRect.Left, destRect.Top, SurfaceDB.Surface(GrhData(Grh).FileNum), SourceRect, DDBLTFAST_SRCCOLORKEY Or DDBLTFAST_WAIT
-End If
-
-End Sub
-
-'Sub DDrawTransGrhtoSurface(surface As DirectDrawSurface7, Grh As Grh, X As Integer, Y As Integer, Center As Byte, Animate As Byte, Optional ByVal KillAnim As Integer = 0)
-'[CODE 000]:MatuX
-    Sub DDrawTransGrhtoSurface(Surface As DirectDrawSurface7, Grh As Grh, ByVal X As Integer, ByVal Y As Integer, center As Byte, Animate As Byte, Optional ByVal KillAnim As Integer = 0)
-'[END]'
-'*****************************************************************
-'Draws a GRH transparently to a X and Y position
-'*****************************************************************
-'[CODE]:MatuX
-'
-'  CurrentGrh.GrhIndex = iGrhIndex
-'
-'[END]
-
-'Dim CurrentGrh As Grh
-Dim iGrhIndex As Integer
-'Dim destRect As RECT
-Dim SourceRect As RECT
-'Dim SurfaceDesc As DDSURFACEDESC2
-Dim QuitarAnimacion As Boolean
-
-
-If Animate Then
-    If Grh.Started = 1 Then
-        If Grh.SpeedCounter > 0 Then
-            Grh.SpeedCounter = Grh.SpeedCounter - 1
-            If Grh.SpeedCounter = 0 Then
-                Grh.SpeedCounter = GrhData(Grh.GrhIndex).Speed
-                Grh.FrameCounter = Grh.FrameCounter + 1
-                If Grh.FrameCounter > GrhData(Grh.GrhIndex).NumFrames Then
-                    Grh.FrameCounter = 1
-                    If KillAnim Then
-                        If charlist(KillAnim).FxLoopTimes <> LoopAdEternum Then
-                            
-                            If charlist(KillAnim).FxLoopTimes > 0 Then charlist(KillAnim).FxLoopTimes = charlist(KillAnim).FxLoopTimes - 1
-                            If charlist(KillAnim).FxLoopTimes < 1 Then 'Matamos la anim del fx ;))
-                                charlist(KillAnim).Fx = 0
-                                Exit Sub
-                            End If
-                            
-                        End If
-                    End If
-               End If
-            End If
-        End If
-    End If
-End If
-
-If Grh.GrhIndex = 0 Then Exit Sub
-
-'Figure out what frame to draw (always 1 if not animated)
-iGrhIndex = GrhData(Grh.GrhIndex).Frames(Grh.FrameCounter)
-
-'Center Grh over X,Y pos
-If center Then
-    If GrhData(iGrhIndex).TileWidth <> 1 Then
-        X = X - Int(GrhData(iGrhIndex).TileWidth * 16) + 16 'hard coded for speed
-    End If
-    If GrhData(iGrhIndex).TileHeight <> 1 Then
-        Y = Y - Int(GrhData(iGrhIndex).TileHeight * 32) + 32 'hard coded for speed
-    End If
-End If
-
-With SourceRect
-    .Left = GrhData(iGrhIndex).sX
-    .Top = GrhData(iGrhIndex).sY
-    .Right = .Left + GrhData(iGrhIndex).pixelWidth
-    .Bottom = .Top + GrhData(iGrhIndex).pixelHeight
-End With
-
-
-Surface.BltFast X, Y, SurfaceDB.Surface(GrhData(iGrhIndex).FileNum), SourceRect, DDBLTFAST_SRCCOLORKEY Or DDBLTFAST_WAIT
-
-End Sub
-
-#If ConAlfaB = 1 Then
-    Sub DDrawTransGrhtoSurfaceAlpha(Surface As DirectDrawSurface7, Grh As Grh, ByVal X As Integer, ByVal Y As Integer, center As Byte, Animate As Byte, Optional ByVal KillAnim As Integer = 0)
-'[END]'
-'*****************************************************************
-'Draws a GRH transparently to a X and Y position
-'*****************************************************************
-'[CODE]:MatuX
-'
-'  CurrentGrh.GrhIndex = iGrhIndex
-'
-'[END]
-
-'Dim CurrentGrh As Grh
-Dim iGrhIndex As Integer
-'Dim destRect As RECT
-Dim SourceRect As RECT
-'Dim SurfaceDesc As DDSURFACEDESC2
-Dim QuitarAnimacion As Boolean
-
-
-If Animate Then
-    If Grh.Started = 1 Then
-        If Grh.SpeedCounter > 0 Then
-            Grh.SpeedCounter = Grh.SpeedCounter - 1
-            If Grh.SpeedCounter = 0 Then
-                Grh.SpeedCounter = GrhData(Grh.GrhIndex).Speed
-                Grh.FrameCounter = Grh.FrameCounter + 1
-                If Grh.FrameCounter > GrhData(Grh.GrhIndex).NumFrames Then
-                    Grh.FrameCounter = 1
-                    If KillAnim Then
-                        If charlist(KillAnim).FxLoopTimes <> LoopAdEternum Then
-
-                            If charlist(KillAnim).FxLoopTimes > 0 Then charlist(KillAnim).FxLoopTimes = charlist(KillAnim).FxLoopTimes - 1
-                            If charlist(KillAnim).FxLoopTimes < 1 Then 'Matamos la anim del fx ;))
-                                charlist(KillAnim).Fx = 0
-                                Exit Sub
-                            End If
-
-                        End If
-                    End If
-               End If
-            End If
-        End If
-    End If
-End If
-
-If Grh.GrhIndex = 0 Then Exit Sub
-
-'Figure out what frame to draw (always 1 if not animated)
-iGrhIndex = GrhData(Grh.GrhIndex).Frames(Grh.FrameCounter)
-
-'Center Grh over X,Y pos
-If center Then
-    If GrhData(iGrhIndex).TileWidth <> 1 Then
-        X = X - Int(GrhData(iGrhIndex).TileWidth * 16) + 16 'hard coded for speed
-    End If
-    If GrhData(iGrhIndex).TileHeight <> 1 Then
-        Y = Y - Int(GrhData(iGrhIndex).TileHeight * 32) + 32 'hard coded for speed
-    End If
-End If
-
-With SourceRect
-    .Left = GrhData(iGrhIndex).sX + IIf(X < 0, Abs(X), 0)
-    .Top = GrhData(iGrhIndex).sY + IIf(Y < 0, Abs(Y), 0)
-    .Right = .Left + GrhData(iGrhIndex).pixelWidth
-    .Bottom = .Top + GrhData(iGrhIndex).pixelHeight
-End With
-
-'surface.BltFast X, Y, SurfaceDB.surface(GrhData(iGrhIndex).FileNum), SourceRect, DDBLTFAST_SRCCOLORKEY Or DDBLTFAST_WAIT
-
-Dim src As DirectDrawSurface7
-Dim rDest As RECT
-Dim dArray() As Byte, sArray() As Byte
-Dim ddsdSrc As DDSURFACEDESC2, ddsdDest As DDSURFACEDESC2
-Dim Modo As Long
-
-Set src = SurfaceDB.Surface(GrhData(iGrhIndex).FileNum)
-
-src.GetSurfaceDesc ddsdSrc
-Surface.GetSurfaceDesc ddsdDest
-
-With rDest
-    .Left = X
-    .Top = Y
-    .Right = X + GrhData(iGrhIndex).pixelWidth
-    .Bottom = Y + GrhData(iGrhIndex).pixelHeight
-    
-    If .Right > ddsdDest.lWidth Then
-        .Right = ddsdDest.lWidth
-    End If
-    If .Bottom > ddsdDest.lHeight Then
-        .Bottom = ddsdDest.lHeight
-    End If
-End With
-
-' 0 -> 16 bits 555
-' 1 -> 16 bits 565
-' 2 -> 16 bits raro (Sin implementar)
-' 3 -> 24 bits
-' 4 -> 32 bits
-
-If ddsdDest.ddpfPixelFormat.lGBitMask = &H3E0 And ddsdSrc.ddpfPixelFormat.lGBitMask = &H3E0 Then
-    Modo = 0
-ElseIf ddsdDest.ddpfPixelFormat.lGBitMask = &H7E0 And ddsdSrc.ddpfPixelFormat.lGBitMask = &H7E0 Then
-    Modo = 1
-ElseIf ddsdDest.ddpfPixelFormat.lGBitMask = &H7E0 And ddsdSrc.ddpfPixelFormat.lGBitMask = &H7E0 Then
-    Modo = 3
-ElseIf ddsdDest.ddpfPixelFormat.lGBitMask = 65280 And ddsdSrc.ddpfPixelFormat.lGBitMask = 65280 Then
-    Modo = 4
-Else
-    'Modo = 2 '16 bits raro ?
-    Surface.BltFast X, Y, src, SourceRect, DDBLTFAST_SRCCOLORKEY Or DDBLTFAST_WAIT
-    Exit Sub
-End If
-
-Dim SrcLock As Boolean, DstLock As Boolean
-SrcLock = False: DstLock = False
-
-On Local Error GoTo HayErrorAlpha
-
-src.Lock SourceRect, ddsdSrc, DDLOCK_WAIT, 0
-SrcLock = True
-Surface.Lock rDest, ddsdDest, DDLOCK_WAIT, 0
-DstLock = True
-
-Surface.GetLockedArray dArray()
-src.GetLockedArray sArray()
-
-Call BltAlphaFast(ByVal VarPtr(dArray(X + X, Y)), ByVal VarPtr(sArray(SourceRect.Left * 2, SourceRect.Top)), rDest.Right - rDest.Left, rDest.Bottom - rDest.Top, ddsdSrc.lPitch, ddsdDest.lPitch, Modo)
-
-Surface.Unlock rDest
-DstLock = False
-src.Unlock SourceRect
-SrcLock = False
-
-
 Exit Sub
 
-HayErrorAlpha:
-If SrcLock Then src.Unlock SourceRect
-If DstLock Then Surface.Unlock rDest
-
+error:
+    If Err.number = 9 And Grh.FrameCounter < 1 Then
+        Grh.FrameCounter = 1
+        Resume
+    Else
+        MsgBox "Ocurrió un error inesperado, por favor comuniquelo a los administradores del juego." & vbCrLf & "Descripción del error: " & _
+        vbCrLf & Err.Description, vbExclamation, "[ " & Err.number & " ] Error"
+        End
+    End If
 End Sub
-#End If 'ConAlfaB = 1
 
-Sub DrawBackBufferSurface()
-    PrimarySurface.Blt MainViewRect, BackBufferSurface, MainDestRect, DDBLT_WAIT
+Sub DDrawTransGrhIndextoSurface(ByVal GrhIndex As Integer, ByVal X As Integer, ByVal Y As Integer, ByVal center As Byte, ByRef Light() As Long)
+    Dim SourceRect As RECT
+    
+    With GrhData(GrhIndex)
+        'Center Grh over X,Y pos
+        If center Then
+            If .TileWidth <> 1 Then
+                X = X - Int(.TileWidth * TilePixelWidth / 2) + TilePixelWidth \ 2
+            End If
+            
+            If .TileHeight <> 1 Then
+                Y = Y - Int(.TileHeight * TilePixelHeight) + TilePixelHeight
+            End If
+        End If
+        
+        SourceRect.Left = .SX
+        SourceRect.Top = .SY
+        SourceRect.Right = SourceRect.Left + .pixelWidth
+        SourceRect.bottom = SourceRect.Top + .pixelHeight
+        
+        'Draw
+        'Call BackBufferSurface.BltFast(X, Y, SurfaceDB.Surface(.FileNum), SourceRect, DDBLTFAST_SRCCOLORKEY Or DDBLTFAST_WAIT)
+        Call Device_Textured_Render(X, Y, SurfaceDB.Surface(.FileNum), SourceRect, Light)
+    End With
 End Sub
 
-Function GetBitmapDimensions(BmpFile As String, ByRef bmWidth As Long, ByRef bmHeight As Long)
+Sub DDrawTransGrhtoSurface(ByRef Grh As Grh, ByVal X As Integer, ByVal Y As Integer, ByVal center As Byte, ByVal Animate As Byte, ByRef Light() As Long, Optional Transp As Byte = 255, Optional blend As Boolean, Optional angle As Single)
+'*****************************************************************
+'Draws a GRH transparently to a X and Y position
+'*****************************************************************
+    Dim CurrentGrhIndex As Integer
+    Dim SourceRect As RECT
+'On Error GoTo error
+   If Grh.GrhIndex = 0 Then Exit Sub
+   
+    If Animate Then
+        If Grh.Started = 1 Then
+            Grh.FrameCounter = Grh.FrameCounter + (timerElapsedTime * GrhData(Grh.GrhIndex).NumFrames / Grh.Speed) * movSpeed
+            
+            If Grh.FrameCounter > GrhData(Grh.GrhIndex).NumFrames Then
+                Grh.FrameCounter = (Grh.FrameCounter Mod GrhData(Grh.GrhIndex).NumFrames) + 1
+                
+                If Grh.Loops <> INFINITE_LOOPS Then
+                    If Grh.Loops > 0 Then
+                        Grh.Loops = Grh.Loops - 1
+                    Else
+                        Grh.Started = 0
+                    End If
+                End If
+            End If
+        End If
+    End If
+    
+    'Figure out what frame to draw (always 1 if not animated)
+    CurrentGrhIndex = GrhData(Grh.GrhIndex).Frames(Grh.FrameCounter)
+    
+    With GrhData(CurrentGrhIndex)
+        'Center Grh over X,Y pos
+        If center Then
+            If .TileWidth <> 1 Then
+                X = X - Int(.TileWidth * TilePixelWidth / 2) + TilePixelWidth \ 2
+            End If
+            
+            If .TileHeight <> 1 Then
+                Y = Y - Int(.TileHeight * TilePixelHeight) + TilePixelHeight
+            End If
+        End If
+                
+        SourceRect.Left = .SX
+        SourceRect.Top = .SY
+        SourceRect.Right = SourceRect.Left + .pixelWidth
+        SourceRect.bottom = SourceRect.Top + .pixelHeight
+        
+        'Draw
+                
+        Call Device_Textured_Render(X, Y, SurfaceDB.Surface(.FileNum), SourceRect, Light(), CBool(blend), Transp, angle)
+    End With
+    
+    
+Exit Sub
+
+error:
+    If Err.number = 9 And Grh.FrameCounter < 1 Then
+        Grh.FrameCounter = 1
+        Resume
+    Else
+        MsgBox "Ocurrió un error inesperado, por favor comuniquelo a los administradores del juego." & vbCrLf & "Descripción del error: " & _
+        vbCrLf & Err.Description, vbExclamation, "[ " & Err.number & " ] Error"
+        End
+    End If
+End Sub
+'******************************************************
+'======================================================
+'*/LORWIK> PARA DIBUJAR COSITAS CON DX :)             *
+'======================================================
+'******************************************************
+
+Function GetBitmapDimensions(ByVal BmpFile As String, ByRef bmWidth As Long, ByRef bmHeight As Long)
 '*****************************************************************
 'Gets the dimensions of a bmp
 '*****************************************************************
-Dim BMHeader As BITMAPFILEHEADER
-Dim BINFOHeader As BITMAPINFOHEADER
-
-Open BmpFile For Binary Access Read As #1
-Get #1, , BMHeader
-Get #1, , BINFOHeader
-Close #1
-bmWidth = BINFOHeader.biWidth
-bmHeight = BINFOHeader.biHeight
+    Dim BMHeader As BITMAPFILEHEADER
+    Dim BINFOHeader As BITMAPINFOHEADER
+    
+    Open BmpFile For Binary Access Read As #1
+    
+    Get #1, , BMHeader
+    Get #1, , BINFOHeader
+    
+    Close #1
+    
+    bmWidth = BINFOHeader.biWidth
+    bmHeight = BINFOHeader.biHeight
 End Function
 
-Sub DrawGrhtoHdc(hwnd As Long, hdc As Long, Grh As Integer, SourceRect As RECT, destRect As RECT)
-    If Grh <= 0 Then Exit Sub
+Public Sub DrawGrhtoHdc(desthdc As Long, ByVal grh_index As Long, ByVal screen_x As Long, ByVal screen_y As Long, Optional transparent As Boolean = False)
+
+    On Error Resume Next
     
-    SecundaryClipper.SetHWnd hwnd
-    SurfaceDB.Surface(GrhData(Grh).FileNum).BltToDC hdc, SourceRect, destRect
+    Dim file_path As String
+    Dim Src_X As Integer
+    Dim Src_Y As Integer
+    Dim src_width As Integer
+    Dim src_height As Integer
+    Dim hdcsrc As Long
+    Dim MaskDC As Long
+    Dim PrevObj As Long
+    Dim PrevObj2 As Long
+    Dim InfoHead As INFOHEADER
+        
+    InfoHead = File_Find(App.Path & "\RECURSOS\Graphics.WAO", CStr(GrhData(grh_index).FileNum) & ".bmp")
+    
+    If grh_index <= 0 Then Exit Sub
+    
+    'If it's animated switch grh_index to first frame
+    If GrhData(grh_index).NumFrames <> 1 Then
+    grh_index = GrhData(grh_index).Frames(1)
+    End If
+        
+    file_path = Get_Extract(graphics, CStr(GrhData(grh_index).FileNum) & ".bmp")
+        
+    Src_X = GrhData(grh_index).SX
+    Src_Y = GrhData(grh_index).SY
+    src_width = GrhData(grh_index).pixelWidth
+    src_height = GrhData(grh_index).pixelHeight
+    
+    hdcsrc = CreateCompatibleDC(desthdc)
+    
+    PrevObj = SelectObject(hdcsrc, LoadPicture(file_path))
+    
+    If transparent = False Then
+        BitBlt desthdc, screen_x, screen_y, src_width, src_height, hdcsrc, Src_X, Src_Y, vbSrcCopy
+    Else
+        TransparentBlt desthdc, screen_x, screen_y, src_width, src_height, hdcsrc, Src_X, Src_Y, src_width, src_height, &HFF000000
+    End If
+    
+    DeleteDC hdcsrc
+    Delete_File file_path
+
 End Sub
 
-Sub RenderScreen(tilex As Integer, tiley As Integer, PixelOffsetX As Integer, PixelOffsetY As Integer)
- 
-On Error Resume Next
- 
-If UserCiego Then Exit Sub
- 
-Dim Y As Integer
-Dim X As Integer
-Dim MinY As Integer
-Dim MaxY As Integer
-Dim MinX As Integer
-Dim MaxX As Integer
-Dim ScreenX As Integer
-Dim ScreenY As Integer
-Dim Moved As Byte
-Dim Grh As Grh
-Dim TempChar As Char
-Dim TextX As Integer
-Dim TextY As Integer
-Dim iPPx As Integer
-Dim iPPy As Integer
-Dim rSourceRect As RECT
-Dim PP As RECT
-Dim iGrhIndex As Integer
-Dim PixelOffsetXTemp As Integer
-Dim PixelOffsetYTemp As Integer
-Dim nX As Integer
-Dim nY As Integer
-Dim lCenter As Long
-Dim sClan As String
-Dim bbarray() As Byte
-Dim nnarray() As Byte
-Dim ddsdBB As DDSURFACEDESC2
-Dim r As RECT
- 
-'Configuramos el tamaño de la pantalla
-'Parra: Gracias kasa, por la solucion al bug de agrandar mainviewshp ;)
-MinY = (tiley - (WindowTileHeight \ 2)) - TileBufferSize
-MaxY = (tiley + (WindowTileHeight \ 2)) + TileBufferSize
-MinX = (tilex - (WindowTileWidth \ 2)) - TileBufferSize
-MaxX = (tilex + (WindowTileWidth \ 2)) + TileBufferSize
- 
-ScreenY = 8
-For Y = (MinY + 8) To MaxY - 8
-ScreenX = 8
-For X = MinX + 8 To MaxX - 8
-If X > 100 Or Y < 1 Then Exit For
-'Capa 1
-With MapData(X, Y).Graphic(1)
-If (.Started = 1) Then
-If (.SpeedCounter > 0) Then
-.SpeedCounter = .SpeedCounter - 1
-If (.SpeedCounter = 0) Then
-.SpeedCounter = GrhData(.GrhIndex).Speed
-.FrameCounter = .FrameCounter + 1
-If (.FrameCounter > GrhData(.GrhIndex).NumFrames) Then _
-.FrameCounter = 1
-End If
-End If
-End If
- 
-'Figure out what frame To draw (always 1 If Not animated)
-iGrhIndex = GrhData(.GrhIndex).Frames(.FrameCounter)
-End With
- 
-With rSourceRect
-.Left = GrhData(iGrhIndex).sX
-.Top = GrhData(iGrhIndex).sY
-.Right = .Left + GrhData(iGrhIndex).pixelWidth
-.Bottom = .Top + GrhData(iGrhIndex).pixelHeight
-End With
- 
-Call BackBufferSurface.BltFast(((32 * ScreenX) - 32) + PixelOffsetX, ((32 * ScreenY) - 32) + PixelOffsetY, SurfaceDB.Surface(GrhData(iGrhIndex).FileNum), rSourceRect, DDBLTFAST_WAIT)
- 
-'Capa 2
-If MapData(X, Y).Graphic(2).GrhIndex <> 0 Then
-Call DDrawTransGrhtoSurface(BackBufferSurface, MapData(X, Y).Graphic(2), ((32 * ScreenX) - 32) + PixelOffsetX, ((32 * ScreenY) - 32) + PixelOffsetY, 1, 1)
-End If
- 
-ScreenX = ScreenX + 1
-Next X
-ScreenY = ScreenY + 1
-If Y > 100 Then Exit For
-Next Y
- 
-Call ConvertCPtoTP(frmMain.MainViewShp.Left, frmMain.MainViewShp.Top, frmMain.MouseX, frmMain.MouseY, nX, nY)
- 
-'Mostrar capas transparentes
-ScreenY = 8
-For Y = MinY + 8 To MaxY - 1
-ScreenX = 5
-For X = MinX + 5 To MaxX - 5
-If X > 100 Or X < -3 Then Exit For
-iPPx = 32 * ScreenX - 32 + PixelOffsetX
-iPPy = 32 * ScreenY - 32 + PixelOffsetY
- 
-'Objetos
-If MapData(X, Y).ObjGrh.GrhIndex <> 0 Then
-Call DDrawTransGrhtoSurface(BackBufferSurface, MapData(X, Y).ObjGrh, iPPx, iPPy, 1, 1)
-End If
- 
-'Personajes
-If MapData(X, Y).CharIndex <> 0 Then
-TempChar = charlist(MapData(X, Y).CharIndex)
-PixelOffsetXTemp = PixelOffsetX
-PixelOffsetYTemp = PixelOffsetY
- 
-Moved = 0
-'If needed, move Left And Right
-If TempChar.MoveOffset.X <> 0 Then
-TempChar.Body.Walk(TempChar.Heading).Started = 1
-TempChar.Arma.WeaponWalk(TempChar.Heading).Started = 1
-TempChar.Escudo.ShieldWalk(TempChar.Heading).Started = 1
-PixelOffsetXTemp = PixelOffsetXTemp + TempChar.MoveOffset.X
-TempChar.MoveOffset.X = TempChar.MoveOffset.X - (8 * Sgn(TempChar.MoveOffset.X))
-Moved = 1
-End If
-'If needed, move up And down
-If TempChar.MoveOffset.Y <> 0 Then
-TempChar.Body.Walk(TempChar.Heading).Started = 1
-TempChar.Arma.WeaponWalk(TempChar.Heading).Started = 1
-TempChar.Escudo.ShieldWalk(TempChar.Heading).Started = 1
-PixelOffsetYTemp = PixelOffsetYTemp + TempChar.MoveOffset.Y
-TempChar.MoveOffset.Y = TempChar.MoveOffset.Y - (8 * Sgn(TempChar.MoveOffset.Y))
-Moved = 1
-End If
-'If done moving Stop animation
-If Moved = 0 And TempChar.Moving = 1 Then
-TempChar.Moving = 0
-TempChar.Body.Walk(TempChar.Heading).FrameCounter = 1
-TempChar.Body.Walk(TempChar.Heading).Started = 0
-TempChar.Arma.WeaponWalk(TempChar.Heading).FrameCounter = 1
-TempChar.Arma.WeaponWalk(TempChar.Heading).Started = 0
-TempChar.Escudo.ShieldWalk(TempChar.Heading).FrameCounter = 1
-TempChar.Escudo.ShieldWalk(TempChar.Heading).Started = 0
-End If
- 
-'[ANIM ATAK]
-If TempChar.Arma.WeaponAttack > 0 Then
-TempChar.Arma.WeaponAttack = TempChar.Arma.WeaponAttack - 1
-If TempChar.Arma.WeaponAttack = 0 Then
-TempChar.Arma.WeaponWalk(TempChar.Heading).Started = 0
-End If
-End If
- 
-iPPx = ((32 * ScreenX) - 32) + PixelOffsetXTemp
-iPPy = ((32 * ScreenY) - 32) + PixelOffsetYTemp
- 
-If TempChar.Head.Head(TempChar.Heading).GrhIndex <> 0 Then
-If Not charlist(MapData(X, Y).CharIndex).invisible Then
-     #If (ConAlfaB = 1) Then
-                        If TempChar.Aura.GrhIndex Then
-                            Call DDrawTransGrhtoSurface(BackBufferSurface, TempChar.Aura, _
-                                    (((32 * ScreenX) - 32) + PixelOffsetXTemp), _
-                                    (((34 * ScreenY) - 34) + PixelOffsetYTemp), _
-                                    1, 0)
-    #End If
-End If
-Call DDrawTransGrhtoSurface(BackBufferSurface, TempChar.Body.Walk(TempChar.Heading), (((32 * ScreenX) - 32) + PixelOffsetXTemp), (((32 * ScreenY) - 32) + PixelOffsetYTemp), 1, 1)
-Call DDrawTransGrhtoSurface(BackBufferSurface, TempChar.Head.Head(TempChar.Heading), iPPx + TempChar.Body.HeadOffset.X, iPPy + TempChar.Body.HeadOffset.Y, 1, 0)
- 
-If TempChar.Casco.Head(TempChar.Heading).GrhIndex <> 0 Then Call DDrawTransGrhtoSurface(BackBufferSurface, TempChar.Casco.Head(TempChar.Heading), iPPx + TempChar.Body.HeadOffset.X, iPPy + TempChar.Body.HeadOffset.Y, 1, 0)
-If TempChar.Arma.WeaponWalk(TempChar.Heading).GrhIndex <> 0 Then Call DDrawTransGrhtoSurface(BackBufferSurface, TempChar.Arma.WeaponWalk(TempChar.Heading), iPPx, iPPy, 1, 1)
-If TempChar.Escudo.ShieldWalk(TempChar.Heading).GrhIndex <> 0 Then Call DDrawTransGrhtoSurface(BackBufferSurface, TempChar.Escudo.ShieldWalk(TempChar.Heading), iPPx, iPPy, 1, 1)
- 
-#If ConAlfaB = 1 Then
-ElseIf charlist(MapData(X, Y).CharIndex).invisible = True And UCase$(charlist(MapData(X, Y).CharIndex).Nombre) = UCase$(UserName) Then
- 
-Call DDrawTransGrhtoSurfaceAlpha(BackBufferSurface, TempChar.Body.Walk(TempChar.Heading), (((32 * ScreenX) - 32) + PixelOffsetXTemp), (((32 * ScreenY) - 32) + PixelOffsetYTemp), 1, 1)
-Call DDrawTransGrhtoSurfaceAlpha(BackBufferSurface, TempChar.Head.Head(TempChar.Heading), iPPx + TempChar.Body.HeadOffset.X, iPPy + TempChar.Body.HeadOffset.Y, 1, 0)
- 
-If TempChar.Casco.Head(TempChar.Heading).GrhIndex <> 0 Then Call DDrawTransGrhtoSurfaceAlpha(BackBufferSurface, TempChar.Casco.Head(TempChar.Heading), iPPx + TempChar.Body.HeadOffset.X, iPPy + TempChar.Body.HeadOffset.Y, 1, 0)
-If TempChar.Arma.WeaponWalk(TempChar.Heading).GrhIndex <> 0 Then Call DDrawTransGrhtoSurfaceAlpha(BackBufferSurface, TempChar.Arma.WeaponWalk(TempChar.Heading), iPPx, iPPy, 1, 1)
-If TempChar.Escudo.ShieldWalk(TempChar.Heading).GrhIndex <> 0 Then Call DDrawTransGrhtoSurfaceAlpha(BackBufferSurface, TempChar.Escudo.ShieldWalk(TempChar.Heading), iPPx, iPPy, 1, 1)
-#End If
- 
-End If
-   If Dialogos.CantidadDialogos > 0 Then
-                    Call Dialogos.Update_Dialog_Pos( _
-                            (iPPx + TempChar.Body.HeadOffset.X), _
-                            (iPPy + TempChar.Body.HeadOffset.Y), _
-                            MapData(X, Y).CharIndex)
+
+Public Sub DrawImageInPicture(ByRef PictureBox As PictureBox, ByRef Picture As StdPicture, ByVal x1 As Single, ByVal y1 As Single, Optional Width1, Optional Height1, Optional x2, Optional y2, Optional Width2, Optional Height2)
+'**************************************************************
+'Author: Torres Patricio (Pato)
+'Last Modify Date: 12/28/2009
+'Draw Picture in the PictureBox
+'*************************************************************
+Call PictureBox.PaintPicture(Picture, x1, y1, Width1, Height1, x2, y2, Width2, Height2)
+End Sub
+
+
+Sub RenderScreen(ByVal tilex As Integer, ByVal tiley As Integer, ByVal PixelOffsetX As Integer, ByVal PixelOffsetY As Integer)
+'**************************************************************
+'Author: Aaron Perkins
+'Last Modify Date: 8/14/2007
+'Last modified by: Juan Martín Sotuyo Dodero (Maraxus)
+'Renders everything to the viewport
+'**************************************************************
+    Dim Y           As Long     'Keeps track of where on map we are
+    Dim X           As Long     'Keeps track of where on map we are
+    Dim screenminY  As Integer  'Start Y pos on current screen
+    Dim screenmaxY  As Integer  'End Y pos on current screen
+    Dim screenminX  As Integer  'Start X pos on current screen
+    Dim screenmaxX  As Integer  'End X pos on current screen
+    Dim minY        As Integer  'Start Y pos on current map
+    Dim maxY        As Integer  'End Y pos on current map
+    Dim minX        As Integer  'Start X pos on current map
+    Dim maxX        As Integer  'End X pos on current map
+    Dim ScreenX     As Integer  'Keeps track of where to place tile on screen
+    Dim ScreenY     As Integer  'Keeps track of where to place tile on screen
+    Dim minXOffset  As Integer
+    Dim minYOffset  As Integer
+    Dim PixelOffsetXTemp As Integer 'For centering grhs
+    Dim PixelOffsetYTemp As Integer 'For centering grhs
+    
+    If TwinkLightByteHandle = 15 Then
+        TwinkLightByteHandle = 0
+    Else
+        TwinkLightByteHandle = TwinkLightByteHandle + timerTicksPerFrame * 5
+        If TwinkLightByteHandle > 15 Then TwinkLightByteHandle = 15
+    End If
+            
+    'Figure out Ends and Starts of screen
+    screenminY = tiley - HalfWindowTileHeight
+    screenmaxY = tiley + HalfWindowTileHeight
+    screenminX = tilex - HalfWindowTileWidth
+    screenmaxX = tilex + HalfWindowTileWidth
+    
+    minY = screenminY - TileBufferSize
+    maxY = screenmaxY + TileBufferSize
+    minX = screenminX - TileBufferSize
+    maxX = screenmaxX + TileBufferSize
+        
+    'Make sure mins and maxs are allways in map bounds
+    If minY < XMinMapSize Then
+        minYOffset = YMinMapSize - minY
+        minY = YMinMapSize
+    End If
+    
+    If maxY > YMaxMapSize Then maxY = YMaxMapSize
+    
+    If minX < XMinMapSize Then
+        minXOffset = XMinMapSize - minX
+        minX = XMinMapSize
+    End If
+    
+    If maxX > XMaxMapSize Then maxX = XMaxMapSize
+    
+    'If we can, we render around the view area to make it smoother
+    If screenminY > YMinMapSize Then
+        screenminY = screenminY - 1
+    Else
+        screenminY = 1
+        ScreenY = 1
+    End If
+    
+    If screenmaxY < YMaxMapSize Then screenmaxY = screenmaxY + 1
+    
+    If screenminX > XMinMapSize Then
+        screenminX = screenminX - 1
+    Else
+        screenminX = 1
+        ScreenX = 1
+    End If
+    
+    If screenmaxX < XMaxMapSize Then screenmaxX = screenmaxX + 1
+        
+    'Draw floor layer
+    For Y = screenminY To screenmaxY
+        For X = screenminX To screenmaxX
+            'Layer 1 **********************************
+            If MapData(X, Y).Graphic(1).GrhIndex <> 0 Then _
+                Call DDrawGrhtoSurface(MapData(X, Y).Graphic(1), (ScreenX - 1) * TilePixelWidth + PixelOffsetX, (ScreenY - 1) * TilePixelHeight + PixelOffsetY, 0, 1, MapData(X, Y).light_value)
+            '******************************************
+            
+            ScreenX = ScreenX + 1
+        Next X
+        ScreenX = ScreenX - X + screenminX
+        ScreenY = ScreenY + 1
+    Next Y
+    
+     'Draw floor layer 2
+    ScreenY = minYOffset - TileBufferSize
+    For Y = minY To maxY
+        ScreenX = minXOffset - TileBufferSize
+        For X = minX To maxX
+            'Layer 2 **********************************
+            If MapData(X, Y).Graphic(2).GrhIndex <> 0 Then _
+                Call DDrawTransGrhtoSurface(MapData(X, Y).Graphic(2), ScreenX * TilePixelWidth + PixelOffsetX, ScreenY * TilePixelHeight + PixelOffsetY, 1, 1, MapData(X, Y).light_value)
+            '******************************************
+                ScreenX = ScreenX + 1
+        Next X
+        ScreenY = ScreenY + 1
+    Next Y
+    
+    'Draw Transparent Layers
+    ScreenY = minYOffset - TileBufferSize
+    For Y = minY To maxY
+        ScreenX = minXOffset - TileBufferSize
+        For X = minX To maxX
+            PixelOffsetXTemp = ScreenX * TilePixelWidth + PixelOffsetX
+            PixelOffsetYTemp = ScreenY * TilePixelHeight + PixelOffsetY
+            With MapData(X, Y)
+            
+                'Sangre **********************************
+                If .Blood.Active = 1 And Opciones.SangreAct Then
+                    If .Blood.LifeTime >= 0 Then .Blood.LifeTime = .Blood.LifeTime - 1
+                    If .Blood.LifeTime <= 0 Then .Blood.Alpha = .Blood.Alpha - 1
+                                        
+                    Dim i As Byte
+                    For i = 0 To 3
+                        .Blood.color(i) = D3DColorARGB(.Blood.Alpha, 255, 0, 0)
+                    Next i
+                    
+                    If .Blood.Alpha <= 5 Then _
+                        .Blood.Active = 0
+                                                
+                    Select Case .Blood.Head
+                        Case E_Heading.EAST 'derecha
+                            Call DDrawTransGrhtoSurface(.Blood.Grh, PixelOffsetXTemp - 20, PixelOffsetYTemp, 1, 1, .Blood.color())
+                        Case E_Heading.NORTH 'arriba
+                            Call DDrawTransGrhtoSurface(.Blood.Grh, PixelOffsetXTemp, PixelOffsetYTemp + 20, 1, 1, .Blood.color())
+                        Case E_Heading.SOUTH 'abajo
+                            Call DDrawTransGrhtoSurface(.Blood.Grh, PixelOffsetXTemp, PixelOffsetYTemp - 20, 1, 1, .Blood.color())
+                        Case E_Heading.WEST 'izquierda
+                           Call DDrawTransGrhtoSurface(.Blood.Grh, PixelOffsetXTemp + 20, PixelOffsetYTemp, 1, 1, .Blood.color())
+                        End Select
                 End If
-'***[Nombres]***
-                If Nombres Then
-                    If TempChar.invisible = False Or (UCase$(TempChar.Nombre) = UCase$(UserName)) Then
-                        If TempChar.Nombre <> "" Then
-                            If InStr(TempChar.Nombre, "<") > 0 And InStr(TempChar.Nombre, ">") > 0 Then
-                                lCenter = (frmMain.TextWidth(Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1)) / 2) - 16
-                                sClan = mid(TempChar.Nombre, InStr(TempChar.Nombre, "<"))
-                                Dim ColorClan As Long
-                                ColorClan = RGB(231, 202, 157)
-                                
-                                Select Case TempChar.priv
-                                    Case 0
-                                        If TempChar.Criminal Then
-                                            Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1), RGB(ColoresPJ(50).r, ColoresPJ(50).G, ColoresPJ(50).b))
-                                            lCenter = (frmMain.TextWidth(sClan) / 2) - 16
-                                           Call Dialogos.DrawText(iPPx - lCenter, iPPy + 45, sClan, ColorClan)
-                                        Else
-                                            Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1), RGB(ColoresPJ(49).r, ColoresPJ(49).G, ColoresPJ(49).b))
-                                            lCenter = (frmMain.TextWidth(sClan) / 2) - 16
-                                            Call Dialogos.DrawText(iPPx - lCenter, iPPy + 45, sClan, ColorClan)
-                                        End If
-                                    Case 25  'admin
-                                        Call Dialogos.DrawTextBig(iPPx - lCenter, iPPy + 30, Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1), RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).b))
-                                        lCenter = (frmMain.TextWidth(sClan) / 2) - 16
-                                        Call Dialogos.DrawTextBig(iPPx - lCenter, iPPy + 45, sClan, ColorClan)
-                                    Case Else 'el resto
-                                        Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1), RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).b))
-                                        lCenter = (frmMain.TextWidth(sClan) / 2) - 16
-                                       Call Dialogos.DrawText(iPPx - lCenter, iPPy + 45, sClan, ColorClan)
-                                End Select
-                            Else
-                                lCenter = (frmMain.TextWidth(TempChar.Nombre) / 2) - 16
-                                Select Case TempChar.priv
-                                    Case 0
-                                        If TempChar.Criminal Then
-                                            Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, TempChar.Nombre, RGB(ColoresPJ(50).r, ColoresPJ(50).G, ColoresPJ(50).b))
-                                        Else
-                                            Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, TempChar.Nombre, RGB(ColoresPJ(49).r, ColoresPJ(49).G, ColoresPJ(49).b))
-                                        End If
-                                    Case 7
-                                        Call Dialogos.DrawTextBig(iPPx - lCenter, iPPy + 30, TempChar.Nombre, RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).b))
-                                    Case Else
-                                        Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, TempChar.Nombre, RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).b))
-                                End Select
-                            End If
-                        End If
-                       
-   ElseIf TempChar.Nombre <> "" Then
-                                             
-                sClan = mid(TempChar.Nombre, InStr(TempChar.Nombre, "<"))
-                Dim UserClan As String
-                UserClan = Trim(mid(charlist(UserCharIndex).Nombre, InStr(charlist(UserCharIndex).Nombre, "<")))
-                If charlist(UserCharIndex).Nombre = TempChar.Nombre Or UCase(UserClan) = UCase(Trim(sClan)) Then
-                       
-                       
-                        If InStr(TempChar.Nombre, "<") > 0 And InStr(TempChar.Nombre, ">") > 0 Then
-                         lCenter = (frmMain.TextWidth(Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1)) / 2) - 16
-                         Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, Left(TempChar.Nombre, InStr(TempChar.Nombre, "<") - 1), RGB(ColoresPJ(50).r, ColoresPJ(50).G, ColoresPJ(50).b))
-                         lCenter = (frmMain.TextWidth(sClan) / 2) - 16
-                         Call Dialogos.DrawText(iPPx - lCenter, iPPy + 45, sClan, vbYellow)
-                        Else
-                         lCenter = (frmMain.TextWidth(TempChar.Nombre) / 2) - 16
-                        Call Dialogos.DrawText(iPPx - lCenter, iPPy + 30, TempChar.Nombre, RGB(ColoresPJ(TempChar.priv).r, ColoresPJ(TempChar.priv).G, ColoresPJ(TempChar.priv).b))
-                     
-                       
-                        End If
-                       
-                         'cuerpo
-                        Call DDrawTransGrhtoSurfaceAlpha(BackBufferSurface, TempChar.Body.Walk(TempChar.Heading), _
-                                    (((32 * ScreenX) - 32) + PixelOffsetXTemp), _
-                                    (((32 * ScreenY) - 32) + PixelOffsetYTemp), _
-                                    1, 1)
-                         
-                        'cabeza
-                        Call DDrawTransGrhtoSurfaceAlpha( _
-                                    BackBufferSurface, _
-                                    TempChar.Head.Head(TempChar.Heading), _
-                                    iPPx + TempChar.Body.HeadOffset.X, _
-                                    iPPy + TempChar.Body.HeadOffset.Y, _
-                                    1, 0)
- 
-           
-                       '[Casco]'
-                            If TempChar.Casco.Head(TempChar.Heading).GrhIndex <> 0 Then
-                                Call DDrawTransGrhtoSurfaceAlpha( _
-                                        BackBufferSurface, _
-                                        TempChar.Casco.Head(TempChar.Heading), _
-                                        iPPx + TempChar.Body.HeadOffset.X, _
-                                        iPPy + TempChar.Body.HeadOffset.Y, _
-                                        1, 0)
-                            End If
-                        '[END]'
-                        '[ARMA]'
-                            If TempChar.Arma.WeaponWalk(TempChar.Heading).GrhIndex <> 0 Then
-                                Call DDrawTransGrhtoSurfaceAlpha( _
-                                        BackBufferSurface, _
-                                        TempChar.Arma.WeaponWalk(TempChar.Heading), _
-                                        iPPx, iPPy, 1, 1)
-                            End If
-                        '[END]'
-                        '[Escudo]'
-                            If TempChar.Escudo.ShieldWalk(TempChar.Heading).GrhIndex <> 0 Then
-                                Call DDrawTransGrhtoSurfaceAlpha( _
-                                        BackBufferSurface, _
-                                        TempChar.Escudo.ShieldWalk(TempChar.Heading), _
-                                        iPPx, iPPy, 1, 1)
-                            End If
+                '**********************************
+                
+                'Object Layer **********************************
+                If .ObjGrh.GrhIndex <> 0 Then
+                        Call DDrawTransGrhtoSurface(.ObjGrh, PixelOffsetXTemp, PixelOffsetYTemp, 1, 1, .light_value)
                 End If
-             End If
-          End If 'if Nombres
-         
-            Else 'If TempChar
- 
-                If Dialogos.CantidadDialogos > 0 Then
-                    Call Dialogos.Update_Dialog_Pos( _
-                            (iPPx + TempChar.Body.HeadOffset.X), _
-                            (iPPy + TempChar.Body.HeadOffset.Y), _
-                            MapData(X, Y).CharIndex)
+                '***********************************************
+                
+                'Char layer ************************************
+                If .CharIndex <> 0 Then
+                    Call CharRender(.CharIndex, PixelOffsetXTemp, PixelOffsetYTemp, .light_value)
                 End If
- 
-                Call DDrawTransGrhtoSurface( _
-                        BackBufferSurface, _
-                        TempChar.Body.Walk(TempChar.Heading), _
-                        iPPx, iPPy, 1, 1)
-                       
-            End If 'TempChar
-            charlist(MapData(X, Y).CharIndex) = TempChar
-           
-            If charlist(MapData(X, Y).CharIndex).Fx <> 0 Then
-#If (ConAlfaB = 0) Then
- 
-                    Call DDrawTransGrhtoSurface( _
-                            BackBufferSurface, _
-                            FxData(TempChar.Fx).Fx, _
-                            iPPx + FxData(TempChar.Fx).OffsetX, _
-                            iPPy + FxData(TempChar.Fx).OffsetY, _
-                            1, 1, MapData(X, Y).CharIndex)
-#Else
-                    Call SurfaceConAB( _
-                            BackBufferSurface, _
-                            FxData(TempChar.Fx).Fx, _
-                            iPPx + FxData(TempChar.Fx).OffsetX, _
-                            iPPy + FxData(TempChar.Fx).OffsetY, _
-                            1, 1, MapData(X, Y).CharIndex)
-#End If
-            End If
-        End If 'If MapData
-        'Layer 3
-        If MapData(X, Y).Graphic(3).GrhIndex <> 0 Then
-            'Draw
-            Call DDrawTransGrhtoSurface( _
-                    BackBufferSurface, _
-                    MapData(X, Y).Graphic(3), _
-                    ((32 * ScreenX) - 32) + PixelOffsetX, _
-                    ((32 * ScreenY) - 32) + PixelOffsetY, _
-                    1, 1)
-        End If
-       
-        ScreenX = ScreenX + 1
-    Next X
-    ScreenY = ScreenY + 1
-    If Y >= 100 Or Y < 1 Then Exit For
-Next Y
- 
-' TECHOS
-If Not bTecho Then
-    'Draw blocked tiles and grid
-    ScreenY = 5
-    For Y = MinY + 5 To MaxY - 1
-        ScreenX = 5
-        For X = MinX + 5 To MaxX
-            'Check to see if in bounds
-            If X < 101 And X > 0 And Y < 101 And Y > 0 Then
-                If MapData(X, Y).Graphic(4).GrhIndex <> 0 Then
+                '*************************************************
+                
+                'Layer 3 *****************************************
+                If .Graphic(3).GrhIndex <> 0 Then
                     'Draw
-                    Call DDrawTransGrhtoSurface( _
-                        BackBufferSurface, _
-                        MapData(X, Y).Graphic(4), _
-                        ((32 * ScreenX) - 32) + PixelOffsetX, _
-                        ((32 * ScreenY) - 32) + PixelOffsetY, _
-                        1, 1)
+                    Call DDrawTransGrhtoSurface(.Graphic(3), PixelOffsetXTemp, PixelOffsetYTemp, 1, 1, .light_value)
                 End If
-            End If
+                '************************************************
+                
+            End With
             ScreenX = ScreenX + 1
         Next X
         ScreenY = ScreenY + 1
     Next Y
-End If
- 
+    
+    'Capa 3.5 (Particulas)
+    ScreenY = minYOffset - TileBufferSize
+        For Y = minY To maxY
+            ScreenX = minXOffset - TileBufferSize
+                For X = minX To maxX
+                    'Particulas**************************************
+                    If MapData(X, Y).particle_group_index Then
+                        Particle_Group_Render MapData(X, Y).particle_group_index, ScreenX * 32 + PixelOffsetX, ScreenY * 32 + PixelOffsetY
+                    '************************************************
+                    End If
+                ScreenX = ScreenX + 1
+            Next X
+        ScreenY = ScreenY + 1
+    Next Y
 
- 
-With PP
-.Left = 0
-.Top = 0
-.Right = WindowTileWidth * TilePixelWidth
-.Bottom = WindowTileHeight * TilePixelHeight
-End With
- 
-Call CargarMacros
 
-#If ConAlfaB Then
-'Efectos
-If EfectosDiaY = True Then
-
-    If Anochecer = 1 Then
-        EfectoNoche BackBufferSurface
+    If Not bTecho And bTechoAB < 255 Then
+        bTechoAB = bTechoAB + 1
+    ElseIf bTecho And bTechoAB > 0 Then
+        bTechoAB = bTechoAB - 1
     End If
+    
+    'Draw blocked tiles and grid
+    ScreenY = minYOffset - TileBufferSize
+    For Y = minY To maxY
+        ScreenX = minXOffset - TileBufferSize
+        For X = minX To maxX
+            'Layer 4 **********************************
+            If MapData(X, Y).Graphic(4).GrhIndex Then
+                'Draw
+                Call DDrawTransGrhtoSurface(MapData(X, Y).Graphic(4), ScreenX * TilePixelWidth + PixelOffsetX, ScreenY * TilePixelHeight + PixelOffsetY, 1, 1, MapData(X, Y).light_value, bTechoAB)
+            End If
+            '**********************************
+            ScreenX = ScreenX + 1
+        Next X
+        ScreenY = ScreenY + 1
+    Next Y
 
-    If Atardecer = 1 Then
-        EfectoTarde BackBufferSurface
-    End If
-
-    If Amanecer = 1 Then
-        EfectoAmanecer BackBufferSurface
-    End If
-
-    If Niebla = 1 Then
-        EfectoNiebla BackBufferSurface
-    End If
-End If
-#End If
-
+    Call ClimaX
 End Sub
+
 Public Function RenderSounds()
 '**************************************************************
 'Author: Juan Martín Sotuyo Dodero
-'Last Modify Date: 4/22/2006
+'Last Modify Date: 3/30/2008
 'Actualiza todos los sonidos del mapa.
 '**************************************************************
-
+    Call Audio.MusicMP3GetLoop
     DoFogataFx
 End Function
-
-
-Function HayUserAbajo(ByVal X As Integer, ByVal Y As Integer, ByVal GrhIndex As Integer) As Boolean
-
-If GrhIndex > 0 Then
-        
-        HayUserAbajo = _
-            charlist(UserCharIndex).Pos.X >= X - (GrhData(GrhIndex).TileWidth \ 2) _
-        And charlist(UserCharIndex).Pos.X <= X + (GrhData(GrhIndex).TileWidth \ 2) _
-        And charlist(UserCharIndex).Pos.Y >= Y - (GrhData(GrhIndex).TileHeight - 1) _
-        And charlist(UserCharIndex).Pos.Y <= Y
-        
-End If
-End Function
-
-Function PixelPos(ByVal X As Integer) As Integer
-'*****************************************************************
-'Converts a tile position to a screen position
-'*****************************************************************
-    PixelPos = (TilePixelWidth * X) - TilePixelWidth
-End Function
-
-Sub LoadGraphics()
+Public Sub Ambient()
 '**************************************************************
-'Author: Juan Martín Sotuyo Dodero - complete rewrite
-'Last Modify Date: 11/03/2006
-'Initializes the SurfaceDB and sets up the rain rects
+'Author: Manuel (Lorwik)
+'Last Modify Date: 6/18/2011
+'Actualiza todos los sonidos del mapa.
 '**************************************************************
-    'New surface manager :D
-    Call SurfaceDB.Initialize(DirectDraw, ClientSetup.bUseVideo, DirGraficos, ClientSetup.byMemory)
-      Call frmCargando.progresoConDelay(75)
-  
+If Opciones.AmbientAct = True Then
     
-    'We are done!
-    AddtoRichTextBox frmCargando.status, "Hecho.", , , , 1, , False
-End Sub
-
-'[END]'
-Function InitTileEngine(ByRef setDisplayFormhWnd As Long, setMainViewTop As Integer, setMainViewLeft As Integer, setTilePixelHeight As Integer, setTilePixelWidth As Integer, setWindowTileHeight As Integer, setWindowTileWidth As Integer, setTileBufferSize As Integer) As Boolean
-'*****************************************************************
-'InitEngine
-'*****************************************************************
-Dim SurfaceDesc As DDSURFACEDESC2
-Dim ddck As DDCOLORKEY
-
-IniPath = App.Path & "\Init\"
-
-'Set intial user position
-UserPos.X = MinXBorder
-UserPos.Y = MinYBorder
-
-'Fill startup variables
-
-DisplayFormhWnd = setDisplayFormhWnd
-MainViewTop = setMainViewTop
-MainViewLeft = setMainViewLeft
-TilePixelWidth = setTilePixelWidth
-TilePixelHeight = setTilePixelHeight
-WindowTileHeight = setWindowTileHeight
-WindowTileWidth = setWindowTileWidth
-TileBufferSize = setTileBufferSize
-
-MinXBorder = XMinMapSize + (WindowTileWidth \ 2)
-MaxXBorder = XMaxMapSize - (WindowTileWidth \ 2)
-MinYBorder = YMinMapSize + (WindowTileHeight \ 2)
-MaxYBorder = YMaxMapSize - (WindowTileHeight \ 2)
-
-MainViewWidth = (TilePixelWidth * WindowTileWidth)
-MainViewHeight = (TilePixelHeight * WindowTileHeight)
-
-
-ReDim MapData(XMinMapSize To XMaxMapSize, YMinMapSize To YMaxMapSize) As MapBlock
-
-
-
-
-
-DirectDraw.SetCooperativeLevel DisplayFormhWnd, DDSCL_NORMAL
-
-'Primary Surface
-' Fill the surface description structure
-With SurfaceDesc
-    .lFlags = DDSD_CAPS
-    .ddsCaps.lCaps = DDSCAPS_PRIMARYSURFACE
-End With
-
-
-
-Set PrimarySurface = DirectDraw.CreateSurface(SurfaceDesc)
-
-Set PrimaryClipper = DirectDraw.CreateClipper(0)
-PrimaryClipper.SetHWnd frmMain.hwnd
-PrimarySurface.SetClipper PrimaryClipper
-
-Set SecundaryClipper = DirectDraw.CreateClipper(0)
-
-With BackBufferRect
-    .Left = 0
-    .Top = 0
-     .Right = TilePixelWidth * (WindowTileWidth * TileBufferSize)
-    .Bottom = TilePixelHeight * (WindowTileHeight * TileBufferSize)
-End With
-
-With SurfaceDesc
-    .lFlags = DDSD_CAPS Or DDSD_HEIGHT Or DDSD_WIDTH
-    If ClientSetup.bUseVideo Then
-        .ddsCaps.lCaps = DDSCAPS_OFFSCREENPLAIN
-    Else
-        .ddsCaps.lCaps = DDSCAPS_OFFSCREENPLAIN Or DDSCAPS_SYSTEMMEMORY
+    'Si es de noche reproducimos el Ambient de los grillos
+    If Not Zona = "DUNGEON" Then
+        If Anocheceria = 3 Then
+            Call Audio.StopWave
+            Call General_Set_Wav("230.wav", , , Enabled)
+            frmMain.IsPlaying = PlayLoop.plAmbient
+            Exit Sub
+        End If
     End If
-    .lHeight = BackBufferRect.Bottom
-    .lWidth = BackBufferRect.Right
-End With
-
-Set BackBufferSurface = DirectDraw.CreateSurface(SurfaceDesc)
-
-ddck.Low = 0
-ddck.High = 0
-BackBufferSurface.SetColorKey DDCKEY_SRCBLT, ddck
-
-
-
-Call LoadGrhData
-Call CargarCuerpos
-Call CargarCabezas
-Call CargarCascos
-Call CargarFxs
-Call frmCargando.progresoConDelay(40)
-
-
-AddtoRichTextBox frmCargando.status, "Cargando Gráficos....", 0, 0, 0, , , True
-Call LoadGraphics
-
-InitTileEngine = True
-
-End Function
-
-Sub ShowNextFrame()
-'***********************************************
-'Updates and draws next frame to screen
-'***********************************************
-    Static OffsetCounterX As Integer
-    Static OffsetCounterY As Integer
     
-    '****** Set main view rectangle ******
-    GetWindowRect DisplayFormhWnd, MainViewRect
+    Dim Ambient As String
+    Dim file As String
+        'Lorwik> Sistema Ambient chapucero (Asi se queda de momento *Yao Ming*)
+         file = Get_Extract(Scripts, "WorldMapData.dat")
+         Ambient = GetVar(file, "AMBIENT", UserMap)
+         If Not Ambient = "" Then
+            Call Audio.StopWave
+            Call General_Set_Wav(Ambient & ".wav", , , Enabled)
+            frmMain.IsPlaying = PlayLoop.plAmbient
+         Else
+            Call Audio.StopWave
+         End If
+         Delete_File file
+End If
+End Sub
+Public Function InitTileEngine(ByVal setDisplayFormhWnd As Long, ByVal setMainViewTop As Integer, ByVal setMainViewLeft As Integer, ByVal setTilePixelHeight As Integer, ByVal setTilePixelWidth As Integer, ByVal setWindowTileHeight As Integer, ByVal setWindowTileWidth As Integer, ByVal setTileBufferSize As Integer, ByVal pixelsToScrollPerFrameX As Integer, pixelsToScrollPerFrameY As Integer, ByVal engineSpeed As Single) As Boolean
     
-    With MainViewRect
-        .Left = .Left + MainViewLeft
-        .Top = .Top + MainViewTop
+    'Fill startup variables
+    MainViewTop = setMainViewTop
+    MainViewLeft = setMainViewLeft
+    TilePixelWidth = setTilePixelWidth
+    TilePixelHeight = setTilePixelHeight
+    WindowTileHeight = setWindowTileHeight
+    WindowTileWidth = setWindowTileWidth
+    TileBufferSize = setTileBufferSize
+    
+    HalfWindowTileHeight = setWindowTileHeight \ 2
+    HalfWindowTileWidth = setWindowTileWidth \ 2
+    
+    'Compute offset in pixels when rendering tile buffer.
+    'We diminish by one to get the top-left corner of the tile for rendering.
+    TileBufferPixelOffsetX = ((TileBufferSize - 1) * TilePixelWidth)
+    TileBufferPixelOffsetY = ((TileBufferSize - 1) * TilePixelHeight)
+    
+    engineBaseSpeed = engineSpeed
+    
+    MinXBorder = XMinMapSize + (WindowTileWidth \ 2)
+    MaxXBorder = XMaxMapSize - (WindowTileWidth \ 2)
+    MinYBorder = YMinMapSize + (WindowTileHeight \ 2)
+    MaxYBorder = YMaxMapSize - (WindowTileHeight \ 2)
+    
+    MainViewWidth = TilePixelWidth * WindowTileWidth
+    MainViewHeight = TilePixelHeight * WindowTileHeight
+    
+    'Resize mapdata array
+    ReDim MapData(XMinMapSize To XMaxMapSize, YMinMapSize To YMaxMapSize) As MapBlock
+    
+    'Set intial user position
+    UserPos.X = MinXBorder
+    UserPos.Y = MinYBorder
+    
+    'Set scroll pixels per frame
+    ScrollPixelsPerFrameX = pixelsToScrollPerFrameX
+    ScrollPixelsPerFrameY = pixelsToScrollPerFrameY
+    
+    'Set the dest rect
+    With MainDestRect
+        .Left = TilePixelWidth * TileBufferSize - TilePixelWidth
+        .Top = TilePixelHeight * TileBufferSize - TilePixelHeight
         .Right = .Left + MainViewWidth
-        .Bottom = .Top + MainViewHeight
+        .bottom = .Top + MainViewHeight
     End With
     
-    If EngineRun Then
-        '****** Move screen Left and Right if needed ******
-        If AddtoUserPos.X <> 0 Then
-            OffsetCounterX = (OffsetCounterX - (8 * Sgn(AddtoUserPos.X)))
-            If Abs(OffsetCounterX) >= Abs(TilePixelWidth * AddtoUserPos.X) Then
-                OffsetCounterX = 0
-                AddtoUserPos.X = 0
-                UserMoving = 0
-            End If
-        '****** Move screen Up and Down if needed ******
-        ElseIf AddtoUserPos.Y <> 0 Then
-            OffsetCounterY = OffsetCounterY - (8 * Sgn(AddtoUserPos.Y))
-            If Abs(OffsetCounterY) >= Abs(TilePixelHeight * AddtoUserPos.Y) Then
-                OffsetCounterY = 0
-                AddtoUserPos.Y = 0
-                UserMoving = 0
-            End If
-        End If
-
-        '****** Update screen ******
-        Call RenderScreen(UserPos.X - AddtoUserPos.X, UserPos.Y - AddtoUserPos.Y, OffsetCounterX, OffsetCounterY)
-
-         If IScombate Then frmMain.com.Caption = "MODO COMBATE"
-        If Not IScombate Then frmMain.com.Caption = ""
-        
-'Estado del Dia
-#If ConAlfaB Then
-        If Amanecer Then
-        frmMain.Tiempo.Caption = "Mañana"
-        frmMain.Tiempo.ForeColor = &H80C0FF
-        ElseIf Atardecer Then
-        frmMain.Tiempo.Caption = "Atardecer"
-        frmMain.Tiempo.ForeColor = &HC0C0C0
-        ElseIf Anochecer Then
-        frmMain.Tiempo.Caption = "Anochecer"
-        frmMain.Tiempo.ForeColor = &H808080
-        ElseIf Niebla Then
-        frmMain.Tiempo.Caption = "Niebla"
-        frmMain.Tiempo.ForeColor = vbWhite
+On Error GoTo 0
+    
+    Call LoadGrhData
+    Call CargarCuerpos
+    Call CargarCabezas
+    Call CargarCascos
+    Call CargarFxs
+    CargarParticulas
+    movSpeed = 1
+    InitColor
+    
+    Call SurfaceDB.Initialize(DirectD3D8, ClientSetup.bUseVideo, DirGraficos, 40)
+    
+    InitTileEngine = True
+End Function
+Public Sub DirectXInit()
+    Dim DispMode As D3DDISPLAYMODE
+    Dim D3DWindow As D3DPRESENT_PARAMETERS
+    
+    Set DirectX = New DirectX8
+    Set DirectD3D = DirectX.Direct3DCreate
+    Set DirectD3D8 = New D3DX8
+    
+    DirectD3D.GetAdapterDisplayMode D3DADAPTER_DEFAULT, DispMode
+    
+    Opciones.VSync = GetVar(App.Path & "\Init\Config.cfg", "Video", "VSync")
+    
+    With D3DWindow
+        .Windowed = True
+        If Opciones.VSync = True Then
+            .SwapEffect = D3DSWAPEFFECT_COPY_VSYNC
         Else
-        frmMain.Tiempo.Caption = "Dia"
-        frmMain.Tiempo.ForeColor = vbGreen
+            .SwapEffect = D3DSWAPEFFECT_COPY
         End If
-#End If
-        If CartelInvisibilidad Then Call Dialogos.DrawText(260, 520, CartelInvisibilidad & " segundos restantes de Invisibilidad", vbCyan)
-        If CartelInvisibilidad Then Call Dialogos.DrawText(260, 520, CartelInvisibilidad & " segundos restantes de Invisibilidad", vbCyan)
-         If UserGuerra Then frmMain.guerra.Caption = "GUERRA !!"
-        Call Dialogos.MostrarTexto
-        Call DibujarCartel
-        Call Dialogos.DrawUsers
-        Call DialogosClanes.Draw(Dialogos)
-         
-Call Dialogos.DrawCoordMapa
+        .BackBufferFormat = DispMode.Format
+        .BackBufferWidth = frmMain.MainViewPic.ScaleWidth
+        .BackBufferHeight = frmMain.MainViewPic.ScaleHeight
+        .EnableAutoDepthStencil = 1
+        .AutoDepthStencilFormat = D3DFMT_D16
+        .hDeviceWindow = frmMain.MainViewPic.hwnd
+    End With
 
-        Call DrawBackBufferSurface
+    Set DirectDevice = DirectD3D.CreateDevice( _
+                        D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, _
+                        frmMain.MainViewPic.hwnd, _
+                        D3DCREATE_SOFTWARE_VERTEXPROCESSING, _
+                        D3DWindow)
+
+    DirectDevice.SetVertexShader D3DFVF_XYZRHW Or D3DFVF_TEX1 Or D3DFVF_DIFFUSE Or D3DFVF_SPECULAR
+    
+    With DirectDevice
+        .SetRenderState D3DRS_LIGHTING, False
+        .SetRenderState D3DRS_SRCBLEND, D3DBLEND_SRCALPHA
+        .SetRenderState D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA
+        .SetRenderState D3DRS_ALPHABLENDENABLE, True
+        .SetTextureStageState 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE
+        .SetTextureStageState 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE
+        .SetTextureStageState 0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR
+    End With
+    
+    If Err Then
+        MsgBox "No se puede iniciar DirectX. Por favor asegurese de tener la ultima version correctamente instalada."
+        Exit Sub
+    End If
+    
+    If Err Then
+        MsgBox "No se puede iniciar DirectD3D. Por favor asegurese de tener la ultima version correctamente instalada."
+        Exit Sub
+    End If
+    
+    If DirectDevice Is Nothing Then
+        MsgBox "No se puede inicializar DirectDevice. Por favor asegurese de tener la ultima version correctamente instalada."
+        Exit Sub
+    End If
+End Sub
+Public Sub DeinitTileEngine()
+'***************************************************
+'Author: Juan Martín Sotuyo Dodero (Maraxus)
+'Last Modification: 08/14/07
+'Destroys all DX objects
+'***************************************************
+On Error Resume Next
+
+    Set DirectD3D = Nothing
+    
+    Set DirectX = Nothing
+End Sub
+
+Sub ShowNextFrame(ByVal DisplayFormTop As Integer, ByVal DisplayFormLeft As Integer, ByVal MouseViewX As Integer, ByVal MouseViewY As Integer)
+'***************************************************
+'Author: Arron Perkins
+'Last Modification: 08/14/07
+'Last modified by: Juan Martín Sotuyo Dodero (Maraxus)
+'Updates the game's model and renders everything.
+'***************************************************
+    Static OffsetCounterX As Single
+    Static OffsetCounterY As Single
+    
+    '****** Set main view rectangle ******
+    MainViewRect.Left = (DisplayFormLeft / Screen.TwipsPerPixelX) + MainViewLeft
+    MainViewRect.Top = (DisplayFormTop / Screen.TwipsPerPixelY) + MainViewTop
+    MainViewRect.Right = MainViewRect.Left + MainViewWidth
+    MainViewRect.bottom = MainViewRect.Top + MainViewHeight
+    
+    If EngineRun Then
+        DirectDevice.Clear 0, ByVal 0, D3DCLEAR_TARGET, 0, 1#, 0
+        DirectDevice.BeginScene
         
-        FramesPerSecCounter = FramesPerSecCounter + 1
+        If UserMoving Then
+            '****** Move screen Left and Right if needed ******
+            If AddtoUserPos.X <> 0 Then
+                OffsetCounterX = OffsetCounterX - ScrollPixelsPerFrameX * AddtoUserPos.X * timerTicksPerFrame
+                If Abs(OffsetCounterX) >= Abs(TilePixelWidth * AddtoUserPos.X) Then
+                    OffsetCounterX = 0
+                    AddtoUserPos.X = 0
+                    UserMoving = False
+                End If
+            End If
+            
+            '****** Move screen Up and Down if needed ******
+            If AddtoUserPos.Y <> 0 Then
+                OffsetCounterY = OffsetCounterY - ScrollPixelsPerFrameY * AddtoUserPos.Y * timerTicksPerFrame
+                If Abs(OffsetCounterY) >= Abs(TilePixelHeight * AddtoUserPos.Y) Then
+                    OffsetCounterY = 0
+                    AddtoUserPos.Y = 0
+                    UserMoving = False
+                End If
+            End If
+        End If
+        
+        'Update mouse position within view area
+        Call ConvertCPtoTP(MouseViewX, MouseViewY, MouseTileX, MouseTileY)
+        
+        '****** Update screen ******
+        If Not UserCiego Then
+            Call RenderScreen(UserPos.X - AddtoUserPos.X, UserPos.Y - AddtoUserPos.Y, OffsetCounterX, OffsetCounterY)
+        End If
+
+        '////////////CARTELES\\\\\\\\\\\\\\\
+        If IScombate = True Then Fonts_Render_String "MODO COMBATE", 1, 1, vbBlue
+        
+        '*********Tiempo restante para que termine el invi o el paralizar*********
+        If CartelInvisibilidad > 0 Then Fonts_Render_String CartelInvisibilidad & " segundos restantes de Invisibilidad", 1, 13, vbCyan
+        If CartelParalisis > 0 Then Fonts_Render_String CartelParalisis & " segundos restantes de Paralisis", 1, 25, vbGreen
+        '*************************************************************************
+        '|||||||||||||||||||||||||||||||||||
+        
+        Call Dialogos.Render
+        Call DibujarCartel
+        
+        'FPS update
+        If fpsLastCheck + 1000 < GetTickCount Then
+            'FPS = FramesPerSecCounter
+            FramesPerSecCounter = 1
+            fpsLastCheck = GetTickCount
+        Else
+            FramesPerSecCounter = FramesPerSecCounter + 1
+        End If
+    
+        'Get timing info
+        timerElapsedTime = GetElapsedTime()
+        timerTicksPerFrame = timerElapsedTime * engineBaseSpeed
+        FPS = 1000 / timerElapsedTime
+        
+        DirectDevice.EndScene
+        DirectDevice.Present ByVal 0, ByVal 0, 0, ByVal 0
     End If
 End Sub
 
-Sub CrearGrh(GrhIndex As Integer, index As Integer)
-ReDim Preserve Grh(1 To index) As Grh
-Grh(index).FrameCounter = 1
-Grh(index).GrhIndex = GrhIndex
-Grh(index).SpeedCounter = GrhData(GrhIndex).Speed
-Grh(index).Started = 1
-End Sub
+Private Function GetElapsedTime() As Single
+'**************************************************************
+'Author: Aaron Perkins
+'Last Modify Date: 10/07/2002
+'Gets the time that past since the last call
+'**************************************************************
+    Dim start_time As Currency
+    Static end_time As Currency
+    Static timer_freq As Currency
 
-Sub CargarAnimsExtra()
-Call CrearGrh(6580, 1) 'Anim Invent
-Call CrearGrh(534, 2) 'Animacion de teleport
-End Sub
-
-Function ControlVelocidad(ByVal lastTime As Long) As Boolean
-ControlVelocidad = (GetTickCount - lastTime > 20)
+    'Get the timer frequency
+    If timer_freq = 0 Then
+        QueryPerformanceFrequency timer_freq
+    End If
+    
+    'Get current time
+    Call QueryPerformanceCounter(start_time)
+    
+    'Calculate elapsed time
+    GetElapsedTime = (start_time - end_time) / timer_freq * 1000
+    
+    'Get next end time
+    Call QueryPerformanceCounter(end_time)
 End Function
 
-#If ConAlfaB Then
+Private Sub CharRender(ByVal CharIndex As Long, ByVal PixelOffsetX As Integer, ByVal PixelOffsetY As Integer, Light() As Long, Optional angle As Single)
+'***************************************************
+'Author: Juan Martín Sotuyo Dodero (Maraxus)
+'Last Modify Date: 12/03/04
+'Draw char's to screen without offcentering them
+'***************************************************
+    Dim moved As Boolean
+    Dim Pos As Integer
+    Dim line As String
+    Dim color As Long
 
-Public Sub EfectoNoche(ByRef Surface As DirectDrawSurface7)
-Dim dArray() As Byte, sArray() As Byte
-Dim ddsdDest As DDSURFACEDESC2
-Dim Modo As Long
-Dim rRect As RECT
-
-Surface.GetSurfaceDesc ddsdDest
-
-With rRect
-.Left = 0
-.Top = 0
-.Right = ddsdDest.lWidth
-.Bottom = ddsdDest.lHeight
-End With
-
-If ddsdDest.ddpfPixelFormat.lGBitMask = &H3E0 Then
-Modo = 0
-ElseIf ddsdDest.ddpfPixelFormat.lGBitMask = &H7E0 Then
-Modo = 1
-Else
-Modo = 2
-End If
-
-Dim DstLock As Boolean
-DstLock = False
-
-On Local Error GoTo HayErrorAlpha
-
-Surface.Lock rRect, ddsdDest, DDLOCK_WAIT, 0
-DstLock = True
-
-Surface.GetLockedArray dArray()
-
-
-Call vbDABLcolorblend16565ck(ByVal VarPtr(dArray(0, 0)), ByVal VarPtr(dArray(0, 0)), 70, rRect.Right - rRect.Left, rRect.Bottom - rRect.Top, ddsdDest.lPitch, ddsdDest.lPitch, 0, 0, 0)
-
-HayErrorAlpha:
-
-If DstLock = True Then
-Surface.Unlock rRect
-DstLock = False
-End If
-
-End Sub
-
-Public Sub EfectoTarde(ByRef Surface As DirectDrawSurface7)
-Dim dArray() As Byte, sArray() As Byte
-Dim ddsdDest As DDSURFACEDESC2
-Dim Modo As Long
-Dim rRect As RECT
-
-Surface.GetSurfaceDesc ddsdDest
-
-With rRect
-.Left = 0
-.Top = 0
-.Right = ddsdDest.lWidth
-.Bottom = ddsdDest.lHeight
-End With
-
-If ddsdDest.ddpfPixelFormat.lGBitMask = &H3E0 Then
-Modo = 0
-ElseIf ddsdDest.ddpfPixelFormat.lGBitMask = &H7E0 Then
-Modo = 1
-Else
-Modo = 2
-End If
-
-Dim DstLock As Boolean
-DstLock = False
-
-On Local Error GoTo HayErrorAlpha
-
-Surface.Lock rRect, ddsdDest, DDLOCK_WAIT, 0
-DstLock = True
-
-Surface.GetLockedArray dArray()
-
-
-Call vbDABLcolorblend16565ck(ByVal VarPtr(dArray(0, 0)), ByVal VarPtr(dArray(0, 0)), 30, rRect.Right - rRect.Left, rRect.Bottom - rRect.Top, ddsdDest.lPitch, ddsdDest.lPitch, 0, 0, 0)
-
-HayErrorAlpha:
-
-If DstLock = True Then
-Surface.Unlock rRect
-DstLock = False
-End If
-
-End Sub
-
-Public Sub EfectoAmanecer(ByRef Surface As DirectDrawSurface7)
-Dim dArray() As Byte, sArray() As Byte
-Dim ddsdDest As DDSURFACEDESC2
-Dim Modo As Long
-Dim rRect As RECT
-
-Surface.GetSurfaceDesc ddsdDest
-
-With rRect
-.Left = 0
-.Top = 0
-.Right = ddsdDest.lWidth
-.Bottom = ddsdDest.lHeight
-End With
-
-If ddsdDest.ddpfPixelFormat.lGBitMask = &H3E0 Then
-Modo = 0
-ElseIf ddsdDest.ddpfPixelFormat.lGBitMask = &H7E0 Then
-Modo = 1
-Else
-Modo = 2
-End If
-
-Dim DstLock As Boolean
-DstLock = False
-
-On Local Error GoTo HayErrorAlpha
-
-Surface.Lock rRect, ddsdDest, DDLOCK_WAIT, 0
-DstLock = True
-
-Surface.GetLockedArray dArray()
-
-
-Call vbDABLcolorblend16565ck(ByVal VarPtr(dArray(0, 0)), ByVal VarPtr(dArray(0, 0)), 50, rRect.Right - rRect.Left, rRect.Bottom - rRect.Top, ddsdDest.lPitch, ddsdDest.lPitch, 128, 64, 64)
-HayErrorAlpha:
-
-If DstLock = True Then
-Surface.Unlock rRect
-DstLock = False
-End If
-
-End Sub
-Public Sub EfectoNiebla(ByRef Surface As DirectDrawSurface7)
-Dim dArray() As Byte, sArray() As Byte
-Dim ddsdDest As DDSURFACEDESC2
-Dim Modo As Long
-Dim rRect As RECT
-
-Surface.GetSurfaceDesc ddsdDest
-
-With rRect
-.Left = 0
-.Top = 0
-.Right = ddsdDest.lWidth
-.Bottom = ddsdDest.lHeight
-End With
-
-If ddsdDest.ddpfPixelFormat.lGBitMask = &H3E0 Then
-Modo = 0
-ElseIf ddsdDest.ddpfPixelFormat.lGBitMask = &H7E0 Then
-Modo = 1
-Else
-Modo = 2
-End If
-
-Dim DstLock As Boolean
-DstLock = False
-
-On Local Error GoTo HayErrorAlpha
-
-Surface.Lock rRect, ddsdDest, DDLOCK_WAIT, 0
-DstLock = True
-
-Surface.GetLockedArray dArray()
-
-
-Call vbDABLcolorblend16565ck(ByVal VarPtr(dArray(0, 0)), ByVal VarPtr(dArray(0, 0)), 60, rRect.Right - rRect.Left, rRect.Bottom - rRect.Top, ddsdDest.lPitch, ddsdDest.lPitch, 255, 255, 255)
-
-HayErrorAlpha:
-
-If DstLock = True Then
-Surface.Unlock rRect
-DstLock = False
-End If
-
-End Sub
-#End If
-Sub SurfaceConAB(Surface As DirectDrawSurface7, Grh As Grh, ByVal X As Integer, ByVal Y As Integer, center As Byte, Animate As Byte, Optional ByVal KillAnim As Integer = 0)
-
-Dim iGrhIndex As Integer
-Dim SourceRect As RECT
-Dim QuitarAnimacion As Boolean
-
-
-If Animate Then
-    If Grh.Started = 1 Then
-        If Grh.SpeedCounter > 0 Then
-            Grh.SpeedCounter = Grh.SpeedCounter - 1
-            If Grh.SpeedCounter = 0 Then
-                Grh.SpeedCounter = GrhData(Grh.GrhIndex).Speed
-                Grh.FrameCounter = Grh.FrameCounter + 1
-                If Grh.FrameCounter > GrhData(Grh.GrhIndex).NumFrames Then
-                    Grh.FrameCounter = 1
-                    If KillAnim Then
-                        If charlist(KillAnim).FxLoopTimes <> LoopAdEternum Then
-
-                            If charlist(KillAnim).FxLoopTimes > 0 Then charlist(KillAnim).FxLoopTimes = charlist(KillAnim).FxLoopTimes - 1
-                            If charlist(KillAnim).FxLoopTimes < 1 Then 'Matamos la anim del fx ;))
-                                charlist(KillAnim).Fx = 0
-                                Exit Sub
-                            End If
-
-                        End If
-                    End If
-               End If
+    With charlist(CharIndex)
+    
+        If .Moving Then
+            '****** Move Left and Right if needed ******
+            If .scrollDirectionX <> 0 Then
+                .MoveOffsetX = .MoveOffsetX + ScrollPixelsPerFrameX * Sgn(.scrollDirectionX) * timerTicksPerFrame
+                
+                'Start animations
+                If .Body.Walk(.Heading).Speed > 0 Then _
+                .Body.Walk(.Heading).Started = 1
+                .arma.WeaponWalk(.Heading).Started = 1
+                .escudo.ShieldWalk(.Heading).Started = 1
+                
+                'Char moved
+                moved = True
+                
+                'Check if we already got there
+                If (Sgn(.scrollDirectionX) = 1 And .MoveOffsetX >= 0) Or _
+                        (Sgn(.scrollDirectionX) = -1 And .MoveOffsetX <= 0) Then
+                    .MoveOffsetX = 0
+                    .scrollDirectionX = 0
+                End If
+            End If
+            
+            '****** Move Up and Down if needed ******
+            If .scrollDirectionY <> 0 Then
+                .MoveOffsetY = .MoveOffsetY + ScrollPixelsPerFrameY * Sgn(.scrollDirectionY) * timerTicksPerFrame
+                
+                'Start animations
+                If .Body.Walk(.Heading).Speed > 0 Then _
+                .Body.Walk(.Heading).Started = 1
+                .arma.WeaponWalk(.Heading).Started = 1
+                .escudo.ShieldWalk(.Heading).Started = 1
+                
+                'Char moved
+                moved = True
+                
+                'Check if we already got there
+                If (Sgn(.scrollDirectionY) = 1 And .MoveOffsetY >= 0) Or _
+                        (Sgn(.scrollDirectionY) = -1 And .MoveOffsetY <= 0) Then
+                    .MoveOffsetY = 0
+                    .scrollDirectionY = 0
+                End If
             End If
         End If
-    End If
-End If
-
-If Grh.GrhIndex = 0 Then Exit Sub
-
-iGrhIndex = GrhData(Grh.GrhIndex).Frames(Grh.FrameCounter)
-
-If center Then
-    If GrhData(iGrhIndex).TileWidth <> 1 Then
-        X = X - Int(GrhData(iGrhIndex).TileWidth * 16) + 16 'hard coded for speed
-    End If
-    If GrhData(iGrhIndex).TileHeight <> 1 Then
-        Y = Y - Int(GrhData(iGrhIndex).TileHeight * 32) + 32 'hard coded for speed
-    End If
-End If
-
-With SourceRect
-    .Left = GrhData(iGrhIndex).sX + IIf(X < 0, Abs(X), 0)
-    .Top = GrhData(iGrhIndex).sY + IIf(Y < 0, Abs(Y), 0)
-    .Right = .Left + GrhData(iGrhIndex).pixelWidth
-    .Bottom = .Top + GrhData(iGrhIndex).pixelHeight
-End With
-
-Dim src As DirectDrawSurface7
-Dim rDest As RECT
-Dim dArray() As Byte, sArray() As Byte
-Dim ddsdSrc As DDSURFACEDESC2, ddsdDest As DDSURFACEDESC2
-Dim Modo As Long
-
-Set src = SurfaceDB.Surface(GrhData(iGrhIndex).FileNum)
-
-src.GetSurfaceDesc ddsdSrc
-Surface.GetSurfaceDesc ddsdDest
-With rDest
-    .Left = X
-    .Top = Y
-    .Right = X + GrhData(iGrhIndex).pixelWidth
-    .Bottom = Y + GrhData(iGrhIndex).pixelHeight
-   
-    If .Right > ddsdDest.lWidth Then
-        .Right = ddsdDest.lWidth
-    End If
-    If .Bottom > ddsdDest.lHeight Then
-        .Bottom = ddsdDest.lHeight
-    End If
-End With
-
-Dim SrcLock As Boolean, DstLock As Boolean
-SrcLock = False: DstLock = False
-
-On Local Error GoTo HayErrorAlpha
-
-src.Lock SourceRect, ddsdSrc, DDLOCK_NOSYSLOCK Or DDLOCK_WAIT, 0
-Surface.Lock rDest, ddsdDest, DDLOCK_NOSYSLOCK Or DDLOCK_WAIT, 0
-
-Surface.GetLockedArray dArray()
-src.GetLockedArray sArray()
-       
-If ddsdDest.ddpfPixelFormat.lGBitMask = &H3E0 Then
-  Modo = 555
-ElseIf ddsdDest.ddpfPixelFormat.lGBitMask = &H7E0 Then
-  Modo = 565
-Else
-  MsgBox "Modo de vídeo no esta en 555 o 565 o algo falló."
-  End
-End If
-
-
-
-vbDABLalphablend16 Modo, 1, sArray(SourceRect.Left * 2, SourceRect.Top), dArray(X + X, Y), AlphaX, rDest.Right - rDest.Left, rDest.Bottom - rDest.Top, ddsdSrc.lPitch, ddsdDest.lPitch, 0
-
-
-Surface.Unlock rDest
-src.Unlock SourceRect
-
-
-
-Exit Sub
-
-HayErrorAlpha:
-If SrcLock Then src.Unlock SourceRect
-If DstLock Then Surface.Unlock rDest
-
-End Sub
-
-Sub TonalidadParalisis(Surface As DirectDrawSurface7, Grh As Grh, ByVal X As Integer, ByVal Y As Integer, center As Byte, Animate As Byte, Optional ByVal KillAnim As Integer = 0)
-Dim iGrhIndex As Integer
-Dim SourceRect As RECT
-Dim QuitarAnimacion As Boolean
-If Animate Then
-    If Grh.Started = 1 Then
-        If Grh.SpeedCounter > 0 Then
-            Grh.SpeedCounter = Grh.SpeedCounter - 1
-            If Grh.SpeedCounter = 0 Then
-                Grh.SpeedCounter = GrhData(Grh.GrhIndex).Speed
-                Grh.FrameCounter = Grh.FrameCounter + 1
-                If Grh.FrameCounter > GrhData(Grh.GrhIndex).NumFrames Then
-                    Grh.FrameCounter = 1
-                    If KillAnim Then
-                        If charlist(KillAnim).FxLoopTimes <> LoopAdEternum Then
- 
-                            If charlist(KillAnim).FxLoopTimes > 0 Then charlist(KillAnim).FxLoopTimes = charlist(KillAnim).FxLoopTimes - 1
-                            If charlist(KillAnim).FxLoopTimes < 1 Then 'Matamos la anim del fx ;))
-                                charlist(KillAnim).Fx = 0
-                                Exit Sub
+        'End scrolling if needed
+        
+        'If done moving stop animation
+        If Not moved Then
+            'Stop animations
+            .Body.Walk(.Heading).Started = 0
+            .Body.Walk(.Heading).FrameCounter = 1
+                
+            If IsAttacking = False Then
+                .arma.WeaponWalk(.Heading).Started = 0
+                .arma.WeaponWalk(.Heading).FrameCounter = 1
+                
+                .escudo.ShieldWalk(.Heading).Started = 0
+                .escudo.ShieldWalk(.Heading).FrameCounter = 1
+            End If
+                
+            .Moving = False
+        Else
+            IsAttacking = False
+        End If
+        
+        PixelOffsetX = PixelOffsetX + .MoveOffsetX
+        PixelOffsetY = PixelOffsetY + .MoveOffsetY
+        
+        '************Char Normal************
+        If .Head.Head(.Heading).GrhIndex Then
+            If Not .invisible Then
+                movSpeed = 0.5
+                
+                If .Aura_Index > 0 Then _
+                    Call DDrawTransGrhtoSurface(.Aura, PixelOffsetX - 2, PixelOffsetY + 25, 1, 0, Light, 100, 1, angle)
+                If .Body.Walk(.Heading).GrhIndex Then _
+                    Call DDrawTransGrhtoSurface(.Body.Walk(.Heading), PixelOffsetX, PixelOffsetY, 1, 1, Light, , , angle)
+                If .Head.Head(.Heading).GrhIndex Then
+                    Call DDrawTransGrhtoSurface(.Head.Head(.Heading), PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY + .Body.HeadOffset.Y, 1, 0, Light, , , angle)
+                If .casco.Head(.Heading).GrhIndex Then _
+                    Call DDrawTransGrhtoSurface(.casco.Head(.Heading), PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY + .Body.HeadOffset.Y, 1, 0, Light, , , angle)
+                If Not UserEquitando Then
+                    If .arma.WeaponWalk(.Heading).GrhIndex Then _
+                        Call DDrawTransGrhtoSurface(.arma.WeaponWalk(.Heading), PixelOffsetX, PixelOffsetY, 1, 1, Light, , , angle)
+                    If .escudo.ShieldWalk(.Heading).GrhIndex Then _
+                        Call DDrawTransGrhtoSurface(.escudo.ShieldWalk(.Heading), PixelOffsetX, PixelOffsetY, 1, 1, Light, , , angle)
+                End If
+                
+                    '************Draw name over head************
+                    If LenB(.nombre) > 0 Then
+                        If Nombres Then
+                            Pos = getTagPosition(.nombre)
+                            
+                            If .priv = 0 Then
+                                If .Atacable Then
+                                    color = D3DColorXRGB(ColoresPJ(48).r, ColoresPJ(48).g, ColoresPJ(48).B)
+                                Else
+                                    If .Criminal Then
+                                        color = D3DColorXRGB(ColoresPJ(50).r, ColoresPJ(50).g, ColoresPJ(50).B)
+                                    Else
+                                        color = D3DColorXRGB(ColoresPJ(49).r, ColoresPJ(49).g, ColoresPJ(49).B)
+                                    End If
+                                End If
+                            Else
+                                color = D3DColorXRGB(ColoresPJ(.priv).r, ColoresPJ(.priv).g, ColoresPJ(.priv).B)
                             End If
- 
+                            
+                            '************Nick************
+                            line = Left$(.nombre, Pos - 2)
+                            Fonts_Render_String line, PixelOffsetX - (Len(line) / 2) * 6 + 15, PixelOffsetY + 30, color
+                            '************Clan************
+                            line = mid$(.nombre, Pos)
+                            Fonts_Render_String line, PixelOffsetX - (Len(line) / 2) * 6 + IIf(Len(line) > 20, 0, 10), PixelOffsetY + 42, D3DColorXRGB(231, 202, 157)
                         End If
                     End If
-               End If
-            End If
-        End If
-    End If
-End If
-If Grh.GrhIndex = 0 Then Exit Sub
-iGrhIndex = GrhData(Grh.GrhIndex).Frames(Grh.FrameCounter)
-If center Then
-    If GrhData(iGrhIndex).TileWidth <> 1 Then
-        X = X - Int(GrhData(iGrhIndex).TileWidth * 16) + 16 'hard coded for speed
-    End If
-    If GrhData(iGrhIndex).TileHeight <> 1 Then
-        Y = Y - Int(GrhData(iGrhIndex).TileHeight * 32) + 32 'hard coded for speed
-    End If
-End If
-With SourceRect
-    .Left = GrhData(iGrhIndex).sX + IIf(X < 0, Abs(X), 0)
-    .Top = GrhData(iGrhIndex).sY + IIf(Y < 0, Abs(Y), 0)
-    .Right = .Left + GrhData(iGrhIndex).pixelWidth
-    .Bottom = .Top + GrhData(iGrhIndex).pixelHeight
-End With
-Dim src As DirectDrawSurface7
-Dim rDest As RECT
-Dim dArray() As Byte, sArray() As Byte
-Dim ddsdSrc As DDSURFACEDESC2, ddsdDest As DDSURFACEDESC2
-Dim Modo As Long
-Set src = SurfaceDB.Surface(GrhData(iGrhIndex).FileNum)
-src.GetSurfaceDesc ddsdSrc
-Surface.GetSurfaceDesc ddsdDest
-With rDest
-    .Left = X
-    .Top = Y
-    .Right = X + GrhData(iGrhIndex).pixelWidth
-    .Bottom = Y + GrhData(iGrhIndex).pixelHeight
-   
-    If .Right > ddsdDest.lWidth Then
-        .Right = ddsdDest.lWidth
-    End If
-    If .Bottom > ddsdDest.lHeight Then
-        .Bottom = ddsdDest.lHeight
-    End If
-End With
-Dim SrcLock As Boolean, DstLock As Boolean
-SrcLock = False: DstLock = False
-On Local Error GoTo HayErrorAlpha
-src.Lock SourceRect, ddsdSrc, DDLOCK_NOSYSLOCK Or DDLOCK_WAIT, 0
-Surface.Lock rDest, ddsdDest, DDLOCK_NOSYSLOCK Or DDLOCK_WAIT, 0
-Surface.GetLockedArray dArray()
-src.GetLockedArray sArray()
-If ddsdDest.ddpfPixelFormat.lGBitMask = &H3E0 Then
-  Modo = 555
-ElseIf ddsdDest.ddpfPixelFormat.lGBitMask = &H7E0 Then
-  Modo = 565
-Else
-  MsgBox "Modo de vídeo no esta en 555 o 565 o algo falló."
-  End
-End If
-Call vbDABLcolorblend16565ck(ByVal VarPtr(sArray(SourceRect.Left * 2, SourceRect.Top)), ByVal VarPtr(dArray(X + X, Y)), 120, rDest.Right - rDest.Left, rDest.Bottom - rDest.Top, ddsdSrc.lPitch, ddsdDest.lPitch, 255, 255, 255)
-Surface.Unlock rDest
-src.Unlock SourceRect
-Exit Sub
-HayErrorAlpha:
-If SrcLock Then src.Unlock SourceRect
-If DstLock Then Surface.Unlock rDest
-End Sub
- 
-#If ConAlfaB Then
-Sub SurfaceColor(Surface As DirectDrawSurface7, Grh As Grh, ByVal X As Integer, ByVal Y As Integer, center As Byte, Animate As Byte, Optional ByVal KillAnim As Integer = 0)
- 
-Dim iGrhIndex As Integer
-Dim SourceRect As RECT
-Dim QuitarAnimacion As Boolean
- 
- 
-If Animate Then
-    If Grh.Started = 1 Then
-        If Grh.SpeedCounter > 0 Then
-            Grh.SpeedCounter = Grh.SpeedCounter - 1
-            If Grh.SpeedCounter = 0 Then
-                Grh.SpeedCounter = GrhData(Grh.GrhIndex).Speed
-                Grh.FrameCounter = Grh.FrameCounter + 1
-                If Grh.FrameCounter > GrhData(Grh.GrhIndex).NumFrames Then
-                    Grh.FrameCounter = 1
-                    If KillAnim Then
-                        If charlist(KillAnim).FxLoopTimes <> LoopAdEternum Then
- 
-                            If charlist(KillAnim).FxLoopTimes > 0 Then charlist(KillAnim).FxLoopTimes = charlist(KillAnim).FxLoopTimes - 1
-                            If charlist(KillAnim).FxLoopTimes < 1 Then 'Matamos la anim del fx ;))
-                                charlist(KillAnim).Fx = 0
-                                Exit Sub
-                            End If
- 
-                        End If
+                End If
+            Else
+            '************Char Invisible************
+                If CharIndex = UserCharIndex Then
+                    movSpeed = 0.5
+                    
+                    If .Aura_Index > 0 Then _
+                        Call DDrawTransGrhtoSurface(.Aura, PixelOffsetX - 2, PixelOffsetY + 25, 1, 0, Light, 100, 1, angle)
+                    If .Body.Walk(.Heading).GrhIndex Then _
+                        Call DDrawTransGrhtoSurface(.Body.Walk(.Heading), PixelOffsetX, PixelOffsetY, 1, 1, Light, , 1, angle)
+                    If .Head.Head(.Heading).GrhIndex Then _
+                        Call DDrawTransGrhtoSurface(.Head.Head(.Heading), PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY + .Body.HeadOffset.Y, 1, 0, Light, , 1, angle)
+                    If .casco.Head(.Heading).GrhIndex Then _
+                        Call DDrawTransGrhtoSurface(.casco.Head(.Heading), PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY + .Body.HeadOffset.Y, 1, 0, Light, , 1, angle)
+                    If Not UserEquitando Then
+                        If .arma.WeaponWalk(.Heading).GrhIndex Then _
+                            Call DDrawTransGrhtoSurface(.arma.WeaponWalk(.Heading), PixelOffsetX, PixelOffsetY, 1, 1, Light, , 1, angle)
+                        If .escudo.ShieldWalk(.Heading).GrhIndex Then _
+                            Call DDrawTransGrhtoSurface(.escudo.ShieldWalk(.Heading), PixelOffsetX, PixelOffsetY, 1, 1, Light, , 1, angle)
                     End If
-               End If
+                End If
+            End If
+        Else
+        '************Si no tiene cabeza mostramos igualmente el nombre************
+            If .Body.Walk(.Heading).GrhIndex Then _
+                Call DDrawTransGrhtoSurface(.Body.Walk(.Heading), PixelOffsetX, PixelOffsetY, 1, 1, Light, , , angle)
+        End If
+        
+        '************Update dialogs************
+        Call Dialogos.UpdateDialogPos(PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY + .Body.HeadOffset.Y, CharIndex)    '34 son los pixeles del grh de la cabeza que quedan superpuestos al cuerpo
+         movSpeed = 1
+         
+        '************Particulas************
+        Dim i As Integer
+            If .particle_count > 0 Then
+                For i = 1 To .particle_count
+                    If .particle_group(i) > 0 Then _
+                        Particle_Group_Render .particle_group(i), PixelOffsetX + .Body.HeadOffset.X, PixelOffsetY
+                Next i
+            End If
+         
+        '************Draw FX************
+        If .FxIndex <> 0 Then
+            Call DDrawTransGrhtoSurface(.fX, PixelOffsetX + FxData(.FxIndex).OffsetX, PixelOffsetY + FxData(.FxIndex).OffsetY + 10, 1, 1, Light, 255, 1)
+            'Check if animation is over
+            If .fX.Started = 0 Then _
+                .FxIndex = 0
+        End If
+        
+        '************Draw Pasos************
+        If CharIndex = UserCharIndex Then
+            If Not UserEquitando Then
+                If MapData(.Pos.X, .Pos.Y).Graphic(1).GrhIndex >= 22563 And MapData(.Pos.X, .Pos.Y).Graphic(1).GrhIndex <= 22883 Or MapData(.Pos.X, .Pos.Y).Graphic(1).GrhIndex >= 7704 And MapData(.Pos.X, .Pos.Y).Graphic(1).GrhIndex <= 7719 Then
+                    If .Heading = WEST Then
+                        Call General_Particle_Create(19, .Pos.X, .Pos.Y, 250)
+                    ElseIf .Heading = EAST Then
+                        Call General_Particle_Create(17, .Pos.X, .Pos.Y, 250)
+                    ElseIf .Heading = NORTH Then
+                        Call General_Particle_Create(18, .Pos.X, .Pos.Y, 250)
+                    ElseIf .Heading = SOUTH Then
+                        Call General_Particle_Create(31, .Pos.X, .Pos.Y, 250)
+                    End If
+                End If
             End If
         End If
-    End If
-End If
- 
-If Grh.GrhIndex = 0 Then Exit Sub
- 
-iGrhIndex = GrhData(Grh.GrhIndex).Frames(Grh.FrameCounter)
- 
-If center Then
-    If GrhData(iGrhIndex).TileWidth <> 1 Then
-        X = X - Int(GrhData(iGrhIndex).TileWidth * 16) + 16 'hard coded for speed
-    End If
-    If GrhData(iGrhIndex).TileHeight <> 1 Then
-        Y = Y - Int(GrhData(iGrhIndex).TileHeight * 32) + 32 'hard coded for speed
-    End If
-End If
- 
-With SourceRect
-    .Left = GrhData(iGrhIndex).sX + IIf(X < 0, Abs(X), 0)
-    .Top = GrhData(iGrhIndex).sY + IIf(Y < 0, Abs(Y), 0)
-    .Right = .Left + GrhData(iGrhIndex).pixelWidth
-    .Bottom = .Top + GrhData(iGrhIndex).pixelHeight
-End With
- 
-Dim src As DirectDrawSurface7
-Dim rDest As RECT
-Dim dArray() As Byte, sArray() As Byte
-Dim ddsdSrc As DDSURFACEDESC2, ddsdDest As DDSURFACEDESC2
-Dim Modo As Long
- 
-Set src = SurfaceDB.Surface(GrhData(iGrhIndex).FileNum)
- 
-src.GetSurfaceDesc ddsdSrc
-Surface.GetSurfaceDesc ddsdDest
-With rDest
-    .Left = X
-    .Top = Y
-    .Right = X + GrhData(iGrhIndex).pixelWidth
-    .Bottom = Y + GrhData(iGrhIndex).pixelHeight
-   
-    If .Right > ddsdDest.lWidth Then
-        .Right = ddsdDest.lWidth
-    End If
-    If .Bottom > ddsdDest.lHeight Then
-        .Bottom = ddsdDest.lHeight
-    End If
-End With
- 
-Dim SrcLock As Boolean, DstLock As Boolean
-SrcLock = False: DstLock = False
- 
-On Local Error GoTo HayErrorAlpha
- 
-src.Lock SourceRect, ddsdSrc, DDLOCK_NOSYSLOCK Or DDLOCK_WAIT, 0
-Surface.Lock rDest, ddsdDest, DDLOCK_NOSYSLOCK Or DDLOCK_WAIT, 0
- 
-Surface.GetLockedArray dArray()
-src.GetLockedArray sArray()
-       
-If ddsdDest.ddpfPixelFormat.lGBitMask = &H3E0 Then
-  Modo = 555
-ElseIf ddsdDest.ddpfPixelFormat.lGBitMask = &H7E0 Then
-  Modo = 565
-Else
-  MsgBox "Modo de vídeo no esta en 555 o 565 o algo falló."
-  End
-End If
- 
-Call vbDABLcolorblend16565ck(ByVal VarPtr(sArray(SourceRect.Left * 2, SourceRect.Top)), ByVal VarPtr(dArray(X + X, Y)), 50, rDest.Right - rDest.Left, rDest.Bottom - rDest.Top, ddsdSrc.lPitch, ddsdDest.lPitch, 255, 255, 0)
-Surface.Unlock rDest
-src.Unlock SourceRect
- 
-Exit Sub
- 
-HayErrorAlpha:
-If SrcLock Then src.Unlock SourceRect
-If DstLock Then Surface.Unlock rDest
- 
+    End With
 End Sub
-#End If
+
+Public Sub SetCharacterFx(ByVal CharIndex As Integer, ByVal fX As Integer, ByVal Loops As Integer)
+'***************************************************
+'Author: Juan Martín Sotuyo Dodero (Maraxus)
+'Last Modify Date: 12/03/04
+'Sets an FX to the character.
+'***************************************************
+    With charlist(CharIndex)
+        .FxIndex = fX
+        
+        If .FxIndex > 0 Then
+            Call InitGrh(.fX, FxData(fX).Animacion)
+        
+            .fX.Loops = Loops
+        End If
+    End With
+End Sub
+
+Public Sub Geometry_Create_Box(ByRef verts() As TLVERTEX, ByRef dest As RECT, ByRef src As RECT, ByRef rgb_list() As Long, _
+                                Optional ByRef Textures_Width As Long, Optional ByRef Textures_Height As Long, Optional ByVal angle As Single)
+'**************************************************************
+'Author: Aaron Perkins
+'Modified by Juan Martín Sotuyo Dodero
+'Last Modify Date: 11/17/2002
+'
+' * v1      * v3
+' |\        |
+' |  \      |
+' |    \    |
+' |      \  |
+' |        \|
+' * v0      * v2
+'**************************************************************
+    Dim x_center As Single
+    Dim y_center As Single
+    Dim radius As Single
+    Dim x_Cor As Single
+    Dim y_Cor As Single
+    Dim left_point As Single
+    Dim right_point As Single
+    Dim temp As Single
+    
+    If angle > 0 Then
+        'Center coordinates on screen of the square
+        x_center = dest.Left + (dest.Right - dest.Left) / 2
+        y_center = dest.Top + (dest.bottom - dest.Top) / 2
+        
+        'Calculate radius
+        radius = Sqr((dest.Right - x_center) ^ 2 + (dest.bottom - y_center) ^ 2)
+        
+        'Calculate left and right points
+        temp = (dest.Right - x_center) / radius
+        right_point = Atn(temp / Sqr(-temp * temp + 1))
+        left_point = 3.1459 - right_point
+    End If
+    
+    'Calculate screen coordinates of sprite, and only rotate if necessary
+    If angle = 0 Then
+        x_Cor = dest.Left
+        y_Cor = dest.bottom
+    Else
+        x_Cor = x_center + Cos(-left_point - angle) * radius
+        y_Cor = y_center - Sin(-left_point - angle) * radius
+    End If
+    
+    
+    '0 - Bottom left vertex
+    If Textures_Width Or Textures_Height Then
+        verts(2) = Geometry_Create_TLVertex(x_Cor, y_Cor, 0, 1, rgb_list(0), 0, src.Left / Textures_Width + 0.001, (src.bottom + 1) / Textures_Height)
+    Else
+        verts(2) = Geometry_Create_TLVertex(x_Cor, y_Cor, 0, 1, rgb_list(0), 0, 0, 0)
+    End If
+    'Calculate screen coordinates of sprite, and only rotate if necessary
+    If angle = 0 Then
+        x_Cor = dest.Left
+        y_Cor = dest.Top
+    Else
+        x_Cor = x_center + Cos(left_point - angle) * radius
+        y_Cor = y_center - Sin(left_point - angle) * radius
+    End If
+    
+    
+    '1 - Top left vertex
+    If Textures_Width Or Textures_Height Then
+        verts(0) = Geometry_Create_TLVertex(x_Cor, y_Cor, 0, 1, rgb_list(1), 0, src.Left / Textures_Width + 0.001, src.Top / Textures_Height + 0.001)
+    Else
+        verts(0) = Geometry_Create_TLVertex(x_Cor, y_Cor, 0, 1, rgb_list(1), 0, 0, 1)
+    End If
+    'Calculate screen coordinates of sprite, and only rotate if necessary
+    If angle = 0 Then
+        x_Cor = dest.Right
+        y_Cor = dest.bottom
+    Else
+        x_Cor = x_center + Cos(-right_point - angle) * radius
+        y_Cor = y_center - Sin(-right_point - angle) * radius
+    End If
+    
+    
+    '2 - Bottom right vertex
+    If Textures_Width Or Textures_Height Then
+        verts(3) = Geometry_Create_TLVertex(x_Cor, y_Cor, 0, 1, rgb_list(2), 0, (src.Right + 1) / Textures_Width, (src.bottom + 1) / Textures_Height)
+    Else
+        verts(3) = Geometry_Create_TLVertex(x_Cor, y_Cor, 0, 1, rgb_list(2), 0, 1, 0)
+    End If
+    'Calculate screen coordinates of sprite, and only rotate if necessary
+    If angle = 0 Then
+        x_Cor = dest.Right
+        y_Cor = dest.Top
+    Else
+        x_Cor = x_center + Cos(right_point - angle) * radius
+        y_Cor = y_center - Sin(right_point - angle) * radius
+    End If
+    
+    
+    '3 - Top right vertex
+    If Textures_Width Or Textures_Height Then
+        verts(1) = Geometry_Create_TLVertex(x_Cor, y_Cor, 0, 1, rgb_list(3), 0, (src.Right + 1) / Textures_Width, src.Top / Textures_Height + 0.001)
+    Else
+        verts(1) = Geometry_Create_TLVertex(x_Cor, y_Cor, 0, 1, rgb_list(3), 0, 1, 1)
+    End If
+
+End Sub
+Public Function Geometry_Create_TLVertex(ByVal X As Single, ByVal Y As Single, ByVal z As Single, _
+                                            ByVal rhw As Single, ByVal color As Long, ByVal Specular As Long, tu As Single, _
+                                            ByVal tv As Single) As TLVERTEX
+'**************************************************************
+'Author: Aaron Perkins
+'Last Modify Date: 10/07/2002
+'**************************************************************
+    Geometry_Create_TLVertex.X = X
+    Geometry_Create_TLVertex.Y = Y
+    Geometry_Create_TLVertex.z = z
+    Geometry_Create_TLVertex.rhw = rhw
+    Geometry_Create_TLVertex.color = color
+    Geometry_Create_TLVertex.Specular = Specular
+    Geometry_Create_TLVertex.tu = tu
+    Geometry_Create_TLVertex.tv = tv
+End Function
+Public Sub Device_Textured_Render(ByVal X As Integer, ByVal Y As Integer, ByVal Texture As Direct3DTexture8, ByRef src_rect As RECT, ByRef rgb_list() As Long, Optional Alpha As Boolean = False, Optional alphabyte As Byte = 255, Optional angle As Single)
+    Dim dest_rect As RECT
+    Dim temp_verts(3) As TLVERTEX
+    Dim srdesc As D3DSURFACE_DESC
+    Static light_value(0 To 3) As Long
+    
+    light_value(0) = rgb_list(0)
+    light_value(1) = rgb_list(1)
+    light_value(2) = rgb_list(2)
+    light_value(3) = rgb_list(3)
+    
+    If (light_value(0) = 0) Then light_value(0) = base_light
+    If (light_value(1) = 0) Then light_value(1) = base_light
+    If (light_value(2) = 0) Then light_value(2) = base_light
+    If (light_value(3) = 0) Then light_value(3) = base_light
+ 
+    With dest_rect
+        .bottom = Y + (src_rect.bottom - src_rect.Top)
+        .Left = X
+        .Right = X + (src_rect.Right - src_rect.Left)
+        .Top = Y
+    End With
+    
+    Dim texwidth As Long, texheight As Long
+    Texture.GetLevelDesc 0, srdesc
+    texwidth = srdesc.Width
+    texheight = srdesc.Height
+    
+    Geometry_Create_Box temp_verts(), dest_rect, src_rect, light_value(), texwidth, texheight, angle
+    
+    DirectDevice.SetTexture 0, Texture
+    
+    If Alpha Then
+        DirectDevice.SetRenderState D3DRS_SRCBLEND, D3DBLEND_ONE
+        DirectDevice.SetRenderState D3DRS_DESTBLEND, D3DBLEND_ONE
+    End If
+    
+    DirectDevice.SetRenderState D3DRS_TEXTUREFACTOR, D3DColorARGB(alphabyte, 0, 0, 0)
+    DirectDevice.DrawPrimitiveUP D3DPT_TRIANGLESTRIP, 2, temp_verts(0), Len(temp_verts(0))
+    
+    If Alpha Then
+        DirectDevice.SetRenderState D3DRS_SRCBLEND, D3DBLEND_SRCALPHA
+        DirectDevice.SetRenderState D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA
+    End If
+    
+End Sub
+Public Sub Draw_FillBox(ByVal X As Integer, ByVal Y As Integer, ByVal Width As Integer, ByVal Height As Integer, color As Long, outlinecolor As Long)
+
+    Static box_rect As RECT
+    Static Outline As RECT
+    Static rgb_list(3) As Long
+    Static rgb_list2(3) As Long
+    Static vertex(3) As TLVERTEX
+    Static Vertex2(3) As TLVERTEX
+    
+    rgb_list(0) = color
+    rgb_list(1) = color
+    rgb_list(2) = color
+    rgb_list(3) = color
+    
+    rgb_list2(0) = outlinecolor
+    rgb_list2(1) = outlinecolor
+    rgb_list2(2) = outlinecolor
+    rgb_list2(3) = outlinecolor
+    
+    With box_rect
+        .bottom = Y + Height
+        .Left = X
+        .Right = X + Width
+        .Top = Y
+    End With
+    
+    With Outline
+        .bottom = Y + Height + 1
+        .Left = X
+        .Right = X + Width + 1
+        .Top = Y
+    End With
+    
+    Geometry_Create_Box Vertex2(), Outline, Outline, rgb_list2(), 0, 0
+    Geometry_Create_Box vertex(), box_rect, box_rect, rgb_list(), 0, 0
+    
+    DirectDevice.SetTexture 0, Nothing
+    DirectDevice.DrawPrimitiveUP D3DPT_TRIANGLESTRIP, 2, Vertex2(0), Len(Vertex2(0))
+    DirectDevice.DrawPrimitiveUP D3DPT_TRIANGLESTRIP, 2, vertex(0), Len(vertex(0))
+End Sub
+
+Public Function ARGB(ByVal r As Long, ByVal g As Long, ByVal B As Long, ByVal A As Long) As Long
+        
+    Dim c As Long
+        
+    If A > 127 Then
+        A = A - 128
+        c = A * 2 ^ 24 Or &H80000000
+        c = c Or r * 2 ^ 16
+        c = c Or g * 2 ^ 8
+        c = c Or B
+    Else
+        c = A * 2 ^ 24
+        c = c Or r * 2 ^ 16
+        c = c Or g * 2 ^ 8
+        c = c Or B
+    End If
+    
+    ARGB = c
+
+End Function
+
+Public Sub D3DColorToRgbList(rgb_list() As Long, color As D3DCOLORVALUE)
+    rgb_list(0) = D3DColorARGB(color.A, color.r, color.g, color.B)
+    rgb_list(1) = rgb_list(0)
+    rgb_list(2) = rgb_list(0)
+    rgb_list(3) = rgb_list(0)
+End Sub
+
+Public Sub Long_To_RGB_List(rgb_list() As Long, Long_Color As Long)
+    rgb_list(0) = Long_Color
+    rgb_list(1) = rgb_list(0)
+    rgb_list(2) = rgb_list(0)
+    rgb_list(3) = rgb_list(0)
+End Sub
+
+Private Function Char_Check(ByVal char_index As Integer) As Boolean
+'**************************************************************
+'Author: Aaron Perkins - Modified by Juan Martín Sotuyo Dodero
+'Last Modify Date: 1/04/2003
+'
+'**************************************************************
+    'check char_index
+    If char_index > 0 And char_index <= LastChar Then
+        Char_Check = (charlist(char_index).Heading > 0)
+    End If
+    
+End Function
+ 
+Public Function Map_In_Bounds(ByVal map_x As Long, ByVal map_y As Long) As Boolean
+'*****************************************************************
+'Author: Aaron Perkins
+'Last Modify Date: 10/07/2002
+'Checks to see if a tile position is in the maps bounds
+'*****************************************************************
+    If map_x < map_current.map_x_min Or map_x > map_current.map_x_max Or map_y < map_current.map_y_min Or map_y > map_current.map_y_max Then
+        Map_In_Bounds = False
+        Exit Function
+    End If
+   
+    Map_In_Bounds = True
+End Function
+Private Function LoadGrhData() As Boolean
+On Error GoTo ErrorHandler
+    Dim Grh As Long
+    Dim Frame As Long
+    Dim grhCount As Long
+    Dim handle As Integer
+    Dim fileVersion As Long
+    Dim file As String
+    
+    file = Get_Extract(Scripts, "Graficos.ind")
+    
+    'Open files
+    handle = FreeFile()
+    Open file For Binary Access Read As handle
+    Seek #handle, 1
+   
+    'Get file version
+    Get handle, , fileVersion
+   
+    'Get number of grhs
+    Get handle, , grhCount
+   
+    'Resize arrays
+    ReDim GrhData(1 To grhCount) As GrhData
+    
+    Get handle, , Grh
+
+    While Not Grh <= 0
+        With GrhData(Grh)
+        
+            'Get number of frames
+            Get handle, , .NumFrames
+            If .NumFrames <= 0 Then GoTo ErrorHandler
+            
+           GrhData(Grh).Active = True
+
+            ReDim .Frames(1 To GrhData(Grh).NumFrames)
+           
+            If .NumFrames > 1 Then
+                'Read a animation GRH set
+                For Frame = 1 To .NumFrames
+                    Get handle, , .Frames(Frame)
+                    If .Frames(Frame) <= 0 Or .Frames(Frame) > grhCount Then
+                        GoTo ErrorHandler
+                    End If
+                Next Frame
+               
+                Get handle, , .Speed
+               
+                If .Speed <= 0 Then GoTo ErrorHandler
+               
+                'Compute width and height
+                .pixelHeight = GrhData(.Frames(1)).pixelHeight
+                If .pixelHeight <= 0 Then GoTo ErrorHandler
+               
+                .pixelWidth = GrhData(.Frames(1)).pixelWidth
+                If .pixelWidth <= 0 Then GoTo ErrorHandler
+               
+                .TileWidth = GrhData(.Frames(1)).TileWidth
+                If .TileWidth <= 0 Then GoTo ErrorHandler
+               
+                .TileHeight = GrhData(.Frames(1)).TileHeight
+                If .TileHeight <= 0 Then GoTo ErrorHandler
+            Else
+                'Read in normal GRH data
+                Get handle, , .FileNum
+                If .FileNum <= 0 Then GoTo ErrorHandler
+               
+                Get handle, , GrhData(Grh).SX
+                If .SX < 0 Then GoTo ErrorHandler
+               
+                Get handle, , .SY
+                If .SY < 0 Then GoTo ErrorHandler
+               
+                Get handle, , .pixelWidth
+                If .pixelWidth <= 0 Then GoTo ErrorHandler
+               
+                Get handle, , .pixelHeight
+                If .pixelHeight <= 0 Then GoTo ErrorHandler
+               
+                'Compute width and height
+                .TileWidth = .pixelWidth / 32
+                .TileHeight = .pixelHeight / 32
+               
+                .Frames(1) = Grh
+            End If
+        End With
+    Get handle, , Grh
+    Wend
+   
+    Close handle
+   Delete_File file
+   
+Dim count As Long
+ 
+file = Get_Extract(Scripts, "minimap.dat")
+Open file For Binary As #1
+    Seek #1, 1
+    For count = 1 To grhCount
+        If GrhData(count).Active Then
+            Get #1, , GrhData(count).MiniMap_color
+        End If
+    Next count
+Close #1
+Delete_File file
+
+    LoadGrhData = True
+Exit Function
+ 
+ErrorHandler:
+    LoadGrhData = False
+End Function
+
+'=-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-=
+'=-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-=DIBUJA CUENTAS =-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-=
+'=-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-=
+'***********************************************************
+Sub DibujarTodo(ByVal Index As Integer, ByVal Body As Integer, ByVal Head As Integer, ByVal casco As Integer, ByVal Shield As Integer, Weapon As Integer, ByVal Baned As Integer, ByVal nombre As String, ByVal LVL As Integer, ByVal Clase As String, ByVal Muerto As Integer, ByVal raza As String, ByVal Logged As Byte)
+
+Dim Grh As Grh
+Dim Pos As Integer
+Dim YBody As Integer
+Dim YYY As Integer
+Dim XBody As Integer
+Dim BBody As Integer
+
+    'Mostramos la informacion de los personajes
+    frmCuenta.nombre(Index).Caption = nombre
+    
+    If Logged = 0 Then
+        frmCuenta.Label2(Index).Caption = ""
+    Else
+        frmCuenta.Label2(Index).Caption = "Logeado"
+    End If
+    
+    frmCuenta.Label1(Index).Font = frmMain.Font
+    frmCuenta.Label1(Index).Font = frmMain.Font
+    
+    frmCuenta.Label1(Index).Caption = LVL
+    frmCuenta.Label2(Index).Caption = Clase
+    frmCuenta.raza(Index).Caption = raza
+    
+    XBody = 12
+    YBody = 20
+    BBody = 17
+    
+    'Preparamos los datos para el fantasmita
+    If Muerto = 1 Then
+        Body = 8
+        Head = 500
+        Shield = 2
+        Weapon = 2
+        XBody = 10
+        YBody = 35
+        BBody = 16
+    End If
+    
+    Grh = BodyData(Body).Walk(3)
+    'Si no esta muerto lo mostramos como normalmente, pero si lo esta subimos el body
+    Call DrawGrhtoHdc(frmCuenta.PJ(Index).hDC, BodyData(Body).Walk(3).GrhIndex, XBody, YBody, True)
+    
+    If Muerto = 0 Then YYY = BodyData(Body).HeadOffset.Y + 5
+    If Muerto = 1 Then YYY = -9
+    
+    'Terminamos con el Body y vamos a por la cabeza
+    Pos = YYY + GrhData(GrhData(Grh.GrhIndex).Frames(Grh.FrameCounter)).pixelHeight
+
+    Call DrawGrhtoHdc(frmCuenta.PJ(Index).hDC, HeadData(Head).Head(3).GrhIndex, XBody + GrhData(BodyData(Body).Walk(3).GrhIndex).pixelWidth / 2 - GrhData(HeadData(Head).Head(3).GrhIndex).pixelWidth / 2, Pos, True)
+            
+    If casco <> 2 And casco > 0 Then
+        Call DrawGrhtoHdc(frmCuenta.PJ(Index).hDC, CascoAnimData(casco).Head(3).GrhIndex, XBody - GrhData(CascoAnimData(casco).Head(3).GrhIndex).pixelWidth / 2 + GrhData(BodyData(Body).Walk(3).GrhIndex).pixelWidth / 2, Pos - GrhData(CascoAnimData(casco).Head(3).GrhIndex).pixelHeight + GrhData(HeadData(Head).Head(3).GrhIndex).pixelHeight, True)
+    End If
+    
+    If Weapon <> 2 And Weapon > 0 Then
+        Call DrawGrhtoHdc(frmCuenta.PJ(Index).hDC, WeaponAnimData(Weapon).WeaponWalk(3).GrhIndex, XBody, YBody, True)
+    End If
+                    
+    If Shield <> 2 And Shield > 0 Then
+        Call DrawGrhtoHdc(frmCuenta.PJ(Index).hDC, ShieldAnimData(Shield).ShieldWalk(3).GrhIndex, XBody, BBody, True)
+    End If
+        
+    If Baned = 1 Then
+       Call DrawGrhtoHdc(frmCuenta.PJ(Index).hDC, 20891, 0, 0, True)
+    End If
+        
+End Sub
+'***********************************************************
+'=-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-=
+'=-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-=/FIN DE DIBUJADO DE CUENTAS =-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-
+'=-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-==-=-=
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''[PARTICULAS]''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Public Function Particle_Group_Create(ByVal map_x As Integer, ByVal map_y As Integer, ByRef grh_index_list() As Long, ByRef rgb_list() As Long, _
+                                        Optional ByVal particle_count As Long = 20, Optional ByVal stream_type As Long = 1, _
+                                        Optional ByVal alpha_blend As Boolean, Optional ByVal alive_counter As Long = -1, _
+                                        Optional ByVal frame_speed As Single = 0.5, Optional ByVal ID As Long, _
+                                        Optional ByVal x1 As Integer, Optional ByVal y1 As Integer, Optional ByVal angle As Integer, _
+                                        Optional ByVal vecx1 As Integer, Optional ByVal vecx2 As Integer, _
+                                        Optional ByVal vecy1 As Integer, Optional ByVal vecy2 As Integer, _
+                                        Optional ByVal life1 As Integer, Optional ByVal life2 As Integer, _
+                                        Optional ByVal fric As Integer, Optional ByVal spin_speedL As Single, _
+                                        Optional ByVal gravity As Boolean, Optional grav_strength As Long, _
+                                        Optional bounce_strength As Long, Optional ByVal x2 As Integer, Optional ByVal y2 As Integer, _
+                                        Optional ByVal XMove As Boolean, Optional ByVal move_x1 As Integer, Optional ByVal move_x2 As Integer, _
+                                        Optional ByVal move_y1 As Integer, Optional ByVal move_y2 As Integer, Optional ByVal YMove As Boolean, _
+                                        Optional ByVal spin_speedH As Single, Optional ByVal spin As Boolean, Optional grh_resize As Boolean, _
+                                        Optional grh_resizex As Integer, Optional grh_resizey As Integer, Optional ByVal Radio As Integer) As Long
+                                        
+'**************************************************************
+'Author: Aaron Perkins
+'Last Modify Date: 12/15/2002
+'Returns the particle_group_index if successful, else 0
+'**************************************************************
+    If (map_x <> -1) And (map_y <> -1) Then
+    If Map_Particle_Group_Get(map_x, map_y) = 0 Then
+        Particle_Group_Create = Particle_Group_Next_Open
+        Particle_Group_Make Particle_Group_Create, map_x, map_y, particle_count, stream_type, grh_index_list(), rgb_list(), alpha_blend, alive_counter, frame_speed, ID, x1, y1, angle, vecx1, vecx2, vecy1, vecy2, life1, life2, fric, spin_speedL, gravity, grav_strength, bounce_strength, x2, y2, XMove, move_x1, move_x2, move_y1, move_y2, YMove, spin_speedH, spin, grh_resize, grh_resizex, grh_resizey, Radio
+    Else
+        Particle_Group_Create = Particle_Group_Next_Open
+        Particle_Group_Make Particle_Group_Create, map_x, map_y, particle_count, stream_type, grh_index_list(), rgb_list(), alpha_blend, alive_counter, frame_speed, ID, x1, y1, angle, vecx1, vecx2, vecy1, vecy2, life1, life2, fric, spin_speedL, gravity, grav_strength, bounce_strength, x2, y2, XMove, move_x1, move_x2, move_y1, move_y2, YMove, spin_speedH, spin, grh_resize, grh_resizex, grh_resizey, Radio
+    End If
+    End If
+End Function
+
+Public Function Char_Particle_Group_Create(ByVal char_index As Integer, ByRef grh_index_list() As Long, ByRef rgb_list() As Long, _
+                                        Optional ByVal particle_count As Long = 20, Optional ByVal stream_type As Long = 1, _
+                                        Optional ByVal alpha_blend As Boolean, Optional ByVal alive_counter As Long = -1, _
+                                        Optional ByVal frame_speed As Single = 0.5, Optional ByVal ID As Long, _
+                                        Optional ByVal x1 As Integer, Optional ByVal y1 As Integer, Optional ByVal angle As Integer, _
+                                        Optional ByVal vecx1 As Integer, Optional ByVal vecx2 As Integer, _
+                                        Optional ByVal vecy1 As Integer, Optional ByVal vecy2 As Integer, _
+                                        Optional ByVal life1 As Integer, Optional ByVal life2 As Integer, _
+                                        Optional ByVal fric As Integer, Optional ByVal spin_speedL As Single, _
+                                        Optional ByVal gravity As Boolean, Optional grav_strength As Long, _
+                                        Optional bounce_strength As Long, Optional ByVal x2 As Integer, Optional ByVal y2 As Integer, _
+                                        Optional ByVal XMove As Boolean, Optional ByVal move_x1 As Integer, Optional ByVal move_x2 As Integer, _
+                                        Optional ByVal move_y1 As Integer, Optional ByVal move_y2 As Integer, Optional ByVal YMove As Boolean, _
+                                        Optional ByVal spin_speedH As Single, Optional ByVal spin As Boolean, Optional Radio As Integer)
+'**************************************************************
+'Author: Augusto José Rando
+'**************************************************************
+    Dim char_part_free_index As Integer
+    
+    'If Char_Particle_Group_Find(char_index, stream_type) Then Exit Function ' hay que ver si dejar o sacar esto...
+    If Not Char_Check(char_index) Then Exit Function
+    char_part_free_index = Char_Particle_Group_Next_Open(char_index)
+    
+    If char_part_free_index > 0 Then
+        Char_Particle_Group_Create = Particle_Group_Next_Open
+        Char_Particle_Group_Make Char_Particle_Group_Create, char_index, char_part_free_index, particle_count, stream_type, grh_index_list(), rgb_list(), alpha_blend, alive_counter, frame_speed, ID, x1, y1, angle, vecx1, vecx2, vecy1, vecy2, life1, life2, fric, spin_speedL, gravity, grav_strength, bounce_strength, x2, y2, XMove, move_x1, move_x2, move_y1, move_y2, YMove, spin_speedH, spin, Radio
+    End If
+
+End Function
+ 
+Public Function Particle_Group_Remove(ByVal particle_group_index As Long) As Boolean
+'*****************************************************************
+'Author: Aaron Perkins
+'Last Modify Date: 1/04/2003
+'
+'*****************************************************************
+    'Make sure it's a legal index
+    If Particle_Group_Check(particle_group_index) Then
+        Particle_Group_Destroy particle_group_index
+        Particle_Group_Remove = True
+    End If
+End Function
+ 
+Public Function Char_Particle_Group_Remove(ByVal char_index As Integer, ByVal stream_type As Long)
+'**************************************************************
+'Author: Augusto José Rando
+'**************************************************************
+    Dim char_part_index As Integer
+    
+    If Char_Check(char_index) Then
+        char_part_index = Char_Particle_Group_Find(char_index, stream_type)
+        If char_part_index = -1 Then Exit Function
+        Call Particle_Group_Remove(char_part_index)
+    End If
+
+End Function
+ 
+Public Function Particle_Group_Remove_All() As Boolean
+'*****************************************************************
+'Author: Aaron Perkins
+'Last Modify Date: 1/04/2003
+'
+'*****************************************************************
+    Dim Index As Long
+    
+    For Index = 1 To particle_group_last
+        'Make sure it's a legal index
+        If Particle_Group_Check(Index) Then
+            Particle_Group_Destroy Index
+        End If
+    Next Index
+    
+    Particle_Group_Remove_All = True
+End Function
+
+Public Function Char_Particle_Group_Remove_All(ByVal char_index As Integer)
+'**************************************************************
+'Author: Augusto José Rando
+'**************************************************************
+    Dim i As Integer
+    
+    If Char_Check(char_index) And Not charlist(char_index).particle_count = 0 Then
+        For i = 1 To UBound(charlist(char_index).particle_group)
+            If charlist(char_index).particle_group(i) <> 0 Then Call Particle_Group_Remove(charlist(char_index).particle_group(i))
+        Next i
+        Erase charlist(char_index).particle_group
+        charlist(char_index).particle_count = 0
+    End If
+    
+End Function
+ 
+Public Function Particle_Group_Find(ByVal ID As Long) As Long
+'*****************************************************************
+'Author: Aaron Perkins
+'Last Modify Date: 1/04/2003
+'Find the index related to the handle
+'*****************************************************************
+On Error GoTo ErrorHandler:
+    Dim loopc As Long
+    
+    loopc = 1
+    Do Until particle_group_list(loopc).ID = ID
+        If loopc = particle_group_last Then
+            Particle_Group_Find = 0
+            Exit Function
+        End If
+        loopc = loopc + 1
+    Loop
+    
+    Particle_Group_Find = loopc
+Exit Function
+ErrorHandler:
+    Particle_Group_Find = 0
+End Function
+ 
+Private Function Char_Particle_Group_Find(ByVal char_index As Integer, ByVal stream_type As Long) As Integer
+'*****************************************************************
+'Author: Augusto José Rando
+'Modified: returns slot or -1
+'*****************************************************************
+
+Dim i As Integer
+
+For i = 1 To charlist(char_index).particle_count
+    If particle_group_list(charlist(char_index).particle_group(i)).stream_type = stream_type Then
+        Char_Particle_Group_Find = charlist(char_index).particle_group(i)
+        Exit Function
+    End If
+Next i
+
+Char_Particle_Group_Find = -1
+
+End Function
+Public Function Particle_Get_Type(ByVal particle_group_index As Long) As Byte
+On Error GoTo ErrorHandler:
+    Particle_Get_Type = particle_group_list(particle_group_index).stream_type
+Exit Function
+ErrorHandler:
+    Particle_Get_Type = 0
+End Function
+Private Sub Particle_Group_Destroy(ByVal particle_group_index As Long)
+'**************************************************************
+'Author: Aaron Perkins
+'Last Modify Date: 10/07/2002
+'
+'**************************************************************
+On Error Resume Next
+    Dim temp As particle_group
+    Dim i As Integer
+    
+    If particle_group_list(particle_group_index).map_x > 0 And particle_group_list(particle_group_index).map_y > 0 Then
+        MapData(particle_group_list(particle_group_index).map_x, particle_group_list(particle_group_index).map_y).particle_group_index = 0
+    ElseIf particle_group_list(particle_group_index).char_index Then
+        If Char_Check(particle_group_list(particle_group_index).char_index) Then
+            For i = 1 To charlist(particle_group_list(particle_group_index).char_index).particle_count
+                If charlist(particle_group_list(particle_group_index).char_index).particle_group(i) = particle_group_index Then
+                    charlist(particle_group_list(particle_group_index).char_index).particle_group(i) = 0
+                    Exit For
+                End If
+            Next i
+        End If
+    End If
+    
+    particle_group_list(particle_group_index) = temp
+    
+    'Update array size
+    If particle_group_index = particle_group_last Then
+        Do Until particle_group_list(particle_group_last).Active
+            particle_group_last = particle_group_last - 1
+            If particle_group_last = 0 Then
+                particle_group_count = 0
+                Exit Sub
+            End If
+        Loop
+        Debug.Print particle_group_last & "," & UBound(particle_group_list)
+        ReDim Preserve particle_group_list(1 To particle_group_last) As particle_group
+    End If
+    particle_group_count = particle_group_count - 1
+End Sub
+
+ 
+Private Sub Particle_Group_Make(ByVal particle_group_index As Long, ByVal map_x As Integer, ByVal map_y As Integer, _
+                                ByVal particle_count As Long, ByVal stream_type As Long, ByRef grh_index_list() As Long, ByRef rgb_list() As Long, _
+                                Optional ByVal alpha_blend As Boolean, Optional ByVal alive_counter As Long = -1, _
+                                Optional ByVal frame_speed As Single = 0.5, Optional ByVal ID As Long, _
+                                Optional ByVal x1 As Integer, Optional ByVal y1 As Integer, Optional ByVal angle As Integer, _
+                                Optional ByVal vecx1 As Integer, Optional ByVal vecx2 As Integer, _
+                                Optional ByVal vecy1 As Integer, Optional ByVal vecy2 As Integer, _
+                                Optional ByVal life1 As Integer, Optional ByVal life2 As Integer, _
+                                Optional ByVal fric As Integer, Optional ByVal spin_speedL As Single, _
+                                Optional ByVal gravity As Boolean, Optional grav_strength As Long, _
+                                Optional bounce_strength As Long, Optional ByVal x2 As Integer, Optional ByVal y2 As Integer, _
+                                Optional ByVal XMove As Boolean, Optional ByVal move_x1 As Integer, Optional ByVal move_x2 As Integer, _
+                                Optional ByVal move_y1 As Integer, Optional ByVal move_y2 As Integer, Optional ByVal YMove As Boolean, _
+                                Optional ByVal spin_speedH As Single, Optional ByVal spin As Boolean, Optional grh_resize As Boolean, _
+                                Optional grh_resizex As Integer, Optional grh_resizey As Integer, Optional Radio As Integer)
+                               
+'*****************************************************************
+'Author: Aaron Perkins
+'Modified by: Ryan Cain (Onezero)
+'Last Modify Date: 5/15/2003
+'Makes a new particle effect
+'Modified by Juan Martín Sotuyo Dodero
+'*****************************************************************
+    'Update array size
+    If particle_group_index > particle_group_last Then
+        particle_group_last = particle_group_index
+        ReDim Preserve particle_group_list(1 To particle_group_last)
+    End If
+    particle_group_count = particle_group_count + 1
+   
+    'Make active
+    particle_group_list(particle_group_index).Active = True
+   
+    'Map pos
+    If (map_x <> -1) And (map_y <> -1) Then
+        particle_group_list(particle_group_index).map_x = map_x
+        particle_group_list(particle_group_index).map_y = map_y
+    End If
+   
+    'Grh list
+    ReDim particle_group_list(particle_group_index).grh_index_list(1 To UBound(grh_index_list))
+    particle_group_list(particle_group_index).grh_index_list() = grh_index_list()
+    particle_group_list(particle_group_index).grh_index_count = UBound(grh_index_list)
+    
+    particle_group_list(particle_group_index).Radio = Radio
+   
+    'Sets alive vars
+    If alive_counter = -1 Then
+        particle_group_list(particle_group_index).alive_counter = -1
+        particle_group_list(particle_group_index).never_die = True
+    Else
+        particle_group_list(particle_group_index).alive_counter = alive_counter
+        particle_group_list(particle_group_index).never_die = False
+    End If
+   
+    'alpha blending
+    particle_group_list(particle_group_index).alpha_blend = alpha_blend
+   
+    'stream type
+    particle_group_list(particle_group_index).stream_type = stream_type
+   
+    'speed
+    particle_group_list(particle_group_index).frame_speed = frame_speed
+   
+    particle_group_list(particle_group_index).x1 = x1
+    particle_group_list(particle_group_index).y1 = y1
+    particle_group_list(particle_group_index).x2 = x2
+    particle_group_list(particle_group_index).y2 = y2
+    particle_group_list(particle_group_index).angle = angle
+    particle_group_list(particle_group_index).vecx1 = vecx1
+    particle_group_list(particle_group_index).vecx2 = vecx2
+    particle_group_list(particle_group_index).vecy1 = vecy1
+    particle_group_list(particle_group_index).vecy2 = vecy2
+    particle_group_list(particle_group_index).life1 = life1
+    particle_group_list(particle_group_index).life2 = life2
+    particle_group_list(particle_group_index).fric = fric
+    particle_group_list(particle_group_index).spin = spin
+    particle_group_list(particle_group_index).spin_speedL = spin_speedL
+    particle_group_list(particle_group_index).spin_speedH = spin_speedH
+    particle_group_list(particle_group_index).gravity = gravity
+    particle_group_list(particle_group_index).grav_strength = grav_strength
+    particle_group_list(particle_group_index).bounce_strength = bounce_strength
+    particle_group_list(particle_group_index).XMove = XMove
+    particle_group_list(particle_group_index).YMove = YMove
+    particle_group_list(particle_group_index).move_x1 = move_x1
+    particle_group_list(particle_group_index).move_x2 = move_x2
+    particle_group_list(particle_group_index).move_y1 = move_y1
+    particle_group_list(particle_group_index).move_y2 = move_y2
+   
+    particle_group_list(particle_group_index).rgb_list(0) = rgb_list(0)
+    particle_group_list(particle_group_index).rgb_list(1) = rgb_list(1)
+    particle_group_list(particle_group_index).rgb_list(2) = rgb_list(2)
+    particle_group_list(particle_group_index).rgb_list(3) = rgb_list(3)
+   
+    'handle
+    particle_group_list(particle_group_index).ID = ID
+   
+    'create particle stream
+    particle_group_list(particle_group_index).particle_count = particle_count
+    ReDim particle_group_list(particle_group_index).particle_stream(1 To particle_count)
+   
+    'plot particle group on map
+    If (map_x <> -1) And (map_y <> -1) Then
+        MapData(map_x, map_y).particle_group_index = particle_group_index
+    End If
+   
+End Sub
+
+Private Sub Char_Particle_Group_Make(ByVal particle_group_index As Long, ByVal char_index As Integer, ByVal particle_char_index As Integer, _
+                                ByVal particle_count As Long, ByVal stream_type As Long, ByRef grh_index_list() As Long, ByRef rgb_list() As Long, _
+                                Optional ByVal alpha_blend As Boolean, Optional ByVal alive_counter As Long = -1, _
+                                Optional ByVal frame_speed As Single = 0.5, Optional ByVal ID As Long, _
+                                Optional ByVal x1 As Integer, Optional ByVal y1 As Integer, Optional ByVal angle As Integer, _
+                                Optional ByVal vecx1 As Integer, Optional ByVal vecx2 As Integer, _
+                                Optional ByVal vecy1 As Integer, Optional ByVal vecy2 As Integer, _
+                                Optional ByVal life1 As Integer, Optional ByVal life2 As Integer, _
+                                Optional ByVal fric As Integer, Optional ByVal spin_speedL As Single, _
+                                Optional ByVal gravity As Boolean, Optional grav_strength As Long, _
+                                Optional bounce_strength As Long, Optional ByVal x2 As Integer, Optional ByVal y2 As Integer, _
+                                Optional ByVal XMove As Boolean, Optional ByVal move_x1 As Integer, Optional ByVal move_x2 As Integer, _
+                                Optional ByVal move_y1 As Integer, Optional ByVal move_y2 As Integer, Optional ByVal YMove As Boolean, _
+                                Optional ByVal spin_speedH As Single, Optional ByVal spin As Boolean, Optional Radio As Integer)
+                                
+'*****************************************************************
+'Author: Aaron Perkins
+'Modified by: Ryan Cain (Onezero)
+'Last Modify Date: 5/15/2003
+'Makes a new particle effect
+'Modified by Juan Martín Sotuyo Dodero
+'*****************************************************************
+    'Update array size
+    If particle_group_index > particle_group_last Then
+        particle_group_last = particle_group_index
+        ReDim Preserve particle_group_list(1 To particle_group_last)
+    End If
+    particle_group_count = particle_group_count + 1
+    
+    'Make active
+    particle_group_list(particle_group_index).Active = True
+    
+    'Char index
+    particle_group_list(particle_group_index).char_index = char_index
+    
+    'Grh list
+    ReDim particle_group_list(particle_group_index).grh_index_list(1 To UBound(grh_index_list))
+    particle_group_list(particle_group_index).grh_index_list() = grh_index_list()
+    particle_group_list(particle_group_index).grh_index_count = UBound(grh_index_list)
+    
+    particle_group_list(particle_group_index).Radio = Radio
+   
+    'Sets alive vars
+    If alive_counter = -1 Then
+        particle_group_list(particle_group_index).alive_counter = -1
+        particle_group_list(particle_group_index).never_die = True
+    Else
+        particle_group_list(particle_group_index).alive_counter = alive_counter
+        particle_group_list(particle_group_index).never_die = False
+    End If
+   
+    'alpha blending
+    particle_group_list(particle_group_index).alpha_blend = alpha_blend
+   
+    'stream type
+    particle_group_list(particle_group_index).stream_type = stream_type
+   
+    'speed
+    particle_group_list(particle_group_index).frame_speed = frame_speed
+   
+    particle_group_list(particle_group_index).x1 = x1
+    particle_group_list(particle_group_index).y1 = y1
+    particle_group_list(particle_group_index).x2 = x2
+    particle_group_list(particle_group_index).y2 = y2
+    particle_group_list(particle_group_index).angle = angle
+    particle_group_list(particle_group_index).vecx1 = vecx1
+    particle_group_list(particle_group_index).vecx2 = vecx2
+    particle_group_list(particle_group_index).vecy1 = vecy1
+    particle_group_list(particle_group_index).vecy2 = vecy2
+    particle_group_list(particle_group_index).life1 = life1
+    particle_group_list(particle_group_index).life2 = life2
+    particle_group_list(particle_group_index).fric = fric
+    particle_group_list(particle_group_index).spin = spin
+    particle_group_list(particle_group_index).spin_speedL = spin_speedL
+    particle_group_list(particle_group_index).spin_speedH = spin_speedH
+    particle_group_list(particle_group_index).gravity = gravity
+    particle_group_list(particle_group_index).grav_strength = grav_strength
+    particle_group_list(particle_group_index).bounce_strength = bounce_strength
+    particle_group_list(particle_group_index).XMove = XMove
+    particle_group_list(particle_group_index).YMove = YMove
+    particle_group_list(particle_group_index).move_x1 = move_x1
+    particle_group_list(particle_group_index).move_x2 = move_x2
+    particle_group_list(particle_group_index).move_y1 = move_y1
+    particle_group_list(particle_group_index).move_y2 = move_y2
+   
+    particle_group_list(particle_group_index).rgb_list(0) = rgb_list(0)
+    particle_group_list(particle_group_index).rgb_list(1) = rgb_list(1)
+    particle_group_list(particle_group_index).rgb_list(2) = rgb_list(2)
+    particle_group_list(particle_group_index).rgb_list(3) = rgb_list(3)
+   
+    'handle
+    particle_group_list(particle_group_index).ID = ID
+   
+    'create particle stream
+    particle_group_list(particle_group_index).particle_count = particle_count
+    ReDim particle_group_list(particle_group_index).particle_stream(1 To particle_count)
+    
+    'plot particle group on char
+    charlist(char_index).particle_group(particle_char_index) = particle_group_index
+   
+End Sub
+
+Public Function Particle_Type_Get(ByVal particle_index As Long) As Long
+'*****************************************************************
+'Author: Juan Martín Sotuyo Dodero (juansotuyo@hotmail.com)
+'Last Modify Date: 8/27/2003
+'Returns the stream type of a particle stream
+'*****************************************************************
+    If Particle_Group_Check(particle_index) Then
+        Particle_Type_Get = particle_group_list(particle_index).stream_type
+    Else
+        Particle_Type_Get = 0
+    End If
+End Function
+Private Sub Particle_Group_Render(ByVal particle_group_index As Long, ByVal screen_x As Long, ByVal screen_y As Long)
+'*****************************************************************
+'Author: Aaron Perkins
+'Modified by: Ryan Cain (Onezero)
+'Modified by: Juan Martín Sotuyo Dodero
+'Last Modify Date: 5/15/2003
+'Renders a particle stream at a paticular screen point
+'*****************************************************************
+
+    Dim loopc As Long
+    Dim temp_rgb(0 To 3) As Long
+    Dim no_move As Boolean
+    
+    'Set colors
+    If UserMinHP = 0 Then
+        temp_rgb(0) = D3DColorARGB(particle_group_list(particle_group_index).alpha_blend, 255, 255, 255)
+        temp_rgb(1) = D3DColorARGB(particle_group_list(particle_group_index).alpha_blend, 255, 255, 255)
+        temp_rgb(2) = D3DColorARGB(particle_group_list(particle_group_index).alpha_blend, 255, 255, 255)
+        temp_rgb(3) = D3DColorARGB(particle_group_list(particle_group_index).alpha_blend, 255, 255, 255)
+    Else
+        temp_rgb(0) = particle_group_list(particle_group_index).rgb_list(0)
+        temp_rgb(1) = particle_group_list(particle_group_index).rgb_list(1)
+        temp_rgb(2) = particle_group_list(particle_group_index).rgb_list(2)
+        temp_rgb(3) = particle_group_list(particle_group_index).rgb_list(3)
+    End If
+    
+    If particle_group_list(particle_group_index).alive_counter Then
+    
+        'See if it is time to move a particle
+        particle_group_list(particle_group_index).frame_counter = particle_group_list(particle_group_index).frame_counter + timerTicksPerFrame
+        If particle_group_list(particle_group_index).frame_counter > particle_group_list(particle_group_index).frame_speed Then
+            particle_group_list(particle_group_index).frame_counter = 0
+            no_move = False
+        Else
+            no_move = True
+        End If
+    
+    
+        'If it's still alive render all the particles inside
+        For loopc = 1 To particle_group_list(particle_group_index).particle_count
+                
+        'Render particle
+            Particle_Render particle_group_list(particle_group_index).particle_stream(loopc), _
+                            screen_x, screen_y, _
+                            particle_group_list(particle_group_index).grh_index_list(Round(RandomNumber(1, particle_group_list(particle_group_index).grh_index_count), 0)), _
+                            temp_rgb(), _
+                            particle_group_list(particle_group_index).alpha_blend, no_move, _
+                            particle_group_list(particle_group_index).x1, particle_group_list(particle_group_index).y1, particle_group_list(particle_group_index).angle, _
+                            particle_group_list(particle_group_index).vecx1, particle_group_list(particle_group_index).vecx2, _
+                            particle_group_list(particle_group_index).vecy1, particle_group_list(particle_group_index).vecy2, _
+                            particle_group_list(particle_group_index).life1, particle_group_list(particle_group_index).life2, _
+                            particle_group_list(particle_group_index).fric, particle_group_list(particle_group_index).spin_speedL, _
+                            particle_group_list(particle_group_index).gravity, particle_group_list(particle_group_index).grav_strength, _
+                            particle_group_list(particle_group_index).bounce_strength, particle_group_list(particle_group_index).x2, _
+                            particle_group_list(particle_group_index).y2, particle_group_list(particle_group_index).XMove, _
+                            particle_group_list(particle_group_index).move_x1, particle_group_list(particle_group_index).move_x2, _
+                            particle_group_list(particle_group_index).move_y1, particle_group_list(particle_group_index).move_y2, _
+                            particle_group_list(particle_group_index).YMove, particle_group_list(particle_group_index).spin_speedH, _
+                            particle_group_list(particle_group_index).spin, particle_group_list(particle_group_index).Radio, _
+                            particle_group_list(particle_group_index).particle_count, loopc
+        Next loopc
+        
+        If no_move = False Then
+            'Update the group alive counter
+            If particle_group_list(particle_group_index).never_die = False Then
+                particle_group_list(particle_group_index).alive_counter = particle_group_list(particle_group_index).alive_counter - 1
+            End If
+        End If
+    
+    Else
+        'If it's dead destroy it
+        Particle_Group_Destroy particle_group_index
+    End If
+End Sub
+ 
+Private Sub Particle_Render(ByRef temp_particle As Particle, ByVal screen_x As Long, ByVal screen_y As Long, _
+                            ByVal grh_index As Long, ByRef rgb_list() As Long, _
+                            Optional ByVal alpha_blend As Boolean, Optional ByVal no_move As Boolean, _
+                            Optional ByVal x1 As Integer, Optional ByVal y1 As Integer, Optional ByVal angle As Integer, _
+                            Optional ByVal vecx1 As Integer, Optional ByVal vecx2 As Integer, _
+                            Optional ByVal vecy1 As Integer, Optional ByVal vecy2 As Integer, _
+                            Optional ByVal life1 As Integer, Optional ByVal life2 As Integer, _
+                            Optional ByVal fric As Integer, Optional ByVal spin_speedL As Single, _
+                            Optional ByVal gravity As Boolean, Optional grav_strength As Long, _
+                            Optional ByVal bounce_strength As Long, Optional ByVal x2 As Integer, Optional ByVal y2 As Integer, _
+                            Optional ByVal XMove As Boolean, Optional ByVal move_x1 As Integer, Optional ByVal move_x2 As Integer, _
+                            Optional ByVal move_y1 As Integer, Optional ByVal move_y2 As Integer, Optional ByVal YMove As Boolean, _
+                            Optional ByVal spin_speedH As Single, Optional ByVal spin As Boolean, _
+                            Optional ByVal Radio As Integer, Optional ByVal count As Integer, Optional ByVal Index As Integer)
+'**************************************************************
+'Author: Aaron Perkins
+'Modified by: Ryan Cain (Onezero)
+'Modified by: Juan Martín Sotuyo Dodero
+'Last Modify Date: 5/15/2003
+'**************************************************************
+    If no_move = False Then
+        If temp_particle.alive_counter = 0 Then
+            'Start new particle
+            InitGrh temp_particle.Grh, grh_index, alpha_blend
+            If Radio = 0 Then
+                temp_particle.X = RandomNumber(x1, x2)
+                temp_particle.Y = RandomNumber(y1, y2)
+            Else
+                temp_particle.X = (RandomNumber(x1, x2) + Radio) + Radio * Cos(PI * 2 * Index / count)
+                temp_particle.Y = (RandomNumber(y1, y2) + Radio) + Radio * Sin(PI * 2 * Index / count)
+            End If
+            temp_particle.X = RandomNumber(x1, x2) - (base_tile_size \ 2)
+            temp_particle.Y = RandomNumber(y1, y2) - (base_tile_size \ 2)
+            temp_particle.vector_x = RandomNumber(vecx1, vecx2)
+            temp_particle.vector_y = RandomNumber(vecy1, vecy2)
+            temp_particle.angle = angle
+            temp_particle.alive_counter = RandomNumber(life1, life2)
+            temp_particle.friction = fric
+        Else
+            'Continue old particle
+            'Do gravity
+            If gravity = True Then
+                temp_particle.vector_y = temp_particle.vector_y + grav_strength
+                If temp_particle.Y > 0 Then
+                    'bounce
+                    temp_particle.vector_y = bounce_strength
+                End If
+            End If
+            'Do rotation
+            If spin = True Then temp_particle.Grh.angle = temp_particle.Grh.angle + (RandomNumber(spin_speedL, spin_speedH) / 100)
+            If temp_particle.angle >= 360 Then
+                temp_particle.angle = 0
+            End If
+            
+            If XMove = True Then temp_particle.vector_x = RandomNumber(move_x1, move_x2)
+            If YMove = True Then temp_particle.vector_y = RandomNumber(move_y1, move_y2)
+        End If
+        
+        'Add in vector
+        temp_particle.X = temp_particle.X + (temp_particle.vector_x \ temp_particle.friction)
+        temp_particle.Y = temp_particle.Y + (temp_particle.vector_y \ temp_particle.friction)
+    
+        'decrement counter
+         temp_particle.alive_counter = temp_particle.alive_counter - 1
+    End If
+    
+'Draw it
+    If temp_particle.Grh.GrhIndex Then
+        DDrawTransGrhtoSurface temp_particle.Grh, temp_particle.X + screen_x, temp_particle.Y + screen_y, 1, 1, rgb_list(), 255, alpha_blend, temp_particle.Grh.angle
+    End If
+End Sub
+Private Function Particle_Group_Next_Open() As Long
+'*****************************************************************
+'Author: Aaron Perkins
+'Last Modify Date: 10/07/2002
+'
+'*****************************************************************
+On Error GoTo ErrorHandler:
+    Dim loopc As Long
+    
+    If particle_group_last = 0 Then
+        Particle_Group_Next_Open = 1
+        Exit Function
+    End If
+    
+    loopc = 1
+    Do Until particle_group_list(loopc).Active = False
+        If loopc = particle_group_last Then
+            Particle_Group_Next_Open = particle_group_last + 1
+            Exit Function
+        End If
+        loopc = loopc + 1
+    Loop
+    
+    Particle_Group_Next_Open = loopc
+
+Exit Function
+
+ErrorHandler:
+
+End Function
+ 
+Private Function Char_Particle_Group_Next_Open(ByVal char_index As Integer) As Integer
+'*****************************************************************
+'Author: Augusto José Rando
+'*****************************************************************
+On Error GoTo ErrorHandler:
+    Dim loopc As Long
+    
+    If charlist(char_index).particle_count = 0 Then
+        Char_Particle_Group_Next_Open = charlist(char_index).particle_count + 1
+        charlist(char_index).particle_count = Char_Particle_Group_Next_Open
+        ReDim Preserve charlist(char_index).particle_group(1 To Char_Particle_Group_Next_Open) As Long
+        Exit Function
+    End If
+    
+    loopc = 1
+    Do Until charlist(char_index).particle_group(loopc) = 0
+        If loopc = charlist(char_index).particle_count Then
+            Char_Particle_Group_Next_Open = charlist(char_index).particle_count + 1
+            charlist(char_index).particle_count = Char_Particle_Group_Next_Open
+            ReDim Preserve charlist(char_index).particle_group(1 To Char_Particle_Group_Next_Open) As Long
+            Exit Function
+        End If
+        loopc = loopc + 1
+    Loop
+    
+    Char_Particle_Group_Next_Open = loopc
+
+Exit Function
+
+ErrorHandler:
+    charlist(char_index).particle_count = 1
+    ReDim charlist(char_index).particle_group(1 To 1) As Long
+    Char_Particle_Group_Next_Open = 1
+
+End Function
+ 
+Private Function Particle_Group_Check(ByVal particle_group_index As Long) As Boolean
+'**************************************************************
+'Author: Aaron Perkins
+'Last Modify Date: 1/04/2003
+'
+'**************************************************************
+    'check index
+    If particle_group_index > 0 And particle_group_index <= particle_group_last Then
+        If particle_group_list(particle_group_index).Active Then
+            Particle_Group_Check = True
+        End If
+    End If
+End Function
+
+Public Function Map_Particle_Group_Get(ByVal map_x As Long, ByVal map_y As Long) As Long
+'*****************************************************************
+'Author: Aaron Perkins
+'Last Modify Date: 2/20/2003
+'Checks to see if a tile position has a particle_group_index and return it
+'*****************************************************************
+    If Map_In_Bounds(map_x, map_y) Then
+        Map_Particle_Group_Get = map_current.map_grid(map_x, map_y).particle_group_index
+    Else
+        Map_Particle_Group_Get = 0
+    End If
+End Function
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''/[PARTICULAS]''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''

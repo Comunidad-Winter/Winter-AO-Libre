@@ -1,78 +1,84 @@
 Attribute VB_Name = "Declaraciones"
-Option Explicit
-Public CastilloSUR As String 'CLAN DUEÑO
-Public CastilloNORTE As String 'CLAN DUEÑO
-Public CastilloESTE As String 'CLAN DUEÑO
-Public NPCReyCastle As Integer 'REY DEL CASTILLO
-Public SUR As Integer 'NUMERO DEL MAPABUSCAR:
-Public NORTE As Integer 'NUMERO DEL MAPABUSCAR:
-Public ESTE As Integer 'NUMERO DEL MAPABUSCAR:
-Public CuentaRegresiva As Integer
-''
-'Denuncias
-Public Denuncias As Boolean
 
-Public Const ClaveSeguridad As String * 18 = "LOR817W0I@KPFKY*"
-' Modulo de declaraciones. Aca hay de todo.
+Option Explicit
+
+''
+' Modulo de declaraciones. Aca hay de todo. <--- Lorwik> Hasta tu madre xD
 '
 
-'[Loopzer]
-Public SLac As Byte ' es el switch on/off
-
-Public Lac_Camina As Long
-Public Lac_Pociones As Long
-Public Lac_Pegar As Long
-Public Lac_Lanzar As Long
-Public Lac_Usar As Long
-Public Lac_Tirar As Long
-
-Public Type TLac
-    
-    LCaminar As New Cls_InterGTC
-    LPociones As New Cls_InterGTC
-    LPegar As New Cls_InterGTC
-    LUsar As New Cls_InterGTC
-    LTirar As New Cls_InterGTC
-    LLanzar As New Cls_InterGTC
-End Type
-
-'[/Loopzer]
-
-Public glob As Boolean
-Public MixedKey As Long
-Public ServerIp As String
-Public CrcSubKey As String
-Public GranPoder As Integer
-
-Type tEstadisticasDiarias
-    Segundos As Double
-    MaxUsuarios As Integer
-    Promedio As Integer
-End Type
-    
-Public DayStats As tEstadisticasDiarias
-
-#If SeguridadAlkon Then
-Public aDos As New clsAntiDoS
-#End If
+'**************Castillo**********************
+Public CastilloWINTER As String 'CLAN DUEÑO
+Public NPCReyCastle As Integer 'REY DEL CASTILLO
+Public WINTER As Integer 'NUMERO DEL MAPABUSCAR:
+'*******************************************
+'*****Climas*****
+Public Anocheceria As Byte
+'****************
+'*****Global*****
+Public GlobalAC As Boolean
+'****************
+'****Cuentas*****
+Public CuentaName As String
+'****************
+'*****HappyHour*****
+Public HappyHourAC As Boolean
+'****************
+'*****TITANES*******
+Public Titan As Boolean
+Public Invocadores(1 To 3) As Integer
+Public MapaTitan As Byte
+Public TitanIndex As Integer
+'********************
+'*****Denuncias******
+Public Denuncias As Boolean
+'********************
+'*Sistema de Torneos organizados*
+Public Hay_Torneo As Boolean
+Public MinLevel As Byte
+Public MaxLevel As Byte
+Public Cupos As Byte
+Public AutoSum As Byte
+Public mapa As Integer
+Public X As Byte
+Public Y As Byte
+Public Torneo_Inscriptos As Long
+'********************************
+'******Limpieza de Mundo*********
+Public LimpiezaTimerMinutos As Byte
+Public Const TimerCleanWorld As Byte = 60
+'********************************
 
 Public aClon As New clsAntiMassClon
 Public TrashCollector As New Collection
 
 Public Const MAXSPAWNATTEMPS = 60
-Public Const MAXUSERMATADOS = 9000000
-Public Const LoopAdEternum = 999
+Public Const INFINITE_LOOPS As Integer = -1
 Public Const FXSANGRE = 14
-Public Const FXXD = 46 'Carita xD
-Public Const FXFE = 47 'Carita Feliz
-Public Const FXTR = 48 'Carita Triste
-Public Const FXHOT = 52 'Carita Cliente
-Public Const FXBUA = 50 'Carita Llorando
-Public Const FXEA = 49  'Carita Groso (?)
-Public Const FXCON = 51 'Carita Confundido
-Public Const FXWTF = 52 'Carita WTF xD
+
+''
+' The color of chats over head of dead characters.
+Public Const CHAT_COLOR_DEAD_CHAR As Long = &HC0C0C0
+
+''
+' The color of yells made by any kind of game administrator.
+Public Const CHAT_COLOR_GM_YELL As Long = &HF82FF
+
+''
+' Coordinates for normal sounds (not 3D, like rain)
+Public Const NO_3D_SOUND As Byte = 0
 
 Public Const iFragataFantasmal = 87
+Public Const iFragataReal = 190
+Public Const iFragataCaos = 189
+Public Const iBarca = 84
+Public Const iGalera = 85
+Public Const iGaleon = 86
+Public Const iBarcaCiuda = 395
+Public Const iBarcaPk = 396
+Public Const iGaleraCiuda = 397
+Public Const iGaleraPk = 398
+Public Const iGaleonCiuda = 399
+Public Const iGaleonPk = 400
 
 Public Enum iMinerales
     HierroCrudo = 192
@@ -83,24 +89,63 @@ Public Enum iMinerales
     LingoteDeOro = 388
 End Enum
 
-
-Public Type tLlamadaGM
-    Usuario As String * 255
-    Desc As String * 255
-End Type
-
 Public Enum PlayerType
-    User = 0
-    Consejero = 1
-    SemiDios = 2
-    Dios = 3
-    Admin = 4
+    User = &H1
+    Consejero = &H2
+    SemiDios = &H4
+    Dios = &H8
+    Admin = &H10
+    RoleMaster = &H20
+    ChaosCouncil = &H40
+    RoyalCouncil = &H80
+End Enum
+
+Public Enum eClass
+    Mage = 1       'Mago
+    Cleric      'Clérigo
+    Warrior     'Guerrero
+    Assasin     'Asesino
+    Thief       'Ladrón
+    Bard        'Bardo
+    Druid       'Druida
+    Bandit      'Bandido
+    Paladin     'Paladín
+    Hunter      'Cazador
+    trabajador  'Trabajador
+    Pirat       'Pirata
+End Enum
+
+Public Enum eCiudad
+    cRamx = 1
+End Enum
+
+Public Enum eRaza
+    Humano = 1
+    Elfo
+    Drow
+    Gnomo
+    Enano
+    orco
+End Enum
+
+Enum eGenero
+    Hombre = 1
+    Mujer
+End Enum
+
+Public Enum eClanType
+    ct_RoyalArmy
+    ct_Evil
+    ct_Neutral
+    ct_GM
+    ct_Legal
+    ct_Criminal
 End Enum
 
 Public Const LimiteNewbie As Byte = 12
 
 Public Type tCabecera 'Cabecera de los con
-    Desc As String * 255
+    desc As String * 255
     crc As Long
     MagicWord As Long
 End Type
@@ -108,14 +153,17 @@ End Type
 Public MiCabecera As tCabecera
 
 'Barrin 3/10/03
-Public Const TIEMPO_INICIOMEDITAR As Byte = 3
+'Cambiado a 2 segundos el 30/11/07
+Public Const TIEMPO_INICIOMEDITAR As Integer = 2000
 
 Public Const NingunEscudo As Integer = 2
 Public Const NingunCasco As Integer = 2
 Public Const NingunArma As Integer = 2
-Public Const NingunAura As Integer = 2
+
 Public Const EspadaMataDragonesIndex As Integer = 402
 Public Const LAUDMAGICO As Integer = 696
+Public Const FLAUTAMAGICA As Integer = 208
+
 
 Public Const MAXMASCOTASENTRENADOR As Byte = 7
 
@@ -125,6 +173,16 @@ Public Enum FXIDs
     FXMEDITARMEDIANO = 5
     FXMEDITARGRANDE = 6
     FXMEDITARXGRANDE = 16
+    FXMEDITARXXGRANDE = 34
+    FXRESUCITAR = 9
+End Enum
+
+Public Enum ParticleIDs
+    ParticleMEDITARCHICO = 8
+    ParticleMEDITARMEDIANO = 14
+    ParticleMEDITARGRANDE = 15
+    ParticleMEDITARXGRANDE = 16
+    PARTICLEMEDITARXXGRANDE = 35
 End Enum
 
 Public Const TIEMPO_CARCEL_PIQUETE As Long = 10
@@ -132,7 +190,7 @@ Public Const TIEMPO_CARCEL_PIQUETE As Long = 10
 ''
 ' TRIGGERS
 '
-' @param NADA nada
+' @param Ninguno Ninguno
 ' @param BAJOTECHO bajo techo
 ' @param trigger_2 ???
 ' @param POSINVALIDA los npcs no pueden pisar tiles con este trigger
@@ -141,7 +199,7 @@ Public Const TIEMPO_CARCEL_PIQUETE As Long = 10
 ' @param ZONAPELEA al pelear en este trigger no se caen las cosas y no cambia el estado de ciuda o crimi
 '
 Public Enum eTrigger
-    NADA = 0
+    Ninguno = 0
     BAJOTECHO = 1
     trigger_2 = 2
     POSINVALIDA = 3
@@ -165,12 +223,29 @@ Public Enum eTrigger6
 End Enum
 
 'TODO : Reemplazar por un enum
-Public Const Bosque = "BOSQUE"
-Public Const Nieve = "NIEVE"
-Public Const Desierto = "DESIERTO"
-Public Const Ciudad = "CIUDAD"
-Public Const Campo = "CAMPO"
-Public Const Dungeon = "DUNGEON"
+Public Const Bosque As String = "BOSQUE"
+Public Const Nieve As String = "NIEVE"
+Public Const Desierto As String = "DESIERTO"
+Public Const Ciudad As String = "CIUDAD"
+Public Const Campo As String = "CAMPO"
+Public Const Dungeon As String = "DUNGEON"
+
+Public Enum eTerrain
+    terrain_bosque = 0
+    terrain_nieve = 1
+    terrain_desierto = 2
+    terrain_ciudad = 3
+    terrain_campo = 4
+    terrain_dungeon = 5
+End Enum
+
+Public Enum eRestrict
+    restrict_no = 0
+    restrict_newbie = 1
+    restrict_armada = 2
+    restrict_caos = 3
+    restrict_faccion = 4
+End Enum
 
 ' <<<<<< Targets >>>>>>
 Public Enum TargetType
@@ -187,8 +262,6 @@ Public Enum TipoHechizo
     uMaterializa = 3    'Nose usa
     uInvocacion = 4
 End Enum
-
-Public Const DRAGON As Integer = 6
 
 Public Const MAX_MENSAJES_FORO As Byte = 35
 
@@ -219,9 +292,17 @@ End Enum
 
 Public Const Guardias As Integer = 6
 
+Public Const MAX_ORO_EDIT As Long = 5000000
+
+
+Public Const STANDARD_BOUNTY_HUNTER_MESSAGE As String = "Se te ha otorgado un premio por ayudar al proyecto reportando bugs, el mismo está disponible en tu bóveda."
+Public Const TAG_USER_INVISIBLE As String = "[INVISIBLE]"
+
 Public Const MAXREP As Long = 6000000
 Public Const MAXORO As Long = 90000000
-Public Const MAXEXP As Long = 99999999
+Public Const MAXEXP As Long = 999999990
+
+Public Const MAXUSERMATADOS As Long = 65000
 
 Public Const MAXATRIBUTOS As Byte = 35
 Public Const MINATRIBUTOS As Byte = 6
@@ -256,10 +337,13 @@ Public Enum eNPCType
     GuardiaReal = 2
     Entrenador = 3
     Banquero = 4
+    Noble = 5
+    DRAGON = 6
     Timbero = 7
     Guardiascaos = 8
-    Pirata = 9
-    Cirujano = 10
+    ResucitadorNewbie = 9
+    Pirata = 10
+    Canjeros = 11
 End Enum
 
 Public Const MIN_APUÑALAR As Byte = 10
@@ -268,7 +352,7 @@ Public Const MIN_APUÑALAR As Byte = 10
 
 ''
 ' Cantidad de skills
-Public Const NUMSKILLS As Byte = 22
+Public Const NUMSKILLS As Byte = 21
 
 ''
 ' Cantidad de Atributos
@@ -276,7 +360,7 @@ Public Const NUMATRIBUTOS As Byte = 5
 
 ''
 ' Cantidad de Clases
-Public Const NUMCLASES As Byte = 17
+Public Const NUMCLASES As Byte = 12
 
 ''
 ' Cantidad de Razas
@@ -286,10 +370,6 @@ Public Const NUMRAZAS As Byte = 6
 ''
 ' Valor maximo de cada skill
 Public Const MAXSKILLPOINTS As Byte = 100
-
-''
-' Constante para indicar que se esta usando ORO
-Public Const FLAGORO As Integer = 777
 
 ''
 'Direccion
@@ -317,9 +397,6 @@ Public Const vlCAZADOR As Integer = 5
 Public Const vlNoble As Integer = 5
 Public Const vlLadron As Integer = 25
 Public Const vlProleta As Integer = 2
- 
-Public Const iCuerpoEmbarazada As Integer = 53
- 
 
 '%%%%%%%%%% CONSTANTES DE INDICES %%%%%%%%%%%%%%%
 Public Const iCuerpoMuerto As Integer = 8
@@ -327,26 +404,27 @@ Public Const iCabezaMuerto As Integer = 500
 
 
 Public Const iORO As Byte = 12
-Public Const Pescado As Byte = 139
 
-Public Subastando As Boolean
-Public Subastante As String
-Public subastCant As Integer
-Public subastObj As String
-Public subastPrice As Long
-Public subastObjIndex As Integer
-Public subastLastOffer As String
+'Sistema de Pesca
+Public Const Pargo As Byte = 139
+Public Const Merluza As Integer = 546
+Public Const Lisa As Integer = 544
+Public Const PezEspada As Integer = 545
+Public Const Hipocampo As Integer = 775
 
-Public Enum PECES_POSIBLES
-    PESCADO1 = 139
-    PESCADO2 = 544
-    PESCADO3 = 545
-    PESCADO4 = 546
+'MaxTus
+Public Enum eMakro '(El 0 es no activado)
+    Ninguno = 0
+    Pescar = 1
+    PescarRed = 2
+    Talar = 3
+    Minar = 4
+    Lingotear = 5
 End Enum
 
 '%%%%%%%%%% CONSTANTES DE INDICES %%%%%%%%%%%%%%%
 Public Enum eSkill
-    Suerte = 1
+    Equitacion = 1
     Magia = 2
     Robar = 3
     Tacticas = 4
@@ -365,9 +443,8 @@ Public Enum eSkill
     Liderazgo = 17
     Domar = 18
     Proyectiles = 19
-    Wresterling = 20
-    navegacion = 21
-    Equitacion = 22
+    Wrestling = 20
+    Navegacion = 21
 End Enum
 
 Public Const FundirMetal = 88
@@ -384,11 +461,10 @@ Public Const AdicionalHPGuerrero As Byte = 2 'HP adicionales cuando sube de nive
 Public Const AdicionalHPCazador As Byte = 1 'HP adicionales cuando sube de nivel
 
 Public Const AumentoSTDef As Byte = 15
+Public Const AumentoStBandido As Byte = AumentoSTDef + 3
 Public Const AumentoSTLadron As Byte = AumentoSTDef + 3
 Public Const AumentoSTMago As Byte = AumentoSTDef - 1
-Public Const AumentoSTLeñador As Byte = AumentoSTDef + 23
-Public Const AumentoSTPescador As Byte = AumentoSTDef + 20
-Public Const AumentoSTMinero As Byte = AumentoSTDef + 25
+Public Const AumentoSTTrabajador As Byte = AumentoSTDef + 25
 
 'Tamaño del mapa
 Public Const XMaxMapSize As Byte = 100
@@ -427,6 +503,7 @@ Public Const SND_SACARARMA As Byte = 25
 Public Const SND_ESCUDO As Byte = 37
 Public Const MARTILLOHERRERO As Byte = 41
 Public Const LABUROCARPINTERO As Byte = 42
+Public Const PROYECTIL As Byte = 249
 Public Const SND_BEBER As Byte = 46
 
 ''
@@ -435,7 +512,12 @@ Public Const MAX_INVENTORY_OBJS As Integer = 10000
 
 ''
 ' Cantidad de "slots" en el inventario
-Public Const MAX_INVENTORY_SLOTS As Byte = 20
+Public Const MAX_INVENTORY_SLOTS As Byte = 25
+
+''
+' Constante para indicar que se esta usando ORO
+Public Const FLAGORO As Integer = MAX_INVENTORY_SLOTS + 1
+
 
 ' CATEGORIAS PRINCIPALES
 Public Enum eOBJType
@@ -455,7 +537,7 @@ Public Enum eOBJType
     otFogata = 15
     otESCUDO = 16
     otCASCO = 17
-    otHerramientas = 18
+    otAnillo = 18
     otTeleport = 19
     otYacimiento = 22
     otMinerales = 23
@@ -470,16 +552,15 @@ Public Enum eOBJType
     otManchas = 35          'No se usa
     otPasajes = 36
     otMonturas = 37
-    otPiedraMagica = 38
-    otPARAA = 39
+    otPiedraHogar = 38
+    otMetaPot = 39
     otCualquiera = 1000
 End Enum
 
 'Texto
 Public Const FONTTYPE_TALK As String = "~255~255~255~0~0"
-Public Const FONTTYPE_CELESTE_NEGRITA As String = "~0~128~255~1~0"
 Public Const FONTTYPE_FIGHT As String = "~255~0~0~1~0"
-Public Const FONTTYPE_WARNING As String = "~32~51~223~1~1"
+Public Const FONTTYPE_WARNING As String = "~233~22~28~1~1"
 Public Const FONTTYPE_INFO As String = "~65~190~156~0~0"
 Public Const FONTTYPE_INFOBOLD As String = "~65~190~156~1~0"
 Public Const FONTTYPE_EJECUCION As String = "~130~130~130~1~0"
@@ -493,22 +574,15 @@ Public Const FONTTYPE_CONSEJOCAOS As String = "~255~60~00~1~0"
 Public Const FONTTYPE_CONSEJOVesA As String = "~0~200~255~1~0"
 Public Const FONTTYPE_CONSEJOCAOSVesA As String = "~255~50~0~1~0"
 Public Const FONTTYPE_CENTINELA As String = "~0~255~0~1~0"
-Public Const FONTTYPE_CONQUISTA As String = "~187~177~15~1~1"
-
-'Lorwik
-Public Const FONTTYPE_FENIX = "~255~150~50~1~0"
-Public Const FONTTYPE_GM As String = "~255~255~255~1~0"
-Public Const FONTTYPE_LORWIK As String = "~255~255~255~0~1"
-Public Const FONTTYPE_LORWIKG As String = "~0~255~0~0~1"
-Public Const FONTTYPE_LORWIKM As String = "~77~113~153~0~1"
-'Standelf
-Public Const FONTTYPE_ADVERTENCIAS As String = "~128~0~0~1~1"
+Public Const FONTTYPE_GLOBAL As String = "~139~248~244~0~1"
+Public Const FONTTYPE_GLD As String = "~204~193~1151~0~1"
+Public Const FONTTYPE_EXP As String = "~32~51~223~1~1"
 
 'Estadisticas
 Public Const STAT_MAXELV As Byte = 50
-Public Const STAT_MAXHP As Integer = 600
+Public Const STAT_MAXHP As Integer = 999
 Public Const STAT_MAXSTA As Integer = 999
-Public Const STAT_MAXMAN As Integer = 3000
+Public Const STAT_MAXMAN As Integer = 9999
 Public Const STAT_MAXHIT_UNDER36 As Byte = 99
 Public Const STAT_MAXHIT_OVER36 As Integer = 999
 Public Const STAT_MAXDEF As Byte = 99
@@ -522,28 +596,21 @@ Public Const STAT_MAXDEF As Byte = 99
 ' **************************************************************
 
 Public Type tHechizo
-
-   TeleportX As String
-   
-   TeleportXMap As String
-   TeleportXX As String
-   TeleportXY As String
-
     Nombre As String
-    Desc As String
+    desc As String
     PalabrasMagicas As String
-    ExclusivoClase As String
     
     HechizeroMsg As String
     TargetMsg As String
     PropioMsg As String
     
-    Resis As Byte
+'    Resis As Byte
     
     Tipo As TipoHechizo
     
     WAV As Integer
     FXgrh As Integer
+    Particle As Integer
     loops As Byte
     
     SubeHP As Byte
@@ -579,7 +646,6 @@ Public Type tHechizo
     MaxCarisma As Integer
     
     Invisibilidad As Byte
-
     Paraliza As Byte
     Inmoviliza As Byte
     RemoverParalisis As Byte
@@ -598,10 +664,10 @@ Public Type tHechizo
     
     Invoca As Byte
     NumNpc As Integer
-    Cant As Integer
-    
-    Materializa As Byte
-    ItemIndex As Byte
+    cant As Integer
+
+'    Materializa As Byte
+'    ItemIndex As Byte
     
     MinSkill As Integer
     ManaRequerido As Integer
@@ -613,22 +679,24 @@ Public Type tHechizo
     
     NeedStaff As Integer
     StaffAffected As Boolean
-    NBaculo As Byte
+    
+    Area As Integer
+    ExclusivoClase As String
 End Type
 
 Public Type LevelSkill
     LevelValue As Integer
 End Type
 
-Public Type UserOBJ
-ObjIndex As Integer
-Amount As Integer
-Equipped As Byte
-ProbTirar As Byte
+Public Type UserObj
+    ObjIndex As Integer
+    amount As Integer
+    Equipped As Byte
+    Probabilidad As Integer
 End Type
 
 Public Type Inventario
-    Object(1 To MAX_INVENTORY_SLOTS) As UserOBJ
+    Object(1 To MAX_INVENTORY_SLOTS) As UserObj
     WeaponEqpObjIndex As Integer
     WeaponEqpSlot As Byte
     ArmourEqpObjIndex As Integer
@@ -639,8 +707,8 @@ Public Type Inventario
     CascoEqpSlot As Byte
     MunicionEqpObjIndex As Integer
     MunicionEqpSlot As Byte
-    HerramientaEqpObjIndex As Integer
-    HerramientaEqpSlot As Integer
+    AnilloEqpObjIndex As Integer
+    AnilloEqpSlot As Byte
     BarcoObjIndex As Integer
     BarcoSlot As Byte
     MonturaObjIndex As Integer
@@ -660,7 +728,7 @@ Public Type Position
 End Type
 
 Public Type WorldPos
-    Map As Integer
+    map As Integer
     X As Integer
     Y As Integer
 End Type
@@ -673,10 +741,9 @@ End Type
 
 'Datos de user o npc
 Public Type Char
-Aura As Integer
     CharIndex As Integer
     Head As Integer
-    Body As Integer
+    body As Integer
     
     WeaponAnim As Integer
     ShieldAnim As Integer
@@ -685,18 +752,16 @@ Aura As Integer
     FX As Integer
     loops As Integer
     
-    Heading As eHeading
+    Particle As Integer
+    
+    heading As eHeading
+    
+    Aura As Integer
 End Type
 
 'Tipos de objetos
 Public Type ObjData
-Aura As Integer
-' Le damos los atributos al objeto.
-mapa As Integer
-X As Integer
-Y As Integer
-
-    name As String 'Nombre del obj
+    Name As String 'Nombre del obj
     
     OBJType As eOBJType 'Tipo enum que determina cuales son las caract del obj
     
@@ -715,12 +780,11 @@ Y As Integer
     MinHP As Integer ' Minimo puntos de vida
     MaxHP As Integer ' Maximo puntos de vida
     
-    
     MineralIndex As Integer
     LingoteInex As Integer
     
     
-    proyectil As Integer
+    PROYECTIL As Integer
     Municion As Integer
     
     Crucial As Byte
@@ -728,6 +792,14 @@ Y As Integer
     
     'Puntos de Stamina que da
     MinSta As Integer ' Minimo puntos de stamina
+
+    'Pasajes
+    DesdeMap As Long
+    HastaMap As Long
+    HastaY As Byte
+    HastaX As Byte
+    NecesitaSkill As Byte
+    CantidadSkill As Byte
     
     'Pociones
     TipoPocion As Byte
@@ -750,12 +822,11 @@ Y As Integer
     Ropaje As Integer 'Indice del grafico del ropaje
     
     WeaponAnim As Integer ' Apunta a una anim de armas
+    WeaponRazaEnanaAnim As Integer
     ShieldAnim As Integer ' Apunta a una anim de escudo
     CascoAnim As Integer
     
     Valor As Long     ' Precio
-    
-    Minlvl As Integer
     
     Cerrada As Integer
     Llave As Byte
@@ -766,9 +837,14 @@ Y As Integer
     IndexCerradaLlave As Integer
     
     RazaEnana As Byte
+    RazaDrow As Byte
+    RazaElfa As Byte
+    RazaGnoma As Byte
+    RazaHumana As Byte
+    RazaOrca As Byte
+    
     Mujer As Byte
     Hombre As Byte
-    NoSubasta As Byte
     
     Envenena As Byte
     Paraliza As Byte
@@ -778,7 +854,7 @@ Y As Integer
     LingH As Integer
     LingO As Integer
     LingP As Integer
-    Madera As Integer
+    Madera As Long
     
     SkHerreria As Integer
     SkCarpinteria As Integer
@@ -786,7 +862,7 @@ Y As Integer
     texto As String
     
     'Clases que no tienen permitido usar este obj
-    ClaseProhibida(1 To NUMCLASES) As String
+    ClaseProhibida(1 To NUMCLASES) As eClass
     
     Snd1 As Integer
     Snd2 As Integer
@@ -802,12 +878,61 @@ Y As Integer
     DefensaMagicaMax As Integer
     DefensaMagicaMin As Integer
     Refuerzo As Byte
+    
+    Log As Byte 'es un objeto que queremos loguear? Pablo (ToxicWaste) 07/09/07
+    NoLog As Byte 'es un objeto que esta prohibido loguear?
+    
+    Canjeable As Byte
+    Puntos As Long
+    
+    Nivel As Byte
+    Aura As Integer
+    VaraDragon As Byte
+
+    Meta As Integer 'Metamorfosis
+    MetaModificador As Integer
 End Type
 
 Public Type Obj
     ObjIndex As Integer
-    Amount As Integer
+    amount As Integer
 End Type
+
+Public Type tQuestNpc
+    NpcIndex As Integer
+    amount As Integer
+End Type
+
+Public Type tUserQuest
+    NPCsKilled() As Integer
+    QuestIndex As Integer
+End Type
+
+Public Type tQuestStats
+    Quests(1 To MAXUSERQUESTS) As tUserQuest
+    NumQuestsDone As Integer
+    QuestsDone() As Integer
+End Type
+
+'[Pablo ToxicWaste]
+Public Type ModClase
+    Evasion As Double
+    AtaqueArmas As Double
+    AtaqueProyectiles As Double
+    DañoArmas As Double
+    DañoProyectiles As Double
+    DañoWrestling As Double
+    Escudo As Double
+End Type
+
+Public Type ModRaza
+    Fuerza As Single
+    Agilidad As Single
+    Inteligencia As Single
+    Carisma As Single
+    Constitucion As Single
+End Type
+'[/Pablo ToxicWaste]
 
 '[KEVIN]
 'Banco Objs
@@ -816,17 +941,10 @@ Public Const MAX_BANCOINVENTORY_SLOTS As Byte = 40
 
 '[KEVIN]
 Public Type BancoInventario
-    Object(1 To MAX_BANCOINVENTORY_SLOTS) As UserOBJ
+    Object(1 To MAX_BANCOINVENTORY_SLOTS) As UserObj
     NroItems As Integer
 End Type
 '[/KEVIN]
-
-Public bancoObj(1 To MAX_BANCOINVENTORY_SLOTS) As SubastaBanco
-
-Public Type SubastaBanco
-    ObjIndex As Integer
-    Amount As Integer
-End Type
 
 
 '*********************************************************
@@ -838,27 +956,42 @@ End Type
 '*********************************************************
 '*********************************************************
 '*********************************************************
+Public Type tQuest
+    Nombre As String
+    desc As String
+    RequiredLevel As Byte
+    
+    RequiredOBJs As Byte
+    RequiredOBJ() As Obj
+    
+    RequiredNPCs As Byte
+    RequiredNPC() As tQuestNpc
+    
+    RewardGLD As Long
+    RewardEXP As Long
+    
+    RewardOBJs As Byte
+    RewardOBJ() As Obj
+End Type
 
 Public Type tReputacion 'Fama del usuario
-    NobleRep As Double
-    BurguesRep As Double
-    PlebeRep As Double
-    LadronesRep As Double
-    BandidoRep As Double
-    AsesinoRep As Double
-    Promedio As Double
+    NobleRep As Long
+    BurguesRep As Long
+    PlebeRep As Long
+    LadronesRep As Long
+    BandidoRep As Long
+    AsesinoRep As Long
+    Promedio As Long
 End Type
 
 'Estadisticas de los usuarios
 Public Type UserStats
     GLD As Long 'Dinero
     Banco As Long
-    MET As Integer
     
     MaxHP As Integer
     MinHP As Integer
     
-    FIT As Integer
     MaxSta As Integer
     MinSta As Integer
     MaxMAN As Integer
@@ -871,46 +1004,45 @@ Public Type UserStats
     
     MaxAGU As Integer
     MinAGU As Integer
+    
+    AMaxDef As Integer
+    AMinDef As Integer
+    SMaxDef As Integer
+    SMinDef As Integer
+    HMaxDef As Integer
+    HMinDef As Integer
+    WMaxHit As Integer
+    WMinHit As Integer
+    MMaxDef As Integer
+    MMinDef As Integer
         
     def As Integer
     Exp As Double
-    ELV As Long
+    ELV As Byte
     ELU As Long
-    UserSkills(1 To NUMSKILLS) As Integer
-    UserAtributos(1 To NUMATRIBUTOS) As Integer
-    UserAtributosBackUP(1 To NUMATRIBUTOS) As Integer
+    UserSkills(1 To NUMSKILLS) As Byte
+    UserAtributos(1 To NUMATRIBUTOS) As Byte
+    UserAtributosBackUP(1 To NUMATRIBUTOS) As Byte
     UserHechizos(1 To MAXUSERHECHIZOS) As Integer
-    UsuariosMatados As Integer
-    CriminalesMatados As Integer
+    UsuariosMatados As Long
+    CriminalesMatados As Long
     NPCsMuertos As Integer
     
     SkillPts As Integer
-    PuntosTorneo As Integer
-        Reward As Integer
+    
+    Puntos As Long
+    
+    DañoExtra As Byte
 End Type
 
 'Flags
 Public Type UserFlags
-
-Guerra As Boolean
- 
-tCoje As String
-cojiendo As Integer
- 
-    Consola As Boolean 'Standelf
-    Portal As Integer
-    PortalM As Integer
-    PortalX As Integer
-    PortalY As Integer
-    Torneo As Byte
-    EstaEmpo As Byte    'Empollando (by yb)
     Muerto As Byte '¿Esta muerto?
     Escondido As Byte '¿Esta escondido?
     Comerciando As Boolean '¿Esta comerciando?
     UserLogged As Boolean '¿Esta online?
     Meditando As Boolean
     ModoCombate As Boolean
-    ParticipaSubasta As Boolean
     Descuento As String
     Hambre As Byte
     Sed As Byte
@@ -919,11 +1051,10 @@ cojiendo As Integer
     PuedeTrabajar As Byte
     Envenenado As Byte
     Paralizado As Byte
-    EnDuelo As Boolean
+    Inmovilizado As Byte
     Estupidez As Byte
     Ceguera As Byte
-    Invisible As Byte
-    GP As Boolean
+    invisible As Byte
     Maldicion As Byte
     Bendicion As Byte
     Oculto As Byte
@@ -932,11 +1063,15 @@ cojiendo As Integer
     Hechizo As Integer
     TomoPocion As Boolean
     TipoPocion As Byte
+    Resucitando As Byte '[MaxTus]
     
     Vuela As Byte
     Navegando As Byte
+    Metamorfosis As Byte 'Metamorfosis
+    
     Equitando As Byte
     Seguro As Boolean
+    SeguroResu As Boolean
     
     DuracionEfecto As Long
     TargetNPC As Integer ' Npc señalado por el usuario
@@ -962,10 +1097,10 @@ cojiendo As Integer
     
     AtacadoPorNpc As Integer
     AtacadoPorUser As Integer
+    NPCAtacado As Integer
     
     StatsChanged As Byte
     Privilegios As PlayerType
-    EsRolesMaster As Boolean
     
     ValCoDe As Integer
     
@@ -975,10 +1110,9 @@ cojiendo As Integer
     OldBody As Integer
     OldHead As Integer
     AdminInvisible As Byte
+    AdminPerseguible As Boolean
     
-    '[el oso]
-    MD5Reportado As String
-    '[/el oso]
+    ChatColor As Long
     
     '[Barrin 30-11-03]
     TimesWalk As Long
@@ -990,15 +1124,18 @@ cojiendo As Integer
     UltimoMensaje As Byte
     '[/CDT]
     
-    NoActualizado As Boolean
-    PertAlCons As Byte
-    PertAlConsCaos As Byte
-    
     Silenciado As Byte
     
     Mimetizado As Byte
     
     CentinelaOK As Boolean 'Centinela
+    AutoTorneo As Boolean
+    
+    Anomalia As Byte
+    
+    'MaxTus
+    Makro As eMakro
+    EnTorneo As Boolean
 End Type
 
 Public Type UserCounters
@@ -1007,18 +1144,25 @@ Public Type UserCounters
     HPCounter As Integer
     STACounter As Integer
     Frio As Integer
+    Lava As Integer
     COMCounter As Integer
     AGUACounter As Integer
+    Makro As Integer
+    Resucitar As Integer
     Veneno As Integer
+    Metamorfosis As Integer 'Metamorfosis
     Paralisis As Integer
     Ceguera As Integer
     Estupidez As Integer
+    
     Invisibilidad As Integer
+    TiempoOculto As Integer
+    
     Mimetismo As Integer
     PiqueteC As Long
     Pena As Long
+    Piedra As Long
     SendMapCounter As WorldPos
-    Pasos As Integer
     '[Gonzalo]
     Saliendo As Boolean
     Salir As Integer
@@ -1031,18 +1175,26 @@ Public Type UserCounters
     
     TimerLanzarSpell As Long
     TimerPuedeAtacar As Long
+    TimerPuedeUsarArco As Long
     TimerPuedeTrabajar As Long
     TimerUsar As Long
+    TimerMagiaGolpe As Long
+    TimerGolpeMagia As Long
+    TimerGolpeUsar As Long
+    
     
     Trabajando As Long  ' Para el centinela
     Ocultando As Long   ' Unico trabajo no revisado por el centinela
+    
+    failedUsageAttempts As Long
 End Type
 
+'Cosas faccionarias.
 Public Type tFacciones
     ArmadaReal As Byte
     FuerzasCaos As Byte
-    CriminalesMatados As Double
-    CiudadanosMatados As Double
+    CriminalesMatados As Long
+    CiudadanosMatados As Long
     RecompensasReal As Long
     RecompensasCaos As Long
     RecibioExpInicialReal As Byte
@@ -1050,71 +1202,38 @@ Public Type tFacciones
     RecibioArmaduraReal As Byte
     RecibioArmaduraCaos As Byte
     Reenlistadas As Byte
-End Type
-
-Public Type CharInfo
-    name As String
-    Body As Integer
-    Head As Integer
-    Weapon As Integer
-    Shield As Integer
-    Helmet As Integer
-    Lvl As Integer
-    Class As String
-    Oro As Long
-    Status As Long
-    Muerto As Byte
-    Pos As String
-End Type
-
-Public Type Account
-    name As String
-    Password As String
-    NumChars As Integer
-    Chars() As CharInfo
+    NivelIngreso As Integer
+    FechaIngreso As String
+    MatadosIngreso As Integer 'Para Armadas Ninguno mas
+    NextRecompensa As Integer
 End Type
 
 'Tipo de los Usuarios
 Public Type User
-Lac As TLac '[loopzer] 'el Anti-Cheats Lac(Loopzer Anti-Cheats)
-
-    'coco cuentas & LRK
-    NombreCuenta As String
-    '/coco cuentas & LRK
-
-    name As String
+    Name As String
     ID As Long
     
     showName As Boolean 'Permite que los GMs oculten su nick con el comando /SHOWNAME
-    
-    modName As String
-    Password As String
     
     Char As Char 'Define la apariencia
     CharMimetizado As Char
     OrigChar As Char
     
-    Desc As String ' Descripcion
+    desc As String ' Descripcion
     DescRM As String
     
-    Clase As String
-    Raza As String
-    Genero As String
+    clase As eClass
+    raza As eRaza
+    genero As eGenero
     email As String
-    Hogar As String
-    
-    
+    Hogar As eCiudad
+        
     Invent As Inventario
     
     Pos As WorldPos
     
     ConnIDValida As Boolean
     ConnID As Long 'ID
-    RDBuffer As String 'Buffer roto
-    
-    CommandsBuffer As New CColaArray
-    ColaSalida As New Collection
-    SockPuedoEnviar As Boolean
     
     '[KEVIN]
     BancoInvent As BancoInventario
@@ -1124,29 +1243,25 @@ Lac As TLac '[loopzer] 'el Anti-Cheats Lac(Loopzer Anti-Cheats)
     
     MascotasIndex(1 To MAXMASCOTAS) As Integer
     MascotasType(1 To MAXMASCOTAS) As Integer
-    NroMacotas As Integer
+    NroMascotas As Integer
     
     Stats As UserStats
     flags As UserFlags
-    NumeroPaquetesPorMiliSec As Long
-    BytesTransmitidosUser As Long
-    BytesTransmitidosSvr As Long
     
     Reputacion As tReputacion
     
     Faccion As tFacciones
     
-    PrevCheckSum As Long
-    PacketNumber As Long
-    RandKey As Long
-    
-    IP As String
+#If ConUpTime Then
+    LogOnTime As Date
+    UpTime As Long
+#End If
+
+    ip As String
     
      '[Alejo]
     ComUsu As tCOmercioUsuario
     '[/Alejo]
-    
-    EmpoCont As Byte
     
     GuildIndex As Integer   'puntero al array global de guilds
     FundandoGuildAlineacion As ALINEACION_GUILD     'esto esta aca hasta que se parchee el cliente y se pongan cadenas de datos distintas para cada alineacion
@@ -1159,6 +1274,12 @@ Lac As TLac '[loopzer] 'el Anti-Cheats Lac(Loopzer Anti-Cheats)
     
     AreasInfo As AreaInfo
     
+    'Outgoing and incoming messages
+    outgoingData As clsByteQueue
+    incomingData As clsByteQueue
+    
+    QuestStats As tQuestStats
+    Lac As TLac
 End Type
 
 
@@ -1179,7 +1300,7 @@ Public Type NPCStats
     MaxHIT As Integer
     MinHIT As Integer
     def As Integer
-    UsuariosMatados As Integer
+    defM As Integer
 End Type
 
 Public Type NpcCounters
@@ -1189,20 +1310,15 @@ End Type
 
 Public Type NPCFlags
     AfectaParalisis As Byte
-    GolpeExacto As Byte
     Domable As Integer
     Respawn As Byte
     NPCActive As Boolean '¿Esta vivo?
     Follow As Boolean
     Faccion As Byte
+    AtacaDoble As Byte
     LanzaSpells As Byte
     
-    '[KEVIN]
-    'DeQuest As Byte
-    
-    'ExpDada As Long
-    ExpCount As Long '[ALEJO]
-    '[/KEVIN]
+    ExpCount As Long
     
     OldMovement As TipoAI
     OldHostil As Byte
@@ -1210,33 +1326,22 @@ Public Type NPCFlags
     AguaValida As Byte
     TierraInvalida As Byte
     
-    UseAINow As Boolean
     Sound As Integer
-    Attacking As Integer
     AttackedBy As String
-    Category1 As String
-    Category2 As String
-    Category3 As String
-    Category4 As String
-    Category5 As String
+    AttackedFirstBy As String
     BackUp As Byte
     RespawnOrigPos As Byte
     
     Envenenado As Byte
     Paralizado As Byte
     Inmovilizado As Byte
-    Invisible As Byte
+    invisible As Byte
     Maldicion As Byte
     Bendicion As Byte
     
     Snd1 As Integer
     Snd2 As Integer
     Snd3 As Integer
-    
-    AtacaAPJ As Integer
-    AtacaANPC As Integer
-    AIAlineacion As e_Alineacion
-    AIPersonalidad As e_Personalidad
 End Type
 
 Public Type tCriaturasEntrenador
@@ -1265,20 +1370,16 @@ End Type
 
 
 Public Type npc
-    name As String
+    Name As String
     Char As Char 'Define como se vera
-    Desc As String
-    DescExtra As String
+    desc As String
 
     NPCtype As eNPCType
     Numero As Integer
 
-    level As Integer
-
     InvReSpawn As Byte
 
     Comercia As Integer
-Subasta As Integer
     Target As Long
     TargetNPC As Long
     TipoItems As Integer
@@ -1295,7 +1396,7 @@ Subasta As Integer
     PoderAtaque As Long
     PoderEvasion As Long
 
-    Inflacion As Long
+    QuestNumber As Integer
 
     GiveEXP As Long
     GiveGLD As Long
@@ -1323,7 +1424,6 @@ Subasta As Integer
     ' New!! Needed for pathfindig
     PFINFO As NpcPathFindingInfo
     AreasInfo As AreaInfo
-    
 End Type
 
 '**********************************************************
@@ -1333,30 +1433,37 @@ End Type
 '**********************************************************
 'Tile
 Public Type MapBlock
+    particle_group_index As Integer
     Blocked As Byte
     Graphic(1 To 4) As Integer
     UserIndex As Integer
     NpcIndex As Integer
-    OBJInfo As Obj
+    ObjInfo As Obj
     TileExit As WorldPos
     trigger As eTrigger
+    base_light(0 To 3) As Integer 'Indica si el tile tiene luz propia.
+    light_value(0 To 3) As Long
 End Type
 
 'Info del mapa
 Type MapInfo
     NumUsers As Integer
     Music As String
-    name As String
+    Name As String
     StartPos As WorldPos
     MapVersion As Integer
     Pk As Boolean
+    Invocado As Boolean
     MagiaSinEfecto As Byte
     NoEncriptarMP As Byte
+    InviSinEfecto As Byte
+    ResuSinEfecto As Byte
     
     Terreno As String
     Zona As String
     Restringir As String
     BackUp As Byte
+    lvlMinimo As Byte
 End Type
 
 '********** V A R I A B L E S     P U B L I C A S ***********
@@ -1368,9 +1475,8 @@ Public BackUp As Boolean ' TODO: Se usa esta variable ?
 Public ListaRazas(1 To NUMRAZAS) As String
 Public SkillsNames(1 To NUMSKILLS) As String
 Public ListaClases(1 To NUMCLASES) As String
+Public ListaAtributos(1 To NUMATRIBUTOS) As String
 
-Public Const ENDL As String * 2 = vbCrLf
-Public Const ENDC As String * 1 = vbNullChar
 
 Public recordusuarios As Long
 
@@ -1381,8 +1487,7 @@ Public recordusuarios As Long
 ''
 'Ruta base del server, en donde esta el "server.ini"
 Public IniPath As String
-Public CuentasPath As String
-Public i As Integer
+
 ''
 'Ruta base para guardar los chars
 Public CharPath As String
@@ -1402,12 +1507,6 @@ Public MaxXBorder As Byte
 Public MinYBorder As Byte
 Public MaxYBorder As Byte
 
-Public ResPos As WorldPos ' TODO: Se usa esta variable ?
-
-''
-'Posicion de comienzo
-Public StartPos As WorldPos ' TODO: Se usa esta variable ?
-
 ''
 'Numero de usuarios actual
 Public NumUsers As Integer
@@ -1424,46 +1523,25 @@ Public AllowMultiLogins As Byte
 Public IdleLimit As Integer
 Public MaxUsers As Integer
 Public HideMe As Byte
+Public OroX As Integer
+Public ExpX As Integer
 Public LastBackup As String
 Public Minutos As String
 Public haciendoBK As Boolean
-Public Torneo_Map As Integer
-Public Torneo_X As Byte
-Public Torneo_Y As Byte
-Public Torneo_Nivel_Minimo As Byte
-Public Torneo_Nivel_Maximo As Byte
-Public Torneo_Cantidad As Byte
-Public Torneo_SumAuto As Byte
-Public Hay_Torneo As Boolean
-Public Torneo As New cCola
- 
-Public Torneo_Clases_Validas(1 To 8) As String
-Public Torneo_Clases_Validas2(1 To 8) As Byte
-Public Torneo_Alineacion_Validas(1 To 4) As String
-Public Torneo_Alineacion_Validas2(1 To 4) As Byte
-Public Oscuridad As Integer
-Public NocheDia As Integer
 Public PuedeCrearPersonajes As Integer
-Public CamaraLenta As Integer
 Public ServerSoloGMs As Integer
-
-''
-'Esta activada la verificacion MD5 ?
-Public MD5ClientesActivado As Byte
-
 
 Public EnPausa As Boolean
 Public EnTesting As Boolean
-Public EncriptarProtocolosCriticos As Boolean
 
 
 '*****************ARRAYS PUBLICOS*************************
 Public UserList() As User 'USUARIOS
-Public Npclist() As npc 'NPCS
+Public Npclist(1 To MAXNPCS) As npc 'NPCS
 Public MapData() As MapBlock
 Public MapInfo() As MapInfo
 Public Hechizos() As tHechizo
-Public CharList() As Integer
+Public CharList(1 To MAXCHARS) As Integer
 Public ObjData() As ObjData
 Public FX() As FXdata
 Public SpawnList() As tCriaturasEntrenador
@@ -1472,19 +1550,23 @@ Public ForbidenNames() As String
 Public ArmasHerrero() As Integer
 Public ArmadurasHerrero() As Integer
 Public ObjCarpintero() As Integer
-Public MD5s() As String
+Public ObjCanjes() As Integer
 Public BanIps As New Collection
-Public Parties() As clsParty
+Public Parties(1 To MAX_PARTIES) As clsParty
+Public ModClase(1 To NUMCLASES) As ModClase
+Public ModRaza(1 To NUMRAZAS) As ModRaza
+Public ModVida(1 To NUMCLASES) As Double
+Public DistribucionEnteraVida(1 To 5) As Integer
+Public DistribucionSemienteraVida(1 To 4) As Integer
+Public QuestList() As tQuest
 '*********************************************************
 
-Public Ullathorpe As WorldPos
 Public Ramx As WorldPos
 
 Public Prision As WorldPos
 Public Libertad As WorldPos
 
 Public Ayuda As New cCola
-Public ConsultaPopular As New ConsultasPopulares
 Public SonidosMapas As New SoundMapInfo
 
 Public Declare Function GetTickCount Lib "kernel32" () As Long
@@ -1492,14 +1574,10 @@ Public Declare Function GetTickCount Lib "kernel32" () As Long
 Public Declare Function writeprivateprofilestring Lib "kernel32" Alias "WritePrivateProfileStringA" (ByVal lpApplicationname As String, ByVal lpKeyname As Any, ByVal lpString As String, ByVal lpfilename As String) As Long
 Public Declare Function GetPrivateProfileString Lib "kernel32" Alias "GetPrivateProfileStringA" (ByVal lpApplicationname As String, ByVal lpKeyname As Any, ByVal lpdefault As String, ByVal lpreturnedstring As String, ByVal nsize As Long, ByVal lpfilename As String) As Long
 
+Public Declare Sub ZeroMemory Lib "kernel32.dll" Alias "RtlZeroMemory" (ByRef destination As Any, ByVal length As Long)
+
 Public Enum e_ObjetosCriticos
     Manzana = 1
     Manzana2 = 2
     ManzanaNewbie = 467
-    
-
-
 End Enum
-
-  Public Const PiedraIndex As Integer = 1000
-    Public Const DestruirPiedraMagica As Byte = 1

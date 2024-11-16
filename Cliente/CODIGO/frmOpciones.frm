@@ -1,11 +1,11 @@
 VERSION 5.00
 Begin VB.Form frmOpciones 
-   BackColor       =   &H00000000&
-   BorderStyle     =   3  'Fixed Dialog
-   ClientHeight    =   4095
-   ClientLeft      =   45
-   ClientTop       =   45
-   ClientWidth     =   6630
+   BorderStyle     =   0  'None
+   ClientHeight    =   6885
+   ClientLeft      =   0
+   ClientTop       =   0
+   ClientWidth     =   4875
+   ClipControls    =   0   'False
    ControlBox      =   0   'False
    BeginProperty Font 
       Name            =   "Tahoma"
@@ -16,312 +16,151 @@ Begin VB.Form frmOpciones
       Italic          =   0   'False
       Strikethrough   =   0   'False
    EndProperty
+   ForeColor       =   &H00000000&
    Icon            =   "frmOpciones.frx":0000
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
    Picture         =   "frmOpciones.frx":0152
-   ScaleHeight     =   4095
-   ScaleWidth      =   6630
+   ScaleHeight     =   6885
+   ScaleWidth      =   4875
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
-   Begin VB.CheckBox Minimapa 
-      BackColor       =   &H00000000&
-      Caption         =   "Activar/Desactivar Minimapa"
-      ForeColor       =   &H00FFFFFF&
-      Height          =   255
-      Left            =   600
-      TabIndex        =   28
-      Top             =   2880
-      Width           =   2415
+   Begin VB.CheckBox ChkMove 
+      Caption         =   "Auto Completar Comandos"
+      Height          =   200
+      Left            =   345
+      TabIndex        =   12
+      Top             =   3250
+      Width           =   180
    End
-   Begin VB.Frame Frame4 
-      BackColor       =   &H00000000&
-      Caption         =   "Publicidad"
-      ForeColor       =   &H00FFFFFF&
-      Height          =   495
-      Left            =   120
-      TabIndex        =   25
-      Top             =   3240
-      Width           =   4215
-      Begin VB.OptionButton Option1 
-         BackColor       =   &H00000000&
-         Caption         =   "Activado"
-         ForeColor       =   &H00FFFFFF&
-         Height          =   270
-         Left            =   960
-         TabIndex        =   27
-         Top             =   120
-         Width           =   1560
-      End
-      Begin VB.OptionButton Option2 
-         BackColor       =   &H00000000&
-         Caption         =   "Desactivado"
-         ForeColor       =   &H00FFFFFF&
-         Height          =   270
-         Left            =   2520
-         TabIndex        =   26
-         Top             =   120
-         Value           =   -1  'True
-         Width           =   1560
-      End
-   End
-   Begin VB.CommandButton Command3 
-      Caption         =   "Reproductor Multimedia"
-      Height          =   255
-      Left            =   4560
-      TabIndex        =   24
-      Top             =   3480
-      Width           =   1815
-   End
-   Begin VB.Frame Frame3 
-      BackColor       =   &H00000000&
-      Caption         =   "Actualizador de Posición"
-      ForeColor       =   &H00FFFFFF&
-      Height          =   1935
-      Left            =   4440
-      TabIndex        =   17
-      Top             =   480
-      Width           =   2055
-      Begin VB.OptionButton DesactPosicion 
-         BackColor       =   &H00000000&
-         Caption         =   "Desactivado"
-         ForeColor       =   &H00FFFFFF&
-         Height          =   255
-         Left            =   120
-         TabIndex        =   21
-         Top             =   240
-         Value           =   -1  'True
-         Width           =   1215
-      End
-      Begin VB.OptionButton ActPosicion 
-         BackColor       =   &H00000000&
-         Caption         =   "Activado"
-         ForeColor       =   &H00FFFFFF&
-         Height          =   255
-         Left            =   120
-         TabIndex        =   20
-         Top             =   600
-         Width           =   975
-      End
-      Begin VB.TextBox Tiempo 
-         Alignment       =   2  'Center
-         Height          =   285
-         Left            =   240
-         TabIndex        =   19
-         Text            =   "60"
-         Top             =   1200
-         Width           =   495
-      End
-      Begin VB.CommandButton BotonCambiarTiempo 
-         Caption         =   "Cambiar Tiempo"
-         Height          =   255
-         Left            =   120
-         TabIndex        =   18
-         Top             =   1560
-         Width           =   1815
-      End
-      Begin VB.Label Label5 
-         Alignment       =   2  'Center
-         BackColor       =   &H00000000&
-         Caption         =   "Actualizar posición cada"
-         ForeColor       =   &H00FFFFFF&
-         Height          =   255
-         Left            =   120
-         TabIndex        =   23
-         Top             =   960
-         Width           =   1815
-      End
-      Begin VB.Label Label4 
-         BackColor       =   &H00000000&
-         Caption         =   "Segundos."
-         ForeColor       =   &H00FFFFFF&
-         Height          =   255
-         Left            =   840
-         TabIndex        =   22
-         Top             =   1215
-         Width           =   1095
-      End
-   End
-   Begin VB.CommandButton Command5 
-      Caption         =   "Configurar Teclas"
-      Height          =   255
-      Left            =   4560
-      TabIndex        =   16
-      Top             =   3240
-      Width           =   1815
-   End
-   Begin VB.CommandButton Command1 
-      Caption         =   "Musica Activada"
-      Height          =   255
-      Index           =   0
-      Left            =   4560
-      MouseIcon       =   "frmOpciones.frx":7746C
-      MousePointer    =   99  'Custom
-      TabIndex        =   0
-      Top             =   3000
-      Width           =   1815
-   End
-   Begin VB.CommandButton Command1 
-      Caption         =   "Sonidos Activados"
-      Height          =   255
+   Begin VB.HScrollBar Slider1 
+      Height          =   250
       Index           =   1
-      Left            =   4560
-      MouseIcon       =   "frmOpciones.frx":775BE
-      MousePointer    =   99  'Custom
-      TabIndex        =   1
-      Top             =   2760
-      Width           =   1815
+      LargeChange     =   15
+      Left            =   1440
+      Max             =   100
+      SmallChange     =   2
+      TabIndex        =   11
+      Top             =   720
+      Width           =   3015
    End
-   Begin VB.CommandButton Command4 
-      Caption         =   "Creditos"
-      Height          =   255
-      Left            =   4560
+   Begin VB.HScrollBar Slider1 
+      Height          =   250
+      Index           =   0
+      LargeChange     =   15
+      Left            =   1440
+      Max             =   0
+      Min             =   -4000
+      SmallChange     =   2
       TabIndex        =   10
-      Top             =   2520
-      Width           =   1815
+      Top             =   420
+      Width           =   3015
    End
-   Begin VB.Frame Frame2 
-      BackColor       =   &H00000000&
-      Caption         =   "Rendimiento"
-      ForeColor       =   &H00FFFFFF&
-      Height          =   2040
-      Left            =   120
+   Begin VB.CheckBox Check3 
+      Height          =   200
+      Left            =   345
       TabIndex        =   9
-      Top             =   1200
-      Width           =   4230
-      Begin VB.CheckBox ActivarNoche 
-         BackColor       =   &H00000000&
-         Caption         =   "Activar / Desactivar Efecto Noche "
-         ForeColor       =   &H00FFFFFF&
-         Height          =   255
-         Left            =   480
-         TabIndex        =   15
-         Top             =   720
-         Width           =   3255
-      End
-      Begin VB.CheckBox Check1 
-         BackColor       =   &H00000000&
-         Caption         =   "Ver Nombre de los mapas"
-         ForeColor       =   &H00FFFFFF&
-         Height          =   255
-         Left            =   480
-         TabIndex        =   14
-         Top             =   1200
-         Width           =   2655
-      End
-      Begin VB.CheckBox Check2 
-         BackColor       =   &H00000000&
-         Caption         =   "Ver Fps"
-         ForeColor       =   &H00FFFFFF&
-         Height          =   255
-         Left            =   480
-         TabIndex        =   13
-         Top             =   1440
-         Value           =   1  'Checked
-         Width           =   2175
-      End
-      Begin VB.CheckBox chkop 
-         BackColor       =   &H00000000&
-         Caption         =   "Ver Nombre de los usuarios"
-         ForeColor       =   &H00FFFFFF&
-         Height          =   285
-         Left            =   480
-         TabIndex        =   12
-         Top             =   960
-         Width           =   2715
-      End
-      Begin VB.Label Label3 
-         BackColor       =   &H00000000&
-         Caption         =   "Si no tienes un buen pc es recomendable desactivar las siguientes opciones."
-         ForeColor       =   &H00FFFFFF&
-         Height          =   495
-         Left            =   120
-         TabIndex        =   11
-         Top             =   240
-         Width           =   3975
-      End
+      Top             =   2430
+      Width           =   180
    End
-   Begin VB.Frame Frame1 
-      BackColor       =   &H00000000&
-      Caption         =   "Diálogos de clan"
-      ForeColor       =   &H00FFFFFF&
-      Height          =   615
-      Left            =   120
+   Begin VB.CheckBox Check2 
+      Height          =   200
+      Left            =   345
+      TabIndex        =   5
+      Top             =   1750
+      Width           =   180
+   End
+   Begin VB.CheckBox Check1 
+      ForeColor       =   &H00000000&
+      Height          =   200
+      Index           =   1
+      Left            =   345
       TabIndex        =   4
-      Top             =   480
-      Width           =   4230
-      Begin VB.TextBox txtCantMensajes 
-         Alignment       =   2  'Center
-         Height          =   285
-         Left            =   2880
-         MaxLength       =   1
-         TabIndex        =   7
-         Text            =   "5"
-         Top             =   240
-         Width           =   450
-      End
-      Begin VB.OptionButton optPantalla 
-         BackColor       =   &H00000000&
-         Caption         =   "En pantalla,"
-         ForeColor       =   &H00FFFFFF&
-         Height          =   270
-         Left            =   1440
-         TabIndex        =   6
-         Top             =   240
-         Value           =   -1  'True
-         Width           =   1560
-      End
-      Begin VB.OptionButton optConsola 
-         BackColor       =   &H00000000&
-         Caption         =   "En consola"
-         ForeColor       =   &H00FFFFFF&
-         Height          =   270
-         Left            =   105
-         TabIndex        =   5
-         Top             =   240
-         Width           =   1560
-      End
-      Begin VB.Label Label2 
-         BackStyle       =   0  'Transparent
-         Caption         =   "mensajes"
-         ForeColor       =   &H00FFFFFF&
-         Height          =   240
-         Left            =   3360
-         TabIndex        =   8
-         Top             =   240
-         Width           =   750
-      End
+      Top             =   750
+      Width           =   180
    End
-   Begin VB.CommandButton Command2 
-      Caption         =   "Cerrar"
-      Height          =   225
-      Left            =   120
-      MouseIcon       =   "frmOpciones.frx":77710
-      MousePointer    =   99  'Custom
-      TabIndex        =   2
-      Top             =   3840
-      Width           =   6375
-   End
-   Begin VB.Label Label1 
-      Alignment       =   2  'Center
-      BackStyle       =   0  'Transparent
-      Caption         =   "Opciones"
-      BeginProperty Font 
-         Name            =   "Arial"
-         Size            =   14.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   375
-      Left            =   0
+   Begin VB.CheckBox Check1 
+      ForeColor       =   &H00000000&
+      Height          =   200
+      Index           =   0
+      Left            =   345
       TabIndex        =   3
-      Top             =   120
-      Width           =   4455
+      Top             =   400
+      Width           =   180
+   End
+   Begin VB.CheckBox ChkComandos 
+      Caption         =   "Auto Completar Comandos"
+      Height          =   200
+      Left            =   345
+      TabIndex        =   2
+      Top             =   2990
+      Width           =   180
+   End
+   Begin VB.CheckBox Check1 
+      ForeColor       =   &H00000000&
+      Height          =   200
+      Index           =   2
+      Left            =   345
+      TabIndex        =   0
+      Top             =   1100
+      Width           =   180
+   End
+   Begin VB.Label PreMenos 
+      BackStyle       =   0  'Transparent
+      Caption         =   "<"
+      ForeColor       =   &H00FFFFFF&
+      Height          =   255
+      Left            =   2040
+      TabIndex        =   8
+      Top             =   2040
+      Width           =   135
+   End
+   Begin VB.Label Precarga 
+      Alignment       =   2  'Center
+      Appearance      =   0  'Flat
+      BackColor       =   &H80000005&
+      BackStyle       =   0  'Transparent
+      BorderStyle     =   1  'Fixed Single
+      Caption         =   "0"
+      ForeColor       =   &H00FFFFFF&
+      Height          =   255
+      Left            =   2220
+      TabIndex        =   7
+      Top             =   2040
+      Width           =   255
+   End
+   Begin VB.Label PreMas 
+      BackStyle       =   0  'Transparent
+      Caption         =   ">"
+      ForeColor       =   &H00FFFFFF&
+      Height          =   255
+      Left            =   2520
+      TabIndex        =   6
+      Top             =   2040
+      Width           =   135
+   End
+   Begin VB.Image Command2 
+      Height          =   255
+      Left            =   3240
+      Top             =   5520
+      Width           =   1335
+   End
+   Begin VB.Image cmdCustomKeys 
+      Height          =   255
+      Left            =   480
+      Top             =   3600
+      Width           =   1935
+   End
+   Begin VB.Label Informacion 
+      BackStyle       =   0  'Transparent
+      Caption         =   "..."
+      ForeColor       =   &H00FFFFFF&
+      Height          =   1095
+      Left            =   360
+      TabIndex        =   1
+      Top             =   4220
+      Width           =   4215
    End
 End
 Attribute VB_Name = "frmOpciones"
@@ -329,222 +168,215 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-'Argentum Online 0.9.0.9
-'
-'Copyright (C) 2002 Márquez Pablo Ignacio
-'Copyright (C) 2002 Otto Perez
-'Copyright (C) 2002 Aaron Perkins
-'Copyright (C) 2002 Matías Fernando Pequeño
-'
-'This program is free software; you can redistribute it and/or modify
-'it under the terms of the GNU General Public License as published by
-'the Free Software Foundation; either version 2 of the License, or
-'any later version.
-'
-'This program is distributed in the hope that it will be useful,
-'but WITHOUT ANY WARRANTY; without even the implied warranty of
-'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-'GNU General Public License for more details.
-'
-'You should have received a copy of the GNU General Public License
-'along with this program; if not, write to the Free Software
-'Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-'
-'Argentum Online is based on Baronsoft's VB6 Online RPG
-'You can contact the original creator of ORE at aaron@baronsoft.com
-'for more information about ORE please visit http://www.baronsoft.com/
-'
-'
-'You can contact me at:
-'morgolock@speedy.com.ar
-'www.geocities.com/gmorgolock
-'Calle 3 número 983 piso 7 dto A
-'La Plata - Pcia, Buenos Aires - Republica Argentina
-'Código Postal 1900
-'Pablo Ignacio Márquez
-
 Option Explicit
 
-Private Sub ActivarNoche_Click()
-EfectosDiaY = Not EfectosDiaY
-End Sub
+Private loading As Boolean
 
-Private Sub ActPosicion_Click()
-frmMain.ActualizadorPosicion.Enabled = True
-End Sub
-
-Private Sub BotonCambiarTiempo_Click()
-frmMain.ActualizadorPosicion.Interval = Val(Tiempo.Text) * 1000
-End Sub
-
-Private Sub Check1_Click()
-
-If MapNameY = True Then
-    MapNameY = False
-    frmMain.MapName.Visible = False
-Else
-    MapNameY = True
-    frmMain.MapName.Visible = True
-End If
+Private Sub Check1_Click(Index As Integer)
+    If Not loading Then _
+        Call General_Set_Wav(SND_CLICK)
     
+    Select Case Index
+        Case 0
+            If Check1(0).value = vbUnchecked Then
+                Call WriteVar(App.Path & "\Init\Config.cfg", "Sound", "MP3", 0)
+                Audio.MusicActivated = False
+                Slider1(0).Enabled = False
+                Informacion.Caption = "Desactiva la música del juego"
+            ElseIf Not Audio.MusicActivated Then  'Prevent the music from reloading
+                Call WriteVar(App.Path & "\Init\Config.cfg", "Sound", "MP3", 1)
+                Audio.MusicActivated = True
+                Slider1(0).Enabled = True
+                Slider1(0).value = GetVar(App.Path & "\Init\Config.cfg", "Sound", "MusicVolume")
+                Informacion.Caption = "Activa la música del juego"
+            End If
+        
+        Case 1
+            If Check1(1).value = vbUnchecked Then
+                Call WriteVar(App.Path & "\Init\Config.cfg", "Sound", "Wav", 0)
+                Audio.SoundActivated = False
+                frmMain.IsPlaying = PlayLoop.plNone
+                Slider1(1).Enabled = False
+                Informacion.Caption = "Desactiva los efectos especiales y sonidos del juego"
+            Else
+                Call WriteVar(App.Path & "\Init\Config.cfg", "Sound", "Wav", 1)
+                Audio.SoundActivated = True
+                Slider1(1).Enabled = True
+                Slider1(1).value = GetVar(App.Path & "\Init\Config.cfg", "Sound", "SoundVolume")
+                Call Ambient
+                Informacion.Caption = "Activa los efectos especiales y sonidos del juego"
+            End If
+            
+        Case 2
+            If Check1(2).value = vbUnchecked Then
+                Audio.SoundEffectsActivated = False
+                Opciones.AmbientAct = False
+                Call Audio.StopWave
+                Call WriteVar(App.Path & "\Init\Config.cfg", "Sound", "FXSound", 0)
+                Informacion.Caption = "Desactiva efectos especiales como el sonido de navegacion o la ambientacion del lugar."
+            Else
+                Audio.SoundEffectsActivated = True
+                Opciones.AmbientAct = True
+                Call Ambient
+                Call WriteVar(App.Path & "\Init\Config.cfg", "Sound", "FXSound", 1)
+                Informacion.Caption = "Activa efectos especiales como el sonido de navegacion o la ambientacion del lugar."
+            End If
+    End Select
 End Sub
 
 Private Sub Check2_Click()
-
-If FpsY = True Then
-    FpsY = False
-    frmMain.fpps.Caption = "Desactivado"
-Else
-    FpsY = True
-End If
-    
+    If Check2.value = vbUnchecked Then
+        Opciones.VSync = False
+        Call WriteVar(App.Path & "\Init\Config.cfg", "Video", "VSync", 0)
+        MsgBox "Los cambios se realizaran cuando reinicie el cliente.", vbInformation
+        Informacion.Caption = "La sincronización vertical permite ajustar los FPS a la frecuencia de tu monitor para asi mejorar la experiencia en el juego."
+    Else
+        Opciones.VSync = True
+        Call WriteVar(App.Path & "\Init\Config.cfg", "Video", "VSync", 1)
+    End If
 End Sub
 
 Private Sub Check3_Click()
-'
-'If EfectosAlphaY Then
-'    EfectosAlphaY = False
-'    frmMain.EfectosAlpha.Enabled = False
-'    AlphaX = 150
-'Else
-'    EfectosAlphaY = True
-'    frmMain.EfectosAlpha.Enabled = True
-'End If
-    
+    If Check3.value = vbUnchecked Then
+        Opciones.SangreAct = False
+        Call WriteVar(App.Path & "\Init\Config.cfg", "Video", "Blood", 0)
+        MsgBox "Los cambios se realizaran cuando reinicie el cliente.", vbInformation
+        Informacion.Caption = "Activa o Desactiva las manchas de sangre al ser golpeados."
+    Else
+        Opciones.SangreAct = True
+        Call WriteVar(App.Path & "\Init\Config.cfg", "Video", "Blood", 1)
+    End If
 End Sub
 
-Private Sub Check4_Click()
-    Call SendData("/SEF")
-    'ConsolaY = Not ConsolaY
+Private Sub ChkComandos_Click()
+If ChkComandos.value = vbUnchecked Then
+    Opciones.AutoComandos = False
+    Call WriteVar(App.Path & "\Init\Config.cfg", "Otros", "AutoCommand", 0)
+Else
+    Opciones.AutoComandos = True
+    Call WriteVar(App.Path & "\Init\Config.cfg", "Otros", "AutoCommand", 1)
+End If
+Informacion.Caption = "Activa o Desactiva el autocompletar comandos."
 End Sub
 
-
-Private Sub chkop_Click()
-Nombres = Not Nombres
+Private Sub ChkMove_Click()
+If ChkMove.value = vbUnchecked Then
+    Opciones.DeMove = False
+    Call WriteVar(App.Path & "\Init\Config.cfg", "Otros", "DeMove", 0)
+Else
+    Opciones.DeMove = True
+    Call WriteVar(App.Path & "\Init\Config.cfg", "Otros", "DeMove", 1)
+End If
+Informacion.Caption = "Desactiva el movimiento del personaje al escribir."
 End Sub
 
-Private Sub Command1_Click(index As Integer)
-
-Call Audio.PlayWave(SND_CLICK)
-
-Select Case index
-    Case 0
-        If Musica Then
-            Musica = False
-            Command1(0).Caption = "Musica Desactivada"
-            Audio.StopMidi
-        Else
-            Musica = True
-            Command1(0).Caption = "Musica Activada"
-            Call Audio.PlayMIDI(CStr(currentMidi) & ".mid")
-        End If
-    Case 1
-    
-        If Sound Then
-            Sound = False
-            Command1(1).Caption = "Sonidos Desactivados"
-            Call Audio.StopWave
-            RainBufferIndex = 0
-        Else
-            Sound = True
-            Command1(1).Caption = "Sonidos Activados"
-        End If
-End Select
+Private Sub cmdCustomKeys_Click()
+    If Not loading Then _
+        Call General_Set_Wav(SND_CLICK)
+    Call frmCustomKeys.Show(vbModal, Me)
+    Informacion.Caption = "Configura a tu gusto las teclas del juego. Teclas clasicas por default."
 End Sub
 
 Private Sub Command2_Click()
-Me.Visible = False
-Call GuardarOpciones
-End Sub
-
-
-Private Sub Command3_Click()
-Call frmReproductor.Show(vbModeless, frmMain)
-End Sub
-
-Private Sub Command4_Click()
-Call FrmCredits.Show(vbModeless, frmMain) 'Stand
-End Sub
-
-
-Private Sub Command5_Click()
-Call frmCustomKeys.Show(vbModeless, frmMain) 'Stand
-Unload Me
-End Sub
-
-
-
-Private Sub Command7_Click()
-
-End Sub
-
-Private Sub DesactPosicion_Click()
-frmMain.ActualizadorPosicion.Interval = 0
-frmMain.ActualizadorPosicion.Enabled = False
-End Sub
-
-Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    HookSurfaceHwnd Me
+    Unload Me
+    frmMain.SetFocus
 End Sub
 
 Private Sub Form_Load()
-    If Musica Then
-        Command1(0).Caption = "Musica Activada"
+    loading = True      'Prevent sounds when setting check's values
+    
+    Me.Picture = General_Load_Picture_From_Resource("13.gif")
+    
+    If Audio.MusicActivated Then
+        Check1(0).value = vbChecked
+        Slider1(0).Enabled = True
+        Slider1(0).value = GetVar(App.Path & "\Init\Config.cfg", "Sound", "MusicVolume")
     Else
-        Command1(0).Caption = "Musica Desactivada"
+        Check1(0).value = vbUnchecked
+        Slider1(0).Enabled = False
     End If
     
-    If Sound Then
-        Command1(1).Caption = "Sonidos Activados"
+    If Audio.SoundActivated Then
+        Check1(1).value = vbChecked
+        Slider1(1).Enabled = True
+        Slider1(1).value = GetVar(App.Path & "\Init\Config.cfg", "Sound", "SoundVolume")
     Else
-        Command1(1).Caption = "Sonidos Desactivados"
+        Check1(1).value = vbUnchecked
+        Slider1(1).Enabled = False
     End If
-
+    
+    If Audio.SoundEffectsActivated Then
+        Check1(2).value = vbChecked
+    Else
+        Check1(2).value = vbUnchecked
+    End If
+    
+    If Opciones.VSync Then
+        Check2.value = vbChecked
+    Else
+        Check2.value = vbUnchecked
+    End If
+    
+    Precarga.Caption = GetVar(App.Path & "\Init\Config.cfg", "Video", "Precarga")
+    
+    If Opciones.SangreAct Then
+        Check3.value = vbChecked
+    Else
+        Check3.value = vbUnchecked
+    End If
+    
+    If Opciones.AutoComandos Then
+        ChkComandos.value = vbChecked
+    Else
+        ChkComandos.value = vbUnchecked
+    End If
+    
+    If Opciones.DeMove Then
+        ChkMove.value = vbChecked
+    Else
+        ChkMove.value = vbUnchecked
+    End If
+    
+    loading = False     'Enable sounds when setting check's values
 End Sub
 
 
-Private Sub Label1_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    HookSurfaceHwnd Me
-End Sub
-
-
-Private Sub Minimapa_Click()
-If MiniMapY = False Then
-    MiniMapY = True
-    frmMain.MiniMap.Visible = True
-    frmMain.Label2.Visible = False
-Else
-    MiniMapY = False
-    frmMain.MiniMap.Visible = False
-    frmMain.Label2.Visible = True
+Private Sub PreMas_Click()
+If Not Precarga.Caption = 5 Then
+    Precarga.Caption = Precarga.Caption + 1
+    Call WriteVar(App.Path & "\Init\Config.cfg", "Video", "Precarga", Precarga.Caption)
+    Informacion.Caption = "Mayor nivel de precarga mejorara la apariencia del juego. (Si crees que tu pc no lo podria soportar, no aumentar al maximo)"
 End If
 End Sub
 
-Private Sub optConsola_Click()
-    DialogosClanes.Activo = False
+Private Sub PreMenos_Click()
+If Not Precarga.Caption = 1 Then
+    Precarga.Caption = Precarga.Caption - 1
+    Call WriteVar(App.Path & "\Init\Config.cfg", "Video", "Precarga", Precarga.Caption)
+    Informacion.Caption = "Menor nivel de precarga te ayudara a resolver problemas con el juego, ya que mostrara los graficos justos en el screen."
+End If
 End Sub
 
-Private Sub Option1_Click()
-frmMain.Propagandas.Visible = True
+Private Sub Slider1_Change(Index As Integer)
+    Select Case Index
+        Case 0
+            Call WriteVar(App.Path & "\Init\Config.cfg", "Sound", "MusicVolume", str(Slider1(0).value))
+            Audio.MusicMP3VolumeSet Slider1(0).value
+            Informacion.Caption = "Ajusta el volumen de la música del juego."
+        Case 1
+            Call WriteVar(App.Path & "\Init\Config.cfg", "Sound", "SoundVolume", Slider1(1).value)
+            Audio.SoundVolume = GetVar(App.Path & "\Init\Config.cfg", "Sound", "SoundVolume")
+            Informacion.Caption = "Ajusta el volumen de efectos especiales y sonidos del juego."
+    End Select
 End Sub
 
-Private Sub Option2_Click()
-frmMain.Propagandas.Visible = False
-End Sub
-
-Private Sub optPantalla_Click()
-    DialogosClanes.Activo = True
-End Sub
-
-Private Sub txtCantMensajes_LostFocus()
-    txtCantMensajes.Text = Trim$(txtCantMensajes.Text)
-    If IsNumeric(txtCantMensajes.Text) Then
-        DialogosClanes.CantidadDialogos = Trim$(txtCantMensajes.Text)
-    Else
-        txtCantMensajes.Text = 5
-    End If
-End Sub
-
-Private Sub Verificador_Timer()
-
+Private Sub Slider1_Scroll(Index As Integer)
+    Select Case Index
+        Case 0
+            Call WriteVar(App.Path & "\Init\Config.cfg", "Sound", "MusicVolume", Slider1(0).value)
+            Audio.MusicMP3VolumeSet Slider1(0).value
+        Case 1
+            Call WriteVar(App.Path & "\Init\Config.cfg", "Sound", "SoundVolume", Slider1(1).value)
+            Audio.SoundVolume = GetVar(App.Path & "\Init\Config.cfg", "Sound", "SoundVolume")
+    End Select
 End Sub

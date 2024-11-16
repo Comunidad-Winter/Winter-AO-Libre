@@ -1,174 +1,203 @@
 VERSION 5.00
 Begin VB.Form frmComerciar 
-   BackColor       =   &H00000000&
+   BackColor       =   &H80000013&
    BorderStyle     =   0  'None
-   ClientHeight    =   7620
+   ClientHeight    =   7995
    ClientLeft      =   0
    ClientTop       =   0
    ClientWidth     =   6930
+   ClipControls    =   0   'False
    ControlBox      =   0   'False
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   Picture         =   "frmComerciar.frx":0000
-   ScaleHeight     =   508
+   MousePointer    =   99  'Custom
+   ScaleHeight     =   533
    ScaleMode       =   3  'Pixel
    ScaleWidth      =   462
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin VB.TextBox cantidad 
+      Alignment       =   2  'Center
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
       BeginProperty Font 
-         Name            =   "Tahoma"
+         Name            =   "MS Sans Serif"
          Size            =   8.25
          Charset         =   0
-         Weight          =   400
+         Weight          =   700
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      Height          =   285
-      Left            =   3195
-      TabIndex        =   8
+      ForeColor       =   &H00FFFFFF&
+      Height          =   210
+      Left            =   3030
+      TabIndex        =   6
       Text            =   "1"
-      Top             =   6840
-      Width           =   585
+      Top             =   7200
+      Width           =   600
    End
-   Begin VB.PictureBox Picture1 
+   Begin VB.PictureBox picInvUser 
+      Appearance      =   0  'Flat
       AutoRedraw      =   -1  'True
       BackColor       =   &H00000000&
-      FillStyle       =   0  'Solid
-      Height          =   600
-      Left            =   600
-      ScaleHeight     =   540
-      ScaleWidth      =   495
-      TabIndex        =   2
-      Top             =   1080
-      Width           =   555
-   End
-   Begin VB.ListBox List1 
-      Appearance      =   0  'Flat
-      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      CausesValidation=   0   'False
+      ClipControls    =   0   'False
       BeginProperty Font 
-         Name            =   "Tahoma"
+         Name            =   "MS Sans Serif"
          Size            =   8.25
          Charset         =   0
-         Weight          =   400
+         Weight          =   700
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   3735
-      Index           =   1
-      Left            =   3690
-      TabIndex        =   1
-      Top             =   2760
-      Width           =   2370
-   End
-   Begin VB.ListBox List1 
-      Appearance      =   0  'Flat
-      BackColor       =   &H00000000&
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   3735
-      Index           =   0
-      Left            =   975
-      TabIndex        =   0
-      Top             =   2760
+      ForeColor       =   &H80000008&
+      Height          =   4320
+      Left            =   4185
+      ScaleHeight     =   288
+      ScaleMode       =   3  'Pixel
+      ScaleWidth      =   160
+      TabIndex        =   5
+      Top             =   2445
       Width           =   2400
    End
-   Begin VB.Image Image1 
-      Height          =   495
-      Index           =   1
-      Left            =   3840
-      Top             =   6720
-      Width           =   2055
+   Begin VB.PictureBox picInvNpc 
+      Appearance      =   0  'Flat
+      AutoRedraw      =   -1  'True
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      CausesValidation=   0   'False
+      ClipControls    =   0   'False
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H80000008&
+      Height          =   4200
+      Left            =   360
+      ScaleHeight     =   280
+      ScaleMode       =   3  'Pixel
+      ScaleWidth      =   162
+      TabIndex        =   4
+      Top             =   2400
+      Width           =   2430
    End
-   Begin VB.Image Image1 
-      Height          =   495
-      Index           =   0
-      Left            =   1080
-      Top             =   6720
-      Width           =   2055
-   End
-   Begin VB.Image Image2 
-      Height          =   375
+   Begin VB.Image imgCross 
+      Height          =   330
       Left            =   6480
-      Top             =   120
-      Width           =   375
+      MouseIcon       =   "frmComerciar.frx":0000
+      MousePointer    =   99  'Custom
+      Tag             =   "1"
+      Top             =   240
+      Width           =   330
    End
-   Begin VB.Label Label1 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "max"
-      ForeColor       =   &H00FFFFFF&
-      Height          =   195
-      Index           =   3
-      Left            =   3480
-      TabIndex        =   7
-      Top             =   2040
-      Visible         =   0   'False
-      Width           =   285
+   Begin VB.Image imgVender 
+      Height          =   345
+      Left            =   4440
+      MouseIcon       =   "frmComerciar.frx":030A
+      MousePointer    =   99  'Custom
+      Tag             =   "1"
+      Top             =   7200
+      Width           =   1500
    End
-   Begin VB.Label Label1 
-      Alignment       =   2  'Center
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   "min"
-      ForeColor       =   &H00FFFFFF&
-      Height          =   195
-      Index           =   4
-      Left            =   3000
-      TabIndex        =   6
-      Top             =   2040
-      Visible         =   0   'False
-      Width           =   240
+   Begin VB.Image imgComprar 
+      Height          =   345
+      Left            =   840
+      MouseIcon       =   "frmComerciar.frx":045C
+      MousePointer    =   99  'Custom
+      Tag             =   "1"
+      Top             =   7200
+      Width           =   1380
    End
    Begin VB.Label Label1 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "cantidad"
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   195
       Index           =   2
-      Left            =   1560
-      TabIndex        =   5
-      Top             =   2040
-      Width           =   615
+      Left            =   3510
+      TabIndex        =   3
+      Top             =   1335
+      Visible         =   0   'False
+      Width           =   75
    End
    Begin VB.Label Label1 
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "precio"
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFFFF&
+      Height          =   195
+      Index           =   3
+      Left            =   3510
+      TabIndex        =   2
+      Top             =   1050
+      Visible         =   0   'False
+      Width           =   75
+   End
+   Begin VB.Label Label1 
+      AutoSize        =   -1  'True
+      BackStyle       =   0  'Transparent
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   195
       Index           =   1
-      Left            =   4680
-      TabIndex        =   4
-      Top             =   2040
-      Width           =   435
+      Left            =   2160
+      TabIndex        =   1
+      Top             =   1050
+      Width           =   75
    End
    Begin VB.Label Label1 
-      Alignment       =   2  'Center
       AutoSize        =   -1  'True
       BackStyle       =   0  'Transparent
-      Caption         =   "Nombre"
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   195
       Index           =   0
-      Left            =   3120
-      TabIndex        =   3
-      Top             =   1320
-      Width           =   555
+      Left            =   2160
+      TabIndex        =   0
+      Top             =   720
+      Width           =   75
    End
 End
 Attribute VB_Name = "frmComerciar"
@@ -177,9 +206,12 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
-'<-------------------------NUEVO-------------------------->
+
 Public LastIndex1 As Integer
 Public LastIndex2 As Integer
+Public LasActionBuy As Boolean
+Private ClickNpcInv As Boolean
+Private lIndex As Byte
 
 Private Sub cantidad_Change()
     If Val(cantidad.Text) < 1 Then
@@ -187,119 +219,178 @@ Private Sub cantidad_Change()
     End If
     
     If Val(cantidad.Text) > MAX_INVENTORY_OBJS Then
-        cantidad.Text = 1
+        cantidad.Text = MAX_INVENTORY_OBJS
+    End If
+    
+    If ClickNpcInv Then
+        If InvComNpc.SelectedItem <> 0 Then
+            'El precio, cuando nos venden algo, lo tenemos que redondear para arriba.
+            Label1(1).Caption = "Precio: " & CalculateSellPrice(NPCInventory(InvComNpc.SelectedItem).Valor, Val(cantidad.Text))  'No mostramos numeros reales
+        End If
+    Else
+        If InvComUsu.SelectedItem <> 0 Then
+            Label1(1).Caption = "Precio: " & CalculateBuyPrice(Inventario.Valor(InvComUsu.SelectedItem), Val(cantidad.Text))  'No mostramos numeros reales
+        End If
     End If
 End Sub
 
 Private Sub cantidad_KeyPress(KeyAscii As Integer)
-If (KeyAscii <> 8) Then
-    If (KeyAscii <> 6) And (KeyAscii < 48 Or KeyAscii > 57) Then
-        KeyAscii = 0
+    If (KeyAscii <> 8) Then
+        If (KeyAscii <> 6) And (KeyAscii < 48 Or KeyAscii > 57) Then
+            KeyAscii = 0
+        End If
     End If
-End If
 End Sub
 
-Private Sub Command2_Click()
-SendData ("FINCOM")
+Private Sub Form_Load()
+    'Cargamos la interface
+    Me.Picture = General_Load_Picture_From_Resource("31.gif")
 End Sub
-
-
-
 Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    HookSurfaceHwnd Me
-End Sub
-Private Sub Image1_Click(Index As Integer)
-
-Call Audio.PlayWave(SND_CLICK)
-
-If List1(Index).List(List1(Index).listIndex) = "Nada" Or _
-   List1(Index).listIndex < 0 Then Exit Sub
-
-Select Case Index
-    Case 0
-        frmComerciar.List1(0).SetFocus
-        LastIndex1 = List1(0).listIndex
-        If UserGLD >= NPCInventory(List1(0).listIndex + 1).Valor * Val(cantidad) Then
-                SendData ("COMP" & "," & List1(0).listIndex + 1 & "," & cantidad.Text)
-                
-        Else
-            AddtoRichTextBox frmMain.RecTxt, "No tenés suficiente oro.", 2, 51, 223, 1, 1
-            Exit Sub
-        End If
-   Case 1
-        LastIndex2 = List1(1).listIndex
-        If Not Inventario.Equipped(List1(1).listIndex + 1) Then
-            SendData ("VEND" & "," & List1(1).listIndex + 1 & "," & cantidad.Text)
-        Else
-            AddtoRichTextBox frmMain.RecTxt, "No podes vender el item porque lo estas usando.", 2, 51, 223, 1, 1
-            Exit Sub
-        End If
-                
-End Select
-List1(0).Clear
-
-List1(1).Clear
-
-NPCInvDim = 0
+    If (Button = vbLeftButton) Then Call Auto_Drag(Me.hWnd)
 End Sub
 
+''
+' Calculates the selling price of an item (The price that a merchant will sell you the item)
+'
+' @param objValue Specifies value of the item.
+' @param objAmount Specifies amount of items that you want to buy
+' @return   The price of the item.
 
-Private Sub Image2_Click()
-SendData ("FINCOM")
-Call Audio.PlayWave(SND_CLICK)
+Private Function CalculateSellPrice(ByRef objValue As Single, ByVal objAmount As Long) As Long
+'*************************************************
+'Author: Marco Vanotti (MarKoxX)
+'Last modified: 19/08/2008
+'Last modify by: Franco Zeoli (Noich)
+'*************************************************
+    On Error GoTo error
+    'We get a Single value from the server, when vb uses it, by approaching, it can diff with the server value, so we do (Value * 100000) and get the entire part, to discard the unwanted floating values.
+    CalculateSellPrice = CCur(objValue * 1000000) / 1000000 * objAmount + 0.5
+    
+    Exit Function
+error:
+    MsgBox Err.Description, vbExclamation, "Error: " & Err.number
+End Function
+''
+' Calculates the buying price of an item (The price that a merchant will buy you the item)
+'
+' @param objValue Specifies value of the item.
+' @param objAmount Specifies amount of items that you want to buy
+' @return   The price of the item.
+Private Function CalculateBuyPrice(ByRef objValue As Single, ByVal objAmount As Long) As Long
+'*************************************************
+'Author: Marco Vanotti (MarKoxX)
+'Last modified: 19/08/2008
+'Last modify by: Franco Zeoli (Noich)
+'*************************************************
+    On Error GoTo error
+    'We get a Single value from the server, when vb uses it, by approaching, it can diff with the server value, so we do (Value * 100000) and get the entire part, to discard the unwanted floating values.
+    CalculateBuyPrice = Fix(CCur(objValue * 1000000) / 1000000 * objAmount)
+    
+    Exit Function
+error:
+    MsgBox Err.Description, vbExclamation, "Error: " & Err.number
+End Function
+
+Private Sub imgComprar_Click()
+    ' Debe tener seleccionado un item para comprarlo.
+    If InvComNpc.SelectedItem = 0 Then Exit Sub
+    
+    If Not IsNumeric(cantidad.Text) Or cantidad.Text = 0 Then Exit Sub
+    
+    Call General_Set_Wav(SND_CLICK)
+    
+    LasActionBuy = True
+    If UserGLD >= CalculateSellPrice(NPCInventory(InvComNpc.SelectedItem).Valor, Val(cantidad.Text)) Then
+        Call WriteCommerceBuy(InvComNpc.SelectedItem, Val(cantidad.Text))
+    Else
+        Call AddtoRichTextBox(frmMain.RecTxt, "No tienes suficiente oro.", 2, 51, 223, 1, 1)
+        Exit Sub
+    End If
+    
 End Sub
 
+Private Sub imgCross_Click()
+    Call WriteCommerceEnd
+End Sub
 
+Private Sub imgVender_Click()
+    ' Debe tener seleccionado un item para comprarlo.
+    If InvComUsu.SelectedItem = 0 Then Exit Sub
 
+    If Not IsNumeric(cantidad.Text) Or cantidad.Text = 0 Then Exit Sub
+    
+    Call General_Set_Wav(SND_CLICK)
+    
+    LasActionBuy = False
 
+    Call WriteCommerceSell(InvComUsu.SelectedItem, Val(cantidad.Text))
+End Sub
 
-Private Sub list1_Click(Index As Integer)
-Dim SR As RECT, DR As RECT
-
-SR.Left = 0
-SR.Top = 0
-SR.Right = 32
-SR.Bottom = 32
-
-DR.Left = 0
-DR.Top = 0
-DR.Right = 32
-DR.Bottom = 32
-
-Select Case Index
-    Case 0
-        Label1(0).Caption = NPCInventory(List1(0).listIndex + 1).Name
-        Label1(1).Caption = NPCInventory(List1(0).listIndex + 1).Valor
-        Label1(2).Caption = NPCInventory(List1(0).listIndex + 1).Amount
-        Select Case NPCInventory(List1(0).listIndex + 1).OBJType
-            Case 2
-                Label1(3).Caption = "Max:" & NPCInventory(List1(0).listIndex + 1).MaxHit
-                Label1(4).Caption = "Min:" & NPCInventory(List1(0).listIndex + 1).MinHit
+Private Sub picInvNpc_Click()
+    Dim ItemSlot As Byte
+    
+    ItemSlot = InvComNpc.SelectedItem
+    If ItemSlot = 0 Then Exit Sub
+    
+    ClickNpcInv = True
+    InvComUsu.DeselectItem
+    
+    Label1(0).Caption = NPCInventory(ItemSlot).name
+    Label1(1).Caption = "Precio: " & CalculateSellPrice(NPCInventory(ItemSlot).Valor, Val(cantidad.Text)) 'No mostramos numeros reales
+    
+    If NPCInventory(ItemSlot).Amount <> 0 Then
+    
+        Select Case NPCInventory(ItemSlot).OBJType
+            Case eObjType.otWeapon
+                Label1(2).Caption = "Máx Golpe:" & NPCInventory(ItemSlot).MaxHit
+                Label1(3).Caption = "Mín Golpe:" & NPCInventory(ItemSlot).MinHit
+                Label1(2).Visible = True
                 Label1(3).Visible = True
-                Label1(4).Visible = True
-            Case 3
-                Label1(3).Visible = False
-                Label1(4).Caption = "Defensa:" & NPCInventory(List1(0).listIndex + 1).Def
-                Label1(4).Visible = True
-        End Select
-        Call DrawGrhtoHdc(Picture1.hWnd, Picture1.Hdc, NPCInventory(List1(0).listIndex + 1).GrhIndex, SR, DR)
-    Case 1
-        Label1(0).Caption = Inventario.ItemName(List1(1).listIndex + 1)
-        Label1(1).Caption = Inventario.Valor(List1(1).listIndex + 1)
-        Label1(2).Caption = Inventario.Amount(List1(1).listIndex + 1)
-        Select Case Inventario.OBJType(List1(1).listIndex + 1)
-            Case 2
-                Label1(3).Caption = "Max:" & Inventario.MaxHit(List1(1).listIndex + 1)
-                Label1(4).Caption = "Min:" & Inventario.MinHit(List1(1).listIndex + 1)
+            Case eObjType.otArmadura, eObjType.otcasco, eObjType.otescudo
+                Label1(2).Caption = "Defensa:" & NPCInventory(ItemSlot).Def
+                Label1(2).Visible = True
                 Label1(3).Visible = True
-                Label1(4).Visible = True
-            Case 3
+            Case Else
+                Label1(2).Visible = False
                 Label1(3).Visible = False
-                Label1(4).Caption = "Defensa:" & Inventario.Def(List1(1).listIndex + 1)
-                Label1(4).Visible = True
         End Select
-        Call DrawGrhtoHdc(Picture1.hWnd, Picture1.Hdc, Inventario.GrhIndex(List1(1).listIndex + 1), SR, DR)
-End Select
-Picture1.Refresh
+    Else
+        Label1(2).Visible = False
+        Label1(3).Visible = False
+    End If
+End Sub
 
+Private Sub picInvUser_Click()
+    Dim ItemSlot As Byte
+    
+    ItemSlot = InvComUsu.SelectedItem
+    
+    If ItemSlot = 0 Then Exit Sub
+    
+    ClickNpcInv = False
+    InvComNpc.DeselectItem
+    
+    Label1(0).Caption = Inventario.ItemName(ItemSlot)
+    Label1(1).Caption = "Precio: " & CalculateBuyPrice(Inventario.Valor(ItemSlot), Val(cantidad.Text)) 'No mostramos numeros reales
+    
+    If Inventario.Amount(ItemSlot) <> 0 Then
+    
+        Select Case Inventario.OBJType(ItemSlot)
+            Case eObjType.otWeapon
+                Label1(2).Caption = "Máx Golpe:" & Inventario.MaxHit(ItemSlot)
+                Label1(3).Caption = "Mín Golpe:" & Inventario.MinHit(ItemSlot)
+                Label1(2).Visible = True
+                Label1(3).Visible = True
+            Case eObjType.otArmadura, eObjType.otcasco, eObjType.otescudo
+                Label1(2).Caption = "Máx Defensa:" & Inventario.Def(ItemSlot)
+                Label1(2).Visible = True
+            Case Else
+                Label1(2).Visible = False
+                Label1(3).Visible = False
+        End Select
+    Else
+        Label1(2).Visible = False
+        Label1(3).Visible = False
+    End If
 End Sub

@@ -1,60 +1,28 @@
 VERSION 5.00
-Object = "{3B7C8863-D78F-101B-B9B5-04021C009402}#1.2#0"; "RICHTX32.OCX"
 Begin VB.Form frmCargando 
+   Appearance      =   0  'Flat
    AutoRedraw      =   -1  'True
-   BackColor       =   &H00000000&
+   BackColor       =   &H80000005&
    BorderStyle     =   0  'None
-   ClientHeight    =   9105
+   ClientHeight    =   7590
    ClientLeft      =   0
    ClientTop       =   0
-   ClientWidth     =   11985
+   ClientWidth     =   10050
    ControlBox      =   0   'False
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   Picture         =   "frmCargando.frx":0000
-   ScaleHeight     =   607
+   ScaleHeight     =   506
    ScaleMode       =   3  'Pixel
-   ScaleWidth      =   799
+   ScaleWidth      =   670
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin VB.PictureBox imgProgress 
-      BorderStyle     =   0  'None
-      Height          =   375
-      Left            =   3180
-      Picture         =   "frmCargando.frx":1EAB4
-      ScaleHeight     =   375
-      ScaleWidth      =   5655
-      TabIndex        =   2
-      Top             =   7650
-      Width           =   5655
-   End
-   Begin VB.FileListBox MP3Files 
-      Height          =   480
-      Left            =   120
-      Pattern         =   "*.mp3"
-      TabIndex        =   1
-      Top             =   120
-      Visible         =   0   'False
-      Width           =   1215
-   End
-   Begin RichTextLib.RichTextBox Status 
-      Height          =   1560
-      Left            =   -3600
-      TabIndex        =   0
-      TabStop         =   0   'False
-      ToolTipText     =   "Mensajes del servidor"
-      Top             =   7200
-      Width           =   3600
-      _ExtentX        =   6350
-      _ExtentY        =   2752
-      _Version        =   393217
-      BackColor       =   16512
-      ReadOnly        =   -1  'True
-      ScrollBars      =   2
-      TextRTF         =   $"frmCargando.frx":25984
-      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-         Name            =   "Verdana"
+   Begin VB.Label Consejo 
+      Alignment       =   2  'Center
+      BackStyle       =   0  'Transparent
+      Caption         =   "Consejo"
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
          Size            =   8.25
          Charset         =   0
          Weight          =   700
@@ -62,6 +30,38 @@ Begin VB.Form frmCargando
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
+      ForeColor       =   &H00FFFFFF&
+      Height          =   495
+      Left            =   240
+      TabIndex        =   1
+      Top             =   5520
+      Width           =   9495
+   End
+   Begin VB.Label Estado 
+      Alignment       =   2  'Center
+      BackStyle       =   0  'Transparent
+      Caption         =   "Estado"
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFFFF&
+      Height          =   255
+      Left            =   3600
+      TabIndex        =   0
+      Top             =   6240
+      Width           =   3135
+   End
+   Begin VB.Image imgProgress 
+      Height          =   495
+      Left            =   2310
+      Top             =   6090
+      Width           =   5400
    End
 End
 Attribute VB_Name = "frmCargando"
@@ -69,9 +69,7 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
 Option Explicit
-
  
 Private porcentajeActual As Integer
  
@@ -85,7 +83,7 @@ Public Sub progresoConDelay(ByVal porcentaje As Integer)
  
 If porcentaje = porcentajeActual Then Exit Sub
  
-Dim step As Integer, stepInterval As Integer, timer As Long, tickCount As Long
+Dim step As Integer, stepInterval As Integer, Timer As Long, tickCount As Long
  
 If (porcentaje > porcentajeActual) Then
     step = DEFAULT_STEP_FORWARD
@@ -96,10 +94,10 @@ Else
 End If
  
 Do Until compararPorcentaje(porcentaje, porcentajeActual, step)
-    Do Until (timer + stepInterval) <= GetTickCount()
+    Do Until (Timer + stepInterval) <= GetTickCount()
         DoEvents
     Loop
-    timer = GetTickCount()
+    Timer = GetTickCount()
     porcentajeActual = porcentajeActual + step
     Call establecerProgreso(porcentajeActual)
 Loop
@@ -129,7 +127,49 @@ Else
 End If
  
 End Function
- 
+
 Private Sub Form_Load()
-Me.Picture = LoadPicture(App.Path & "\Interfaces\" & "cargando.jpg")
+Me.Caption = Form_Caption
+Me.Picture = General_Load_Picture_From_Resource("38.gif")
+imgProgress.Picture = General_Load_Picture_From_Resource("113.gif")
+Call MsgConsjo(RandomNumber(0, 16))
+End Sub
+
+Private Sub MsgConsjo(Index As Integer)
+    Select Case Index
+        Case 0
+            Consejo.Caption = "Al hacer Quest, ¡obtendrás más experiencia, oro e ítems!"
+        Case 1
+            Consejo.Caption = "Las criaturas no siempre dropearan ítems."
+        Case 2
+            Consejo.Caption = "Puedes configurar los macros de comandos, en la configuración de teclas, del menú opciones."
+        Case 3
+            Consejo.Caption = "Antes de enviar una consulta a los GM, consulta el Manual."
+        Case 4
+            Consejo.Caption = "Los skills son mas fáciles de subir mientras seas Newbie."
+        Case 5
+            Consejo.Caption = "Si escribes ""/RANK"", podrás ver los usuarios con mas nivel, oro y muertes del server."
+        Case 6
+            Consejo.Caption = "Escribiendo el comando ""/TOP5"" podrás ver los 5 mejores usuarios del server."
+        Case 7
+            Consejo.Caption = "Si utilizas monturas obtendras ventajas como velocidad, refuerzo de la armadura y sigilo."
+        Case 8
+            Consejo.Caption = "Recomendamos jugar con todas las opciones de sonido activadas para disfrutar de una mayor experiencia."
+        Case 9
+            Consejo.Caption = "En cada ciudad encontraras equipos/magias diferente, en las capitales encontraras los mejores equipos a la venta."
+        Case 10
+            Consejo.Caption = "Los Titanes no pueden ser paralizados. Se recomienda el uso de un guerrero junto sus hermanos para derrotarlos."
+        Case 11
+            Consejo.Caption = "Debes de comprender que los GM's atienden muchas consultas, debes de esperar pacientemente tu turno."
+        Case 12
+            Consejo.Caption = "Los GM's son personas ocupadas que da soporte a todos los usuarios. ¡No les pidas objetos! ¡No te lo daran!"
+        Case 13
+            Consejo.Caption = "Para fundar un clan, necesitaras forjar el Anillo de la Hermandad, realizando una quest que se encuentra en Ramx."
+        Case 14
+            Consejo.Caption = "Si no encuentras ningun GM online o tu problema no puede ser resuelto online, te recomendamos visitar el foro."
+        Case 15
+            Consejo.Caption = "Apretando la letra ""Q"" podras ver el mapa del mundo."
+        Case 16
+            Consejo.Caption = "Los puntos de canjes se pueden conseguir por eventos oficiales o donaciones. Encontraras mas informacion en la web."
+    End Select
 End Sub

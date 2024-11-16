@@ -6,6 +6,7 @@ Begin VB.Form frmEligeAlineacion
    ClientLeft      =   15
    ClientTop       =   15
    ClientWidth     =   6705
+   ClipControls    =   0   'False
    ControlBox      =   0   'False
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
@@ -38,7 +39,7 @@ Begin VB.Form frmEligeAlineacion
       Caption         =   $"frmEligeAlineacion.frx":0000
       ForeColor       =   &H00FFFFFF&
       Height          =   645
-      Index           =   4
+      Index           =   1
       Left            =   1095
       TabIndex        =   9
       Top             =   4140
@@ -50,7 +51,7 @@ Begin VB.Form frmEligeAlineacion
       Caption         =   $"frmEligeAlineacion.frx":00D5
       ForeColor       =   &H00FFFFFF&
       Height          =   645
-      Index           =   3
+      Index           =   5
       Left            =   1095
       TabIndex        =   8
       Top             =   3240
@@ -74,7 +75,7 @@ Begin VB.Form frmEligeAlineacion
       Caption         =   $"frmEligeAlineacion.frx":025D
       ForeColor       =   &H00FFFFFF&
       Height          =   645
-      Index           =   1
+      Index           =   4
       Left            =   1095
       TabIndex        =   6
       Top             =   1350
@@ -106,7 +107,7 @@ Begin VB.Form frmEligeAlineacion
       EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   240
-      Index           =   4
+      Index           =   1
       Left            =   1005
       TabIndex        =   4
       Top             =   3915
@@ -126,7 +127,7 @@ Begin VB.Form frmEligeAlineacion
       EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   240
-      Index           =   3
+      Index           =   5
       Left            =   1005
       TabIndex        =   3
       Top             =   3015
@@ -166,7 +167,7 @@ Begin VB.Form frmEligeAlineacion
       EndProperty
       ForeColor       =   &H00FFFFFF&
       Height          =   240
-      Index           =   1
+      Index           =   4
       Left            =   1005
       TabIndex        =   1
       Top             =   1125
@@ -198,65 +199,71 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Option Explicit
-Private Sub Form_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
-Dim i As Byte
+'**************************************************************
+' frmEligeAlineacion.frm
+'
+'**************************************************************
 
-    For i = 0 To 4
-        lblDescripcion(i).BorderStyle = 0
-        lblDescripcion(i).BackStyle = 0
-    Next i
-    
+'**************************************************************************
+'This program is free software; you can redistribute it and/or modify
+'it under the terms of the Affero General Public License;
+'either version 1 of the License, or any later version.
+'
+'This program is distributed in the hope that it will be useful,
+'but WITHOUT ANY WARRANTY; without even the implied warranty of
+'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+'Affero General Public License for more details.
+'
+'You should have received a copy of the Affero General Public License
+'along with this program; if not, you can find it at http://www.affero.org/oagpl.html
+'**************************************************************************
+
+Option Explicit
+
+Dim LastColoured As Byte
+
+'odio programar sin tiempo (c) el oso
+
+Private Sub Form_MouseMove(Button As Integer, Shift As Integer, x As Single, y As Single)
+    lblDescripcion(LastColoured).BorderStyle = 0
+    lblDescripcion(LastColoured).BackStyle = 0
 End Sub
 
-Private Sub lblDescripcion_Click(Index As Integer)
-Dim s As String
-    
-    Select Case Index
-        Case 0
-            s = "armada"
-        Case 1
-            s = "legal"
-        Case 2
-            s = "neutro"
-        Case 3
-            s = "criminal"
-        Case 4
-            s = "mal"
-    End Select
-    
-    s = "/fundarclan " & s
-    Call SendData(s)
+Private Sub lblDescripcion_Click(index As Integer)
+    Call WriteGuildFundate(index)
     Unload Me
 End Sub
 
-Private Sub lblDescripcion_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
-    lblDescripcion(Index).BorderStyle = 1
-    lblDescripcion(Index).BackStyle = 1
-    Select Case Index
+Private Sub lblDescripcion_MouseMove(index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+    
+    If LastColoured <> index Then
+        lblDescripcion(LastColoured).BorderStyle = 0
+        lblDescripcion(LastColoured).BackStyle = 0
+    End If
+    
+    lblDescripcion(index).BorderStyle = 1
+    lblDescripcion(index).BackStyle = 1
+    
+    Select Case index
         Case 0
-            lblDescripcion(Index).BackColor = &H400000
-        Case 1
-            lblDescripcion(Index).BackColor = &H800000
-        Case 2
-            lblDescripcion(Index).BackColor = 4194368
-        Case 3
-            lblDescripcion(Index).BackColor = &H80&
+            lblDescripcion(index).BackColor = &H400000
         Case 4
-            lblDescripcion(Index).BackColor = &H40&
+            lblDescripcion(index).BackColor = &H800000
+        Case 2
+            lblDescripcion(index).BackColor = 4194368
+        Case 5
+            lblDescripcion(index).BackColor = &H80&
+        Case 1
+            lblDescripcion(index).BackColor = &H40&
     End Select
+    
+    LastColoured = index
 End Sub
 
 
-Private Sub lblNombre_MouseMove(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
-Dim i As Byte
-
-    For i = 0 To 4
-        lblDescripcion(i).BorderStyle = 0
-        lblDescripcion(i).BackStyle = 0
-    Next i
-    
-
+Private Sub lblNombre_MouseMove(index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
+    lblDescripcion(LastColoured).BorderStyle = 0
+    lblDescripcion(LastColoured).BackStyle = 0
 End Sub
 
 Private Sub lblSalir_Click()

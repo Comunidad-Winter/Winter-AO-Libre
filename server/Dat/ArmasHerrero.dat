@@ -1,5 +1,5 @@
 [INIT]
-NumArmas=33
+NumArmas=32
 
 [Arma1] ' Daga
 Index=15
@@ -82,20 +82,17 @@ Index=127
 [Arma27] ' Martillo de Herrero
 Index=389
 
-[Arma28] 'Espada Vital
-Index=1063
+[Arma28] ' Espada de la Luz
+Index=1164
 
-[Arma29] 'Espada de la Luz
-Index=1069
+[Arma29] ' Daga Infernal
+Index=1165
 
-[Arma30] 'Daga Paralizante
-Index=1211
+[Arma30] ' Harbinger Kin
+Index=1166
 
-[Arma31] 'Daga Infernal
-Index=1058
+[Arma31] ' Espada Infernal
+Index=1167
 
-[Arma32] 
-Index=1288
-
-[Arma33]
-Index=1305
+[Arma32] ' Vara de Mago Arcano
+Index=1182

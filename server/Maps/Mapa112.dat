@@ -1,26 +1,27 @@
-[mapa]
-Name=Wintley
-MusicNum=33
+[Mapa]
+Name=Haverwood
+MusicNum=16
 MagiaSinefecto=0
+InviSinEfecto=0
+ResuSinEfecto=0
 NoEncriptarMP=0
-Terreno=DESIERTO
+RoboNpcsPermitido=0
+Terreno=NIEVE
 Zona=CIUDAD
 Restringir=No
 BackUp= 0
 Pk=0
 [MAPA112]
-MagiaSinefecto=1
-NoEncriptarMP=0
-BackUp= 1
-Pk=1
-MusicNum=33
-Terreno=NIEVE
-Zona=CIUDAD
-Restringir=No
-Name=Winley
+MagiaSinefecto=0
 InviSinEfecto=0
 ResuSinEfecto=0
-Light=0
-cRojo=0
-cVerde=0
-cAzul=0
+NoEncriptarMP=0
+RoboNpcsPermitido=0
+BackUp= 0
+Pk=1
+Name=Haverwood
+MusicNum=20
+Terreno=NIEVE
+Zona=CIUDAD
+Restringir=NO
+lvlMinimo=0

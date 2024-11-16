@@ -11,47 +11,11 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'**************************************************************
-' clsCustomKeys.cls - Allows the User to Customize Keys.
-'
-' Creation Date: 08/03/07
-' Created and Implemented by Rapsodius
-'**************************************************************
-
-'**************************************************************************
-'This program is free software; you can redistribute it and/or modify
-'it under the terms of the Affero General Public License;
-'either version 1 of the License, or any later version.
-'
-'This program is distributed in the hope that it will be useful,
-'but WITHOUT ANY WARRANTY; without even the implied warranty of
-'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-'Affero General Public License for more details.
-'
-'You should have received a copy of the Affero General Public License
-'along with this program; if not, you can find it at http://www.affero.org/oagpl.html
-'**************************************************************************
-
-''
-'Customizes User Keys.
-'
-'@author Rapsodius
-'@version 1.1.0
-'@date 20080413
-
-'03/08/2007 - Rapsodius
-'   - First Release
-'
-'13/04/2008 - Juan Martín Sotuyo Dodero (Maraxus) - (juansotuyo@gmail.com)
-'   - Removed lots of unwanted buggy features keeping it clean. Revised documentation and coding standards.
-
-
 Option Explicit
 
 ''
 'Number of Customizable Keys
-Private Const NUM_CUSTOM_KEYS As Byte = 22
-
+Private Const NUM_CUSTOM_KEYS As Byte = 21
 ''
 'Error Raised in case the key file doesn't exist
 Private Const ERROR_NO_KEY_FILE As Long = vbObjectError + 16
@@ -65,6 +29,34 @@ Private Const KEY_CONFIG_FILE As String = "\init\BindKeys.bin"
 Private mappedKeys(1 To NUM_CUSTOM_KEYS) As Integer
 
 
+''
+'Index of keys on array
+'
+'@param mKeyUp Key for moving character up
+'@param mKeyDown Key for moving character down
+'@param mKeyLeft Key for moving character left
+'@param mKeyRight Key for moving character right
+'@param mKeyToggleMusic Key for toggling background music
+'@param mKeyRequestRefresh Key for sending a request refreshing packet
+'@param mKeyToggleNames Key for toggling characters' names
+'@param mKeyGetObject Key for retrieving an object from the ground
+'@param mKeyToggleCombatMode Key for toggling combat mode
+'@param mKeyEquipObject Key for equiping an inventory object
+'@param mKeyTamAnimal Key for taming animals
+'@param mKeySteal Key for Stealing other users' gold or objects
+'@param mKeyToggleSafeMode Key for toggling Safe Mode
+'@param mKeyToggleResuscitationSafe Key for toggling Resuscitation Safe
+'@param mKeyHide Key for hiding the character
+'@param mKeyDropObject Key for dropping inventory objects
+'@param mKeyUseObject Key for using inventory objects
+'@param mKeyAttack Key for attacking other Users/NPCs
+'@param mKeyTalk Key for talking (to all)
+'@param mKeyTalkWithGuild Key for talking (only to guild members)
+'@param mKeyToggleFPS Key for toggling the FPS counter
+'@param mKeyTakeScreenShot Key for taking a snapshot of the screen
+'@param mKeyShowOptions Key for showing the "Options" form
+'@param mKeyMeditate Key for start/stop meditation
+'@param mKeyExitGame Key for close the game
 Public Enum eKeyType
     mKeyUp = 1
     mKeyDown
@@ -78,16 +70,15 @@ Public Enum eKeyType
     mKeyEquipObject
     mKeyTamAnimal
     mKeySteal
-    mKeyToggleSafeMode
-    mKeyTakeScreenShot
+    mKeyToggleResuscitationSafe
     mKeyHide
     mKeyDropObject
     mKeyUseObject
     mKeyAttack
     mKeyTalk
     mKeyTalkWithGuild
-    mKeyMapView
-    mKeyTrabajo
+    mKeyTakeScreenShot
+    mKeyMap
 End Enum
 
 ''
@@ -110,9 +101,6 @@ Public Function ReadableName(ByVal KeyCode As Integer) As String
         Case KeyCodeConstants.vbKeyNumpad0 To KeyCodeConstants.vbKeyNumpad9
             ReadableName = KeyCode - KeyCodeConstants.vbKeyNumpad0 & " (teclado numérico)"
         
-        'Case KeyCodeConstants.vbKeyF1 To KeyCodeConstants.vbKeyF16
-            'ReadableName = "F" & (KeyCode - KeyCodeConstants.vbKeyF1 + 1)
-        
         Case KeyCodeConstants.vbKeyMultiply
             ReadableName = "* (teclado numerico)"
         
@@ -120,6 +108,9 @@ Public Function ReadableName(ByVal KeyCode As Integer) As String
             ReadableName = "+ (teclado numerico)"
         
         Case KeyCodeConstants.vbKeySeparator
+            'Note: Separator appears in MSDN as the Enter key for
+            'the numpad, but MS recognizes it as the normal
+            'Enter key
             ReadableName = "Enter (teclado numérico)"
         
         Case KeyCodeConstants.vbKeySubtract
@@ -193,6 +184,9 @@ Public Function ReadableName(ByVal KeyCode As Integer) As String
         
         Case KeyCodeConstants.vbKeyDelete
             ReadableName = "Suprimir"
+            
+        Case KeyCodeConstants.vbKeyF12
+            ReadableName = "F12"
         
         Case Else
             'In all other cases, key is considered not valid.
@@ -316,16 +310,15 @@ Public Sub LoadDefaults()
     mappedKeys(eKeyType.mKeyEquipObject) = KeyCodeConstants.vbKeyE
     mappedKeys(eKeyType.mKeyTamAnimal) = KeyCodeConstants.vbKeyD
     mappedKeys(eKeyType.mKeySteal) = KeyCodeConstants.vbKeyR
-    mappedKeys(eKeyType.mKeyToggleSafeMode) = KeyCodeConstants.vbKeyMultiply
-    mappedKeys(eKeyType.mKeyTakeScreenShot) = KeyCodeConstants.vbKeyF
+    mappedKeys(eKeyType.mKeyToggleResuscitationSafe) = KeyCodeConstants.vbKeyEnd
     mappedKeys(eKeyType.mKeyHide) = KeyCodeConstants.vbKeyO
     mappedKeys(eKeyType.mKeyDropObject) = KeyCodeConstants.vbKeyT
     mappedKeys(eKeyType.mKeyUseObject) = KeyCodeConstants.vbKeyU
     mappedKeys(eKeyType.mKeyAttack) = KeyCodeConstants.vbKeyControl
     mappedKeys(eKeyType.mKeyTalk) = KeyCodeConstants.vbKeyReturn
     mappedKeys(eKeyType.mKeyTalkWithGuild) = KeyCodeConstants.vbKeyDelete
-    mappedKeys(eKeyType.mKeyMapView) = KeyCodeConstants.vbKeyQ
-    mappedKeys(eKeyType.mKeyTrabajo) = KeyCodeConstants.vbKeyW
+    mappedKeys(eKeyType.mKeyTakeScreenShot) = KeyCodeConstants.vbKeyF12
+    mappedKeys(eKeyType.mKeyMap) = KeyCodeConstants.vbKeyQ
 End Sub
 
 ''
@@ -357,13 +350,13 @@ End Function
 '
 '@return The number of customizable keys
 
-Public Property Get Count() As Byte
+Public Property Get count() As Byte
 '***************************************************
 'Author: Rapsodius
 'Last Modification: 08/04/07
 '
 '***************************************************
-    Count = NUM_CUSTOM_KEYS
+    count = NUM_CUSTOM_KEYS
 End Property
 
 ''
@@ -380,7 +373,7 @@ On Error GoTo ErrHand:
     Exit Sub
     
 ErrHand:
-    If Err.Number = ERROR_NO_KEY_FILE Then
+    If Err.number = ERROR_NO_KEY_FILE Then
         Call LoadDefaults
         Call SaveCustomKeys
         Resume Next

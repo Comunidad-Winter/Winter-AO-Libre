@@ -1,30 +1,27 @@
-[TERRENO]
+[MAPA63]
+Name=Nuevo Mapa
+MusicNum=0
 MagiaSinefecto=0
+InviSinEfecto=0
+ResuSinEfecto=0
 NoEncriptarMP=0
-BackUp=0
-Pk=0
-
-[44]
-Name=44
-MagiaSinefecto=0
-NoEncriptarMP=0
-Terreno=BOSQUE
-Zona=CAMPO
-BackUp=0
-Pk=0
-[MAPA44]
-MagiaSinefecto=0
-NoEncriptarMP=0
-BackUp= 0
-Pk=0
-Name=Afueras de Windell
-MusicNum=14
+RoboNpcsPermitido=0
 Terreno=BOSQUE
 Zona=CAMPO
 Restringir=No
+BackUp= 1
+Pk=0
+[MAPA44]
+MagiaSinefecto=0
 InviSinEfecto=0
 ResuSinEfecto=0
-Light=0
-cRojo=0
-cVerde=0
-cAzul=0
+NoEncriptarMP=0
+RoboNpcsPermitido=0
+BackUp= 0
+Pk=0
+lvlMinimo=0
+Name=Tierras Devastadas
+MusicNum=23
+Terreno=BOSQUE
+Zona=CAMPO
+Restringir=NO

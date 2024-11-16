@@ -1,5 +1,5 @@
 [INIT]
-NumObjs=30
+NumObjs=31
 
 [OBJ1] 'Flecha
 Index=480
@@ -16,77 +16,80 @@ Index=553
 [OBJ5] 'Laud Mágico
 Index=696
 
-[OBJ6] 'Arco de Cazador
+[OBJ6] 'Flauta Mágica
+Index=208
+
+[OBJ7] 'Arco de Cazador
 Index=665
 
-[OBJ7] 'Arco Compuesto Reforzado
+[OBJ8] 'Arco Compuesto Reforzado
 Index=664
 
-[OBJ8] 'Arco compuesto
+[OBJ9] 'Arco compuesto
 Index=479
 
-[OBJ9] 'Arco Simple Reforzado
+[OBJ10] 'Arco Simple Reforzado
 Index=663
 
-[OBJ10] 'Arco simple
+[OBJ11] 'Arco simple
 Index=478
 
-[OBJ11] 'Barca
+[OBJ12] 'Barca
 Index=474
 
-[OBJ12] 'Galera
+[OBJ13] 'Galera
 Index=475
 
-[OBJ13] 'Galeón
+[OBJ14] 'Galeón
 Index=476
 
-[OBJ14] 'Tambor
+[OBJ15] 'Tambor
 Index=362
 
-[OBJ15] 'Laud
+[OBJ16] 'Laud
 Index=469
 
-[OBJ16] 'Flauta
+[OBJ17] 'Flauta
 Index=540
 
-[OBJ17] 'Cuchara
+[OBJ18] 'Cuchara
 Index=163
 
-[OBJ18] 'Silla
+[OBJ19] 'Silla
 Index=168
 
-[OBJ19] 'Silla
+[OBJ20] 'Silla
 Index=162
 
-[OBJ20] 'Butaca
+[OBJ21] 'Butaca
 Index=733
 
-[OBJ21] 'Banqueta
+[OBJ22] 'Banqueta
 Index=799
 
-[OBJ22] 'Mueble Rústico 
+[OBJ23] 'Mueble Rústico 
 Index=167
 
-[OBJ23] 'Mueble Rústico
+[OBJ24] 'Mueble Rústico
 Index=756
 
-[OBJ24] 'Sillón
+[OBJ25] 'Sillón
 Index=748
 
-[OBJ25] 'Sillón
+[OBJ26] 'Sillón
 Index=788
 
-[OBJ26] 'Sillón
+[OBJ27] 'Sillón
 Index=789
 
-[OBJ27] 'Sillón Azul
+[OBJ28] 'Sillón Azul
 Index=790
 
-[OBJ28] 'Sillón Azul Doble
+[OBJ29] 'Sillón Azul Doble
 Index=791
 
-[OBJ29] 'Armario
+[OBJ30] 'Armario
 Index=800
 
-[OBJ30] 'Caña de Pescar
+[OBJ31] 'Caña de Pescar
 Index=138

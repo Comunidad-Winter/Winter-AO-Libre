@@ -1,5 +1,5 @@
 [INIT]
-NumArmaduras=85
+NumArmaduras=67
 
 
 [Armadura1] ' Casco de hierro
@@ -179,87 +179,26 @@ Index=695
 [Armadura59] ' Armadura Infame
 Index=701
 
-[Armadura60] ' Armadura Legendaria Mujer
-Index=895
+[Armadura60] ' Armadura de Seiya
+Index=1107
 
-[Armadura61] ' Armadura Legendaria Mujer Bajos
-Index=1061
+[Armadura61] ' Escudo de León
+Index=1171
 
-[Armadura62] ' Armadura Legendaria Bajos
-Index=1062
+[Armadura62] ' Escudo de plata + 2
+Index=1172
 
-[Armadura63] ' Casco de Oro
-Index=993
+[Armadura63] ' Armadura Infame
+Index=701
 
-[Armadura64] ' Casco Legendario
-Index=994
+[Armadura64] ' Escudo de tres puntas
+Index=1168
 
-[Armadura65] ' Casco Diabolico
-Index=996
+[Armadura65] ' Escudo mediano
+Index=1169
 
-[Armadura66] ' Corona
-Index=995
+[Armadura66] ' Escudo dual
+Index=1170
 
-[Armadura67] ' Casco Bifurcado
-Index=1009
-
-[Armadura68] 'Casco del Gladiador
-Index=1010
-
-[Armadura69] 'Casco Bikingo
-Index=1012
-
-[Armadura70] 'Casco Cordial
-Index=1068
-
-[Armadura71] 'Escudo de Torre
-Index=1018
-
-[Armadura72] ' Escudo de Torre + 1
-Index=999
-
-[Armadura73] ' Escudo Legendario
-Index=1031
-
-[Armadura74] ' Escudo Aureal
-Index=1034
-
-[Armadura75] ' Escudo Legendario
-Index=1031
-
-[Armadura76] ' Escudo de Magia
-Index=1040
-
-[Armadura77] ' Escudo de Hirro + 1
-Index=1046
-
-[Armadura78] ' Escudo Demoniaco
-Index=1048
-
-[Armadura79] ' Escudo de Tres Puntas
-Index=1210
-
-
-[Armadura80] ' Tampoco me acuerdo xDD
-Index=1088
-
-[Armadura81] ' Tunica de Dragon
-Index=1240
-
-[Armadura82] ' Tunica de Dragon Enano
-Index=1033
-
-[Armadura83] ' Armadura de Dragon Negro
-Index=992
-
-[Armadura84] ' Armadura Durex
-Index=1293
-
-[Armadura85] 'Tunica Nogan
-Index=1298
-
-[Armadura86] 
-Index=1293
-
-[Armadura87] 
-Index=1294
+[Armadura67] ' Escudo de plata + 1
+Index=1173

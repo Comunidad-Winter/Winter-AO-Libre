@@ -1,2 +1,0 @@
-[INIT]
-CantSolicitudes=0

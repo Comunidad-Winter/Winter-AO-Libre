@@ -1,7 +1,0 @@
-Línea 29: la clase RichTextLib.RichTextBox del control Status no era una clase de control cargada.
-Línea 37: el nombre de la propiedad _ExtentX de Status no es válido.
-Línea 38: el nombre de la propiedad _ExtentY de Status no es válido.
-Línea 39: el nombre de la propiedad _Version de Status no es válido.
-Línea 41: el nombre de la propiedad ReadOnly de Status no es válido.
-Línea 42: el nombre de la propiedad ScrollBars de Status no es válido.
-Línea 43: el nombre de la propiedad TextRTF de Status no es válido.

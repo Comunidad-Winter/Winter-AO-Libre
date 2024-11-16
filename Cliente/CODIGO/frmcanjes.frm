@@ -1,140 +1,512 @@
 VERSION 5.00
-Begin VB.Form frmcanjes 
-   BackColor       =   &H00000000&
+Begin VB.Form frmCanjes 
    BorderStyle     =   0  'None
-   Caption         =   "Canjes de Puntos"
-   ClientHeight    =   9675
+   Caption         =   "Form1"
+   ClientHeight    =   2280
    ClientLeft      =   0
    ClientTop       =   0
-   ClientWidth     =   5595
+   ClientWidth     =   6105
    LinkTopic       =   "Form1"
-   ScaleHeight     =   9675
-   ScaleWidth      =   5595
+   ScaleHeight     =   2280
+   ScaleWidth      =   6105
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin VB.PictureBox Picture14 
-      Height          =   495
-      Left            =   2760
-      Picture         =   "frmcanjes.frx":0000
-      ScaleHeight     =   435
-      ScaleWidth      =   435
-      TabIndex        =   30
-      Top             =   5040
-      Width           =   495
-   End
-   Begin VB.PictureBox Picture13 
-      Height          =   495
-      Left            =   2760
-      Picture         =   "frmcanjes.frx":0C42
-      ScaleHeight     =   435
-      ScaleWidth      =   435
-      TabIndex        =   28
-      Top             =   3600
-      Width           =   495
-   End
-   Begin VB.PictureBox Picture12 
-      Height          =   495
-      Left            =   2760
-      Picture         =   "frmcanjes.frx":1904
-      ScaleHeight     =   435
-      ScaleWidth      =   435
-      TabIndex        =   25
-      Top             =   2400
-      Width           =   495
-   End
-   Begin VB.PictureBox Picture11 
-      Height          =   495
-      Left            =   2760
-      Picture         =   "frmcanjes.frx":2546
-      ScaleHeight     =   435
-      ScaleWidth      =   435
-      TabIndex        =   23
-      Top             =   1080
-      Width           =   495
-   End
-   Begin VB.PictureBox Picture10 
-      Height          =   495
-      Left            =   2760
-      Picture         =   "frmcanjes.frx":3188
-      ScaleHeight     =   435
-      ScaleWidth      =   435
-      TabIndex        =   21
-      Top             =   120
-      Width           =   495
-   End
-   Begin VB.PictureBox Picture6 
-      Height          =   495
-      Left            =   0
-      Picture         =   "frmcanjes.frx":3DCA
-      ScaleHeight     =   435
-      ScaleWidth      =   435
-      TabIndex        =   18
-      Top             =   8280
-      Width           =   495
-   End
-   Begin VB.PictureBox Picture9 
-      Height          =   495
-      Left            =   0
-      Picture         =   "frmcanjes.frx":41AE
-      ScaleHeight     =   435
-      ScaleWidth      =   435
-      TabIndex        =   16
-      Top             =   7080
-      Width           =   495
-   End
-   Begin VB.PictureBox Picture8 
-      Height          =   495
-      Left            =   0
-      Picture         =   "frmcanjes.frx":4DF0
-      ScaleHeight     =   435
-      ScaleWidth      =   435
-      TabIndex        =   14
-      Top             =   6120
-      Width           =   495
-   End
-   Begin VB.PictureBox Picture7 
-      Height          =   495
-      Left            =   0
-      Picture         =   "frmcanjes.frx":5266
-      ScaleHeight     =   435
-      ScaleWidth      =   435
-      TabIndex        =   12
-      Top             =   5040
-      Width           =   495
-   End
-   Begin VB.PictureBox Picture5 
-      Height          =   495
-      Left            =   0
-      Picture         =   "frmcanjes.frx":5AA8
-      ScaleHeight     =   435
-      ScaleWidth      =   435
-      TabIndex        =   10
-      Top             =   4200
-      Width           =   495
-   End
-   Begin VB.PictureBox Picture4 
-      Height          =   495
-      Left            =   0
-      Picture         =   "frmcanjes.frx":62EA
-      ScaleHeight     =   435
-      ScaleWidth      =   435
-      TabIndex        =   8
-      Top             =   3360
-      Width           =   495
-   End
-   Begin VB.PictureBox Picture3 
-      Height          =   495
-      Left            =   0
-      Picture         =   "frmcanjes.frx":6F2C
-      ScaleHeight     =   435
-      ScaleWidth      =   435
-      TabIndex        =   6
-      Top             =   2160
-      Width           =   495
-   End
-   Begin VB.Frame Frame1 
+   Begin VB.PictureBox Otros 
+      AutoSize        =   -1  'True
       BackColor       =   &H00000000&
-      Caption         =   "Ayuda"
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   5
+      Left            =   1080
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   36
+      Top             =   1200
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Otros 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   4
+      Left            =   480
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   35
+      Top             =   1200
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Otros 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   3
+      Left            =   2280
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   34
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Otros 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   2
+      Left            =   1680
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   33
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Otros 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   1
+      Left            =   1050
+      Picture         =   "frmCanjes.frx":0000
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   32
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Otros 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   0
+      Left            =   420
+      Picture         =   "frmCanjes.frx":0C44
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   31
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Armas 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   5
+      Left            =   1080
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   30
+      Top             =   1200
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Armas 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   4
+      Left            =   1800
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   29
+      Top             =   1200
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Armas 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   3
+      Left            =   2280
+      Picture         =   "frmCanjes.frx":1486
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   28
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Armas 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   2
+      Left            =   1680
+      Picture         =   "frmCanjes.frx":1CC8
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   27
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Armas 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   1
+      Left            =   1050
+      Picture         =   "frmCanjes.frx":290A
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   26
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Armas 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   0
+      Left            =   450
+      Picture         =   "frmCanjes.frx":314C
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   25
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Armaduras 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   5
+      Left            =   1080
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   24
+      Top             =   1200
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Armaduras 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   4
+      Left            =   480
+      Picture         =   "frmCanjes.frx":3D8E
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   23
+      Top             =   1200
+      Width           =   480
+   End
+   Begin VB.PictureBox Armaduras 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   495
+      Index           =   3
+      Left            =   2260
+      Picture         =   "frmCanjes.frx":49D0
+      ScaleHeight     =   495
+      ScaleWidth      =   495
+      TabIndex        =   22
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   495
+   End
+   Begin VB.PictureBox Armaduras 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   2
+      Left            =   1680
+      Picture         =   "frmCanjes.frx":52B6
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   21
+      Top             =   600
+      Width           =   480
+   End
+   Begin VB.PictureBox Armaduras 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   1
+      Left            =   1040
+      Picture         =   "frmCanjes.frx":5AFA
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   20
+      Top             =   600
+      Width           =   480
+   End
+   Begin VB.PictureBox Armaduras 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   0
+      Left            =   420
+      Picture         =   "frmCanjes.frx":5F70
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   19
+      Top             =   600
+      Width           =   480
+   End
+   Begin VB.PictureBox Cascos 
+      AutoSize        =   -1  'True
+      BackColor       =   &H00000000&
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   5
+      Left            =   1080
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   17
+      Top             =   1200
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Cascos 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   4
+      Left            =   470
+      Picture         =   "frmCanjes.frx":63E6
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   16
+      Top             =   1200
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Cascos 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   3
+      Left            =   2270
+      Picture         =   "frmCanjes.frx":6C28
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   15
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Cascos 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   2
+      Left            =   1640
+      Picture         =   "frmCanjes.frx":786A
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   14
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Cascos 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   1
+      Left            =   1040
+      Picture         =   "frmCanjes.frx":806E
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   13
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Cascos 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   0
+      Left            =   420
+      Picture         =   "frmCanjes.frx":8CB0
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   12
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Monturas 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   5
+      Left            =   1080
+      Picture         =   "frmCanjes.frx":98F4
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   11
+      Top             =   1200
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Monturas 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   4
+      Left            =   460
+      Picture         =   "frmCanjes.frx":A938
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   10
+      Top             =   1200
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Monturas 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   3
+      Left            =   2260
+      Picture         =   "frmCanjes.frx":B57C
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   9
+      Top             =   580
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Monturas 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   2
+      Left            =   1650
+      Picture         =   "frmCanjes.frx":C1C0
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   8
+      Top             =   580
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Monturas 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   0
+      Left            =   420
+      Picture         =   "frmCanjes.frx":CE04
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   2
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.PictureBox Monturas 
+      AutoSize        =   -1  'True
+      BorderStyle     =   0  'None
+      Height          =   480
+      Index           =   1
+      Left            =   1040
+      Picture         =   "frmCanjes.frx":DA46
+      ScaleHeight     =   480
+      ScaleWidth      =   480
+      TabIndex        =   0
+      Top             =   600
+      Visible         =   0   'False
+      Width           =   480
+   End
+   Begin VB.Image Image5 
+      Height          =   255
+      Left            =   4440
+      Top             =   240
+      Width           =   855
+   End
+   Begin VB.Image Image4 
+      Height          =   255
+      Left            =   2520
+      Top             =   240
+      Width           =   735
+   End
+   Begin VB.Image Image3 
+      Height          =   255
+      Left            =   360
+      Top             =   240
+      Width           =   1335
+   End
+   Begin VB.Label Precio 
+      Alignment       =   2  'Center
+      AutoSize        =   -1  'True
+      BackStyle       =   0  'Transparent
+      Caption         =   "Precio: 0"
+      BeginProperty Font 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFFFF&
+      Height          =   195
+      Left            =   2610
+      TabIndex        =   18
+      Top             =   1905
+      Width           =   795
+   End
+   Begin VB.Image Image2 
+      Height          =   255
+      Left            =   1680
+      Top             =   240
+      Width           =   735
+   End
+   Begin VB.Image Command1 
+      Height          =   255
+      Left            =   240
+      Top             =   1920
+      Width           =   1455
+   End
+   Begin VB.Image Cerrar 
+      Height          =   255
+      Left            =   4440
+      Top             =   1920
+      Width           =   1335
+   End
+   Begin VB.Label Informacion 
+      BackStyle       =   0  'Transparent
+      Caption         =   "-"
+      BeginProperty Font 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFFFF&
+      Height          =   495
+      Left            =   3000
+      TabIndex        =   7
+      Top             =   1320
+      Width           =   2775
+   End
+   Begin VB.Label Label3 
+      BackStyle       =   0  'Transparent
+      Caption         =   "Información:"
       BeginProperty Font 
          Name            =   "Tahoma"
          Size            =   8.25
@@ -145,341 +517,17 @@ Begin VB.Form frmcanjes
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H00FFFFFF&
-      Height          =   1695
-      Left            =   3120
-      TabIndex        =   2
-      Top             =   6480
-      Width           =   1935
-      Begin VB.Label Label1 
-         BackStyle       =   0  'Transparent
-         Caption         =   "Para canjear tus puntos deves de hacer click en el Item deseado, una vez echo esta operacion no podras volver atras !! "
-         ForeColor       =   &H00FFFFFF&
-         Height          =   1335
-         Left            =   120
-         TabIndex        =   3
-         Top             =   360
-         Width           =   1695
-      End
-   End
-   Begin VB.PictureBox Picture2 
-      Height          =   495
-      Left            =   0
-      Picture         =   "frmcanjes.frx":7B6E
-      ScaleHeight     =   435
-      ScaleWidth      =   435
-      TabIndex        =   1
-      Top             =   120
-      Width           =   495
-   End
-   Begin VB.PictureBox Picture1 
-      Height          =   495
-      Left            =   0
-      Picture         =   "frmcanjes.frx":83B0
-      ScaleHeight     =   435
-      ScaleWidth      =   435
-      TabIndex        =   0
+      Height          =   255
+      Left            =   3000
+      TabIndex        =   6
       Top             =   1080
-      Width           =   495
-   End
-   Begin VB.Image Image2 
-      Height          =   225
-      Left            =   5160
-      MouseIcon       =   "frmcanjes.frx":8ACC
-      MousePointer    =   99  'Custom
-      Picture         =   "frmcanjes.frx":9796
-      Top             =   0
-      Width           =   420
-   End
-   Begin VB.Label Label17 
-      BackColor       =   &H00000000&
-      Caption         =   "Tunica Templaria (Bajos) Mago  (Sagrado): MaxDef=45/MinDef=40                                  55 Puntos"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   1215
-      Left            =   3360
-      TabIndex        =   31
-      Top             =   5040
-      Width           =   2055
-   End
-   Begin VB.Label Label16 
-      BackColor       =   &H00000000&
-      Caption         =   "Armadura de la Oscuridad (Bajos) (Sagrado): MaxDef=70/MinDef=65                                  55 Puntos"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   1215
-      Left            =   3360
-      TabIndex        =   29
-      Top             =   3600
-      Width           =   2055
-   End
-   Begin VB.Label Label15 
-      BackStyle       =   0  'Transparent
-      Caption         =   "Algunos items sagrados que no se muestran en la lista se reservan para las ofertas de Donaciones"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   -1  'True
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   975
-      Left            =   3120
-      TabIndex        =   27
-      Top             =   8280
-      Width           =   2175
-   End
-   Begin VB.Label Label14 
-      BackColor       =   &H00000000&
-      Caption         =   "Armadura Demonio (Sagrado): MaxDef=45/MinDef=40                                 45 Puntos"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   975
-      Left            =   3360
-      TabIndex        =   26
-      Top             =   2400
-      Width           =   2055
-   End
-   Begin VB.Label Label13 
-      BackColor       =   &H00000000&
-      Caption         =   "Montura Grifo (Sagrado): MaxDef=65/MinDef=65 Equitacion: 100                                        50 Puntos"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   1215
-      Left            =   3360
-      TabIndex        =   24
-      Top             =   1080
-      Width           =   1935
-   End
-   Begin VB.Label Label12 
-      BackColor       =   &H00000000&
-      Caption         =   "Arco Argentum (Sagrado): MinHit=15/MaxHit=25                                   50 Puntos"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   975
-      Left            =   3360
-      TabIndex        =   22
-      Top             =   0
-      Width           =   1935
-   End
-   Begin VB.Label Label11 
-      BackColor       =   &H00000000&
-      Caption         =   "Para ver los puntos disponibles escribe el comando /est"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   615
-      Left            =   120
-      TabIndex        =   20
-      Top             =   9000
-      Width           =   1935
-   End
-   Begin VB.Label Label7 
-      BackColor       =   &H00000000&
-      Caption         =   "Escudo Desintegrador(Sagrado): MaxDef=30/MinDef=30 35 Puntos"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   855
-      Left            =   600
-      TabIndex        =   19
-      Top             =   8160
-      Width           =   2055
-   End
-   Begin VB.Label Label10 
-      BackColor       =   &H00000000&
-      Caption         =   "Montura de Preclitus (Sagrado): MaxDef=50/MinDef=50 Equitacion: 100         40 Puntos"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   975
-      Left            =   600
-      TabIndex        =   17
-      Top             =   6960
-      Width           =   2055
-   End
-   Begin VB.Label Label9 
-      BackColor       =   &H00000000&
-      Caption         =   "Armadura del Logouth (Sagrado): MaxDef=70/MinDef=65 55 Puntos"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   975
-      Left            =   600
-      TabIndex        =   15
-      Top             =   6000
-      Width           =   2055
-   End
-   Begin VB.Label Label8 
-      BackColor       =   &H00000000&
-      Caption         =   "Vara Infernal (Sagrado): MinHit=5/MaxHit=15 40 Puntos"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   855
-      Left            =   600
-      TabIndex        =   13
-      Top             =   5040
-      Width           =   1815
-   End
-   Begin VB.Label Label6 
-      BackColor       =   &H00000000&
-      Caption         =   "Escudo de Torre + 1: MaxDef=24/MinDef=24 5 Puntos"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   975
-      Left            =   600
-      TabIndex        =   11
-      Top             =   4200
-      Width           =   2055
-   End
-   Begin VB.Label Label5 
-      BackColor       =   &H00000000&
-      Caption         =   "Casco Bikingo: MaxDef=50/MinDef=45 10 Puntos"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   735
-      Left            =   600
-      TabIndex        =   9
-      Top             =   3360
-      Width           =   2175
-   End
-   Begin VB.Label Label4 
-      BackColor       =   &H00000000&
-      Caption         =   "Gorro de Defensa Magica (+20)                     MaxDef=25/MinDef=20 15 Puntos"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   975
-      Left            =   600
-      TabIndex        =   7
-      Top             =   2160
-      Width           =   2055
-   End
-   Begin VB.Label Label3 
-      BackStyle       =   0  'Transparent
-      Caption         =   "Pendiente del Sacrificio: Con este Pendiente al morir solo se te caera el Pendiente.                     25 Puntos"
-      BeginProperty Font 
-         Name            =   "MS Sans Serif"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   700
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      ForeColor       =   &H00FFFFFF&
-      Height          =   975
-      Left            =   600
-      TabIndex        =   5
-      Top             =   1080
-      Width           =   2175
+      Width           =   1095
    End
    Begin VB.Label Label2 
-      BackColor       =   &H00000000&
-      Caption         =   "Espada Argentum (Sagrado): MinHit=25/MaxHit=29                                   50 Puntos"
+      BackStyle       =   0  'Transparent
+      Caption         =   "Puntos disponibles:"
       BeginProperty Font 
-         Name            =   "MS Sans Serif"
+         Name            =   "Tahoma"
          Size            =   8.25
          Charset         =   0
          Weight          =   700
@@ -488,102 +536,305 @@ Begin VB.Form frmcanjes
          Strikethrough   =   0   'False
       EndProperty
       ForeColor       =   &H00FFFFFF&
-      Height          =   975
-      Left            =   600
+      Height          =   255
+      Left            =   3000
+      TabIndex        =   5
+      Top             =   600
+      Width           =   1695
+   End
+   Begin VB.Image Image1 
+      Height          =   255
+      Left            =   3280
+      Top             =   240
+      Width           =   1095
+   End
+   Begin VB.Label Nombre 
+      BackStyle       =   0  'Transparent
+      Caption         =   "-"
+      BeginProperty Font 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFFFF&
+      Height          =   255
+      Left            =   3720
       TabIndex        =   4
-      Top             =   0
-      Width           =   1935
+      Top             =   840
+      Width           =   2055
+   End
+   Begin VB.Label Label1 
+      BackStyle       =   0  'Transparent
+      Caption         =   "Nombre:"
+      BeginProperty Font 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFFFF&
+      Height          =   255
+      Left            =   3000
+      TabIndex        =   3
+      Top             =   840
+      Width           =   735
+   End
+   Begin VB.Label Puntos 
+      BackStyle       =   0  'Transparent
+      Caption         =   "0"
+      BeginProperty Font 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00E0E0E0&
+      Height          =   255
+      Left            =   4680
+      TabIndex        =   1
+      Top             =   610
+      Width           =   975
    End
 End
-Attribute VB_Name = "frmcanjes"
+Attribute VB_Name = "frmCanjes"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Private Sub Command1_Click()
-frmcanjes.Visible = False
+Dim Seleccionado As Byte
+
+Private Sub Armaduras_Click(Index As Integer)
+    Select Case Index
+        Case 0
+            Seleccionado = 11
+            Nombre.Caption = "Armadura Logouth"
+            Informacion.Caption = "Def: 68/63, Nivel:50"
+            Precio.Caption = "Precio: 85pts"
+        Case 1
+            Seleccionado = 12
+            Nombre.Caption = "Armadura Logouth (Bajos)"
+            Informacion.Caption = "Def: 68/63, Nivel:50"
+            Precio.Caption = "Precio: 85pts"
+        Case 2
+            Seleccionado = 13
+            Nombre.Caption = "Túnica de Dragon (H/M)"
+            Informacion.Caption = "Def: 68/63, Nivel:50"
+            Precio.Caption = "Precio: 85pts"
+        Case 3
+            Seleccionado = 14
+            Nombre.Caption = "Túnica de Dragon (Bajos)(H/M)"
+            Informacion.Caption = "Def: 68/63, Nivel:50"
+            Precio.Caption = "Precio: 85pts"
+        Case 4
+            Seleccionado = 15
+            Nombre.Caption = "Túnica de Akatsuki(H/M)"
+            Informacion.Caption = "Def: 25/15"
+            Precio.Caption = "Precio: 30pts"
+      End Select
+            
 End Sub
 
+Private Sub Armas_Click(Index As Integer)
+    Select Case Index
+        Case 0
+            Seleccionado = 16
+            Nombre.Caption = "Arco Argentum"
+            Informacion.Caption = "Def: 15/10, Nivel:50"
+            Precio.Caption = "Precio: 85pts"
+        Case 1
+            Seleccionado = 17
+            Nombre.Caption = "Espada Argentum"
+            Informacion.Caption = "Def: 29/25, Nivel:50"
+            Precio.Caption = "Precio: 85pts"
+        Case 2
+            Seleccionado = 18
+            Nombre.Caption = "Vara del Mago Legendario"
+            Informacion.Caption = "Def: 16/7, Nivel:50"
+            Precio.Caption = "Precio: 85pts"
+        Case 3
+            Seleccionado = 19
+            Nombre.Caption = "Daga Demoniaca"
+            Informacion.Caption = "Def: 15/11, Nivel:45"
+            Precio.Caption = "Precio: 75pts"
+    End Select
+End Sub
 
-Private Sub Form_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-    HookSurfaceHwnd Me
+Private Sub Cerrar_Click()
+Unload Me
+Comerciando = False
+End Sub
+Private Sub Command1_Click()
+If Seleccionado = 0 Then
+    MsgBox "Selecciona un objeto", vbInformation
+    Exit Sub
+Else
+    Call WriteCanjes(Seleccionado)
+End If
+End Sub
+
+Private Sub Form_Load()
+    Me.Picture = General_Load_Picture_From_Resource("33.gif")
 End Sub
 
 Private Sub Image1_Click()
-
+    Dim i As Byte
+    
+    For i = 0 To 5
+        Armaduras(i).Visible = False
+        Cascos(i).Visible = False
+        Armas(i).Visible = False
+        Monturas(i).Visible = True
+    Next i
+    
+    Me.Picture = General_Load_Picture_From_Resource("36.gif")
 End Sub
 
 Private Sub Image2_Click()
-Unload Me
+    Dim i As Byte
+    
+    For i = 0 To 5
+        Armaduras(i).Visible = False
+        Cascos(i).Visible = True
+        Armas(i).Visible = False
+        Monturas(i).Visible = False
+    Next i
+    
+    Me.Picture = General_Load_Picture_From_Resource("34.gif")
 End Sub
 
-Private Sub Picture1_Click()
-Call SendData("KOTO1")
-frmcanjes.Visible = False
+Private Sub Cascos_Click(Index As Integer)
+    Select Case Index
+        Case 0
+            Seleccionado = 6
+            Nombre.Caption = "Sombrero de Mago (+RM)"
+            Informacion.Caption = "Def: 28/24, Nivel:50"
+            Precio.Caption = "Precio: 65pts"
+        Case 1
+            Seleccionado = 7
+            Nombre.Caption = "Casco Alethril"
+            Informacion.Caption = "Def: 50/48, Nivel:50"
+            Precio.Caption = "Precio: 65pts"
+        Case 2
+            Seleccionado = 8
+            Nombre.Caption = "Casco de Astas"
+            Informacion.Caption = "Def: 48/45, Nivel:48"
+            Precio.Caption = "Precio: 60pts"
+        Case 3
+            Seleccionado = 9
+            Nombre.Caption = "Casco Alado"
+            Informacion.Caption = "Def: 45/43, Nivel:45"
+            Precio.Caption = "Precio: 55pts"
+        Case 4
+            Seleccionado = 10
+            Nombre.Caption = "Gafas"
+            Informacion.Caption = "Def: 1/1, Nivel:1. ¡Presume de tus gafas!"
+            Precio.Caption = "Precio: 35pts"
+    End Select
 End Sub
 
-Private Sub Picture10_Click()
-Call SendData("KITI2")
-frmcanjes.Visible = False
+Private Sub Image3_Click()
+    Dim i As Byte
+    
+    For i = 0 To 5
+        Armaduras(i).Visible = True
+        Cascos(i).Visible = False
+        Armas(i).Visible = False
+        Monturas(i).Visible = False
+        Otros(i).Visible = False
+    Next i
+
+    Me.Picture = General_Load_Picture_From_Resource("33.gif")
 End Sub
 
-Private Sub Picture11_Click()
-Call SendData("KITI3")
-frmcanjes.Visible = False
+Private Sub Image4_Click()
+    Dim i As Byte
+    
+    For i = 0 To 5
+        Armaduras(i).Visible = False
+        Cascos(i).Visible = False
+        Armas(i).Visible = True
+        Monturas(i).Visible = False
+        Otros(i).Visible = False
+    Next i
+
+    Me.Picture = General_Load_Picture_From_Resource("35.gif")
 End Sub
 
-Private Sub Picture12_Click()
-Call SendData("KITI4")
-frmcanjes.Visible = False
+Private Sub Image5_Click()
+    Dim i As Byte
+    
+    For i = 0 To 5
+        Armaduras(i).Visible = False
+        Cascos(i).Visible = False
+        Armas(i).Visible = False
+        Monturas(i).Visible = False
+        Otros(i).Visible = True
+    Next i
+
+    Me.Picture = General_Load_Picture_From_Resource("37.gif")
 End Sub
 
-Private Sub Picture13_Click()
-Call SendData("KITI5")
-frmcanjes.Visible = False
+Private Sub Monturas_Click(Index As Integer)
+'********************************************
+'MONTURAS
+'********************************************
+    Select Case Index
+    
+        Case 0
+            Seleccionado = 1
+            Nombre.Caption = "Montura Preclitus"
+            Informacion.Caption = "Skills:100, Nivel:50. Aumenta velocidad, golpe y defensa."
+            Precio.Caption = "Precio: 75 pts"
+        Case 1
+            Seleccionado = 2
+            Nombre.Caption = "Montura Preclitus Azul"
+            Informacion.Caption = "Skills:100, Nivel:50. Aumenta velocidad, golpe y defensa."
+            Precio.Caption = "Precio: 75pts"
+        Case 2
+            Seleccionado = 3
+            Nombre.Caption = "Montura de Dragón Negro"
+            Informacion.Caption = "Skills:100, Nivel:50. Aumenta velocidad, golpe y defensa."
+            Precio.Caption = "Precio: 100pts"
+        Case 3
+            Seleccionado = 4
+            Nombre.Caption = "Montura de Dragón Dorado"
+            Informacion.Caption = "Skills:100, Nivel:50. Aumenta velocidad, golpe y defensa."
+            Precio.Caption = "Precio: 100pts"
+        Case 4
+            Seleccionado = 5
+            Nombre.Caption = "Montura de Dragón Rojo"
+            Informacion.Caption = "Skills:100, Nivel:50. Aumenta velocidad, golpe y defensa."
+            Precio.Caption = "Precio: 100pts"
+        Case 5
+            Seleccionado = 6
+            Nombre.Caption = "Montura de Buey"
+            Informacion.Caption = "Skills:100, Nivel:50. Aumenta velocidad, golpe y defensa."
+            Precio.Caption = "Precio: 85pts"
+    End Select
 End Sub
 
-Private Sub Picture14_Click()
-Call SendData("KITI6")
-frmcanjes.Visible = False
+Private Sub Otros_Click(Index As Integer)
+    Select Case Index
+    
+        Case 0
+            Seleccionado = 20
+            Nombre.Caption = "Pendiente del sacrificio"
+            Informacion.Caption = "Al morir solo perderas el pendiente."
+            Precio.Caption = "Precio: 30 pts"
+        Case 1
+            Seleccionado = 21
+            Nombre.Caption = "Anillo de la hermandad"
+            Informacion.Caption = "Requerido para fundar clan."
+            Precio.Caption = "Precio: 100 pts"
+    End Select
 End Sub
-
-Private Sub Picture2_Click()
-Call SendData("KOTO2")
-frmcanjes.Visible = False
-End Sub
-
-Private Sub Picture3_Click()
-Call SendData("KOTO3")
-frmcanjes.Visible = False
-End Sub
-
-Private Sub Picture4_Click()
-Call SendData("KOTO4")
-frmcanjes.Visible = False
-End Sub
-
-Private Sub Picture5_Click()
-Call SendData("KOTO5")
-frmcanjes.Visible = False
-End Sub
-
-Private Sub Picture6_Click()
-Call SendData("KITI1")
-frmcanjes.Visible = False
-End Sub
-
-Private Sub Picture7_Click()
-Call SendData("KOTO7")
-frmcanjes.Visible = False
-End Sub
-
-Private Sub Picture8_Click()
-Call SendData("KOTO8")
-frmcanjes.Visible = False
-End Sub
-
-Private Sub Picture9_Click()
-Call SendData("KOTO9")
-frmcanjes.Visible = False
-End Sub
-

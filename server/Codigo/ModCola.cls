@@ -57,9 +57,6 @@ End Sub
 
 Public Function VerElemento(ByVal Index As Integer) As Variant
 On Error Resume Next
-
-
-
 If IndexValido(Index) Then
     VerElemento = Cola(Index)
 Else
@@ -68,10 +65,8 @@ End If
 
 End Function
 
-
-Public Sub Push(ByVal Info As String, ByVal Nombre As String)
+Public Sub Push(ByVal Nombre As String)
 On Error Resume Next
-'Mete elemento en la cola
 Call Cola.Add(UCase$(Nombre))
 End Sub
 
@@ -101,38 +96,33 @@ End Function
 
 Public Function Existe(ByVal Nombre As String) As Boolean
 On Error Resume Next
-  
  Dim f As Boolean
- Dim V As Variant
+ Dim V As String
  Dim i As Integer
  Dim NombreEnMayusculas As String
  NombreEnMayusculas = UCase$(Nombre)
- 
  i = 1
  f = False
  
  For i = 1 To Me.Longitud
         V = Me.VerElemento(i)
-        If V = NombreEnMayusculas Then
+        If ReadField(1, V, 59) = ReadField(1, NombreEnMayusculas, 59) Then
             Existe = True
             Exit Function
         End If
  Next
-
-
 End Function
 
 Public Sub Quitar(ByVal Nombre As String)
 On Error Resume Next
-Dim V As Variant
+Dim V As String
 Dim i As Integer
 Dim NombreEnMayusculas As String
- 
+
 NombreEnMayusculas = UCase$(Nombre)
- 
 For i = 1 To Me.Longitud
     V = Me.VerElemento(i)
-    If V = NombreEnMayusculas Then
+    If ReadField(1, V, 59) = ReadField(1, NombreEnMayusculas, 59) Then
         Call Cola.Remove(i)
         Exit Sub
     End If
@@ -140,13 +130,8 @@ Next i
  
 End Sub
 
-Public Sub QuitarIndex(ByVal Index As Integer)
-On Error Resume Next
-If IndexValido(Index) Then Call Cola.Remove(Index)
-End Sub
-
-
 Private Sub Class_Terminate()
 'Destruimos el objeto Cola
 Set Cola = Nothing
 End Sub
+
