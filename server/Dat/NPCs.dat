@@ -72,7 +72,7 @@ Inv mujer
 
 
 [INIT]
-NumNPCs=131
+NumNPCs=134
 
 [NPC1] 'NPC Aldeano
 Name=Aldeano
@@ -219,7 +219,7 @@ Domable=0
 Alineacion=0
 Comercia=1
 TipoItems=2
-NROITEMS=18
+NROITEMS=19
 Inflacion=0
 Obj1=15-1000
 Obj2=619-1000
@@ -239,6 +239,7 @@ Obj15=478-1000
 Obj16=480-1000
 Obj17=165-1000
 Obj18=398-1000
+Obj19=365-1000
 BackUp=1
 
 [NPC8] 'NPC verdulero de Ulla
@@ -539,7 +540,7 @@ Domable=0
 Alineacion=0
 Comercia=1
 TipoItems=2
-NROITEMS=16
+NROITEMS=17
 Inflacion=0
 Obj1=15-1000
 Obj2=619-1000
@@ -557,6 +558,7 @@ Obj13=478-1000
 Obj14=480-1000
 Obj15=165-1000
 Obj16=398-1000
+Obj17=365-1000
 BackUp=1
 
 [NPC38] 'NPC
@@ -575,7 +577,7 @@ Domable=0
 Alineacion=0
 Comercia=1
 TipoItems=3
-NROITEMS=16
+NROITEMS=17
 Inflacion=0
 Obj1=15-100
 Obj2=619-100
@@ -593,6 +595,7 @@ Obj13=478-1000
 Obj14=480-1000
 Obj15=165-1000
 Obj16=398-1000
+Obj17=365-1000
 BackUp=1
 
 [NPC39] 'NPC
@@ -770,7 +773,7 @@ NROITEMS=0
 [NPC46]
 Name=Mago de Ramx
 NpcType=0
-Desc=Bienvenido a mi humilde tienda, aqui podras encontrar los mejores hechizos de Ramx.
+Desc=Bienvenido a mi humilde tienda, aqui podras encontrar los mejores hechizos.
 Head=2
 Heading=3
 Body=50
@@ -799,7 +802,7 @@ BackUp=1
 [NPC47]
 Name=Mago de Feinur
 NpcType=0
-Desc=Solo las magias de Feinur te podran defender de cualquier problema.
+Desc=Solo las magias de aqui te podran defender de cualquier problema.
 Head=6
 Heading=3
 Body=50
@@ -899,7 +902,7 @@ BackUp=1
 [NPC51]
 Name=Mago de Winderbill
 NpcType=0
-Desc=Bienvenido a mi pequeña Tienda... Tengo toda clase de hechizos que solo podras encontrar en Winderbill.
+Desc=Bienvenido a mi pequeña Tienda... Tengo toda clase de hechizos que solo podras encontrar aqui.
 Head=6
 Heading=3
 Body=50
@@ -1062,7 +1065,7 @@ Obj11=389-100
 Obj12=1083-1000
 Obj13=478-1000
 Obj14=165-1000
-Obj16=398-1000
+Obj17=398-1000
 BackUp=1
 
 [NPC56] 'NPC Herrero de Banderbill
@@ -1080,7 +1083,7 @@ Domable=0
 Alineacion=0
 Comercia=1
 TipoItems=3
-NROITEMS=16
+NROITEMS=17
 Inflacion=0
 Obj1=15-100
 Obj2=619-100
@@ -1097,6 +1100,7 @@ Obj12=1083-1000
 Obj13=478-1000
 Obj14=165-1000
 Obj16=398-1000
+Obj17=365-1000
 BackUp=1
 
 [NPC57] 'NPC Banquero móvil
@@ -2522,12 +2526,15 @@ Movement=1
 Comercia=1
 Alineacion=0
 ReSpawn=0
-NROITEMS=5
+NROITEMS=8
 Obj1=990-10000
 Obj2=1042-10000
 Obj3=1043-10000
 Obj4=1044-10000
 Obj5=1071-10000
+Obj6=1295-10000
+Obj7=1296-10000
+Obj8=1297-10000
 
 [NPC118]
 Name=Vende Monturas
@@ -2540,11 +2547,13 @@ Movement=1
 Comercia=1
 Alineacion=0
 ReSpawn=0
-NROITEMS=4
+NROITEMS=6
 Obj1=998-1000
 Obj2=1019-1000
 Obj3=1064-1000
 Obj4=1070-1000
+Obj5=1300-1000
+Obj6=1301-1000
 
 [NPC119] 'NPC Cambia Caras
 Name=Cirujano
@@ -2800,3 +2809,46 @@ NROITEMS=0
 PoderAtaque=400
 PoderEvasion=190
 Domable=0
+
+[NPC132] ' deathmatch
+Name=DeathMatch
+NpcType=10
+Desc=Un nuevo deathmatch para usuarios ha abierto, para ingresar /DEATHMATCH, ¡Buena suerte!.
+Head=11
+Body=1
+Heading=3
+Movement=1
+Attackable=0
+Comercia=0
+Hostile=0
+
+[NPC133]
+Name=Mago de Arghal
+NpcType=0
+Desc=Bienvenido a mi humilde tienda, aqui podras encontrar los mejores hechizos.
+Head=2
+Heading=3
+Body=50
+Movement=1
+Attackable=0
+ReSpawn=0
+Hostile=0
+Domable=0
+Alineacion=0
+Comercia=1
+TipoItems=24
+NROITEMS=2
+Inflacion=0
+Obj1=1291-1000
+Obj2=542-1000
+BackUp=1
+
+[NPC134] ' SUBASTAS
+Name=Subastador
+Desc=¡Buenas amigo!, soy dueño de la cadena mas grande de subastas de todo Argentum. Si quieres subastar un item solo tipea /SUBASTAR
+Head=101
+Body=63
+Heading=3
+Movement=1
+Subasta=1
+BackUp=1

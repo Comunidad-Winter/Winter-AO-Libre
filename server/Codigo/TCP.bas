@@ -31,7 +31,7 @@ Public Enum SendTarget
     ToCriminalesYRMs = 25
     ToRealYRMs = 26
     ToCaosYRMs = 27
-
+    tosubasta = 28
 End Enum
 
 
@@ -397,12 +397,6 @@ If FileExist(CharPath & UCase$(name) & ".chr", vbNormal) = True Then
     Exit Sub
 End If
 
-'Tiró los dados antes de llegar acá??
-If UserList(UserIndex).Stats.UserAtributos(eAtributos.Fuerza) = 0 Then
-    Call SendData(SendTarget.ToIndex, UserIndex, 0, "ERRDebe tirar los dados antes de poder crear un personaje.")
-    Exit Sub
-End If
-
 If val(GetVar(CuentasPath & Cuenta & ".ct", "INIT", "NumPjs")) >= 8 Then
     Call SendData(SendTarget.ToIndex, UserIndex, 0, "ERRNo podes crear mas personajes desde esta cuenta, si queres otro, elimina alguno.")
     Exit Sub
@@ -413,12 +407,15 @@ UserList(UserIndex).flags.Escondido = 0
 
 
 
-UserList(UserIndex).Reputacion.AsesinoRep = 0
-UserList(UserIndex).Reputacion.BandidoRep = 0
-UserList(UserIndex).Reputacion.BurguesRep = 0
-UserList(UserIndex).Reputacion.LadronesRep = 0
-UserList(UserIndex).Reputacion.NobleRep = 1000
-UserList(UserIndex).Reputacion.PlebeRep = 30
+
+
+    UserList(UserIndex).Reputacion.AsesinoRep = 0
+    UserList(UserIndex).Reputacion.BandidoRep = 0
+    UserList(UserIndex).Reputacion.BurguesRep = 0
+    UserList(UserIndex).Reputacion.LadronesRep = 0
+    UserList(UserIndex).Reputacion.NobleRep = 1000
+    UserList(UserIndex).Reputacion.PlebeRep = 30
+
 
 UserList(UserIndex).Reputacion.Promedio = 30 / 6
 
@@ -1052,7 +1049,15 @@ Select Case sndRoute
                 Call PostMensaje(Replace(ReadField(1, Right(sndData, Len(sndData) - 2), Asc("~")), ENDC, ""))
         Exit Sub
     
-        
+            Case SendTarget.tosubasta
+        For LoopC = 1 To LastUser
+            If UserList(LoopC).ConnID <> -1 Then
+                If UserList(LoopC).flags.ParticipaSubasta Then 'Esta logeado como usuario?
+                    Call EnviarDatosASlot(LoopC, sndData)
+                End If
+            End If
+        Next LoopC
+        Exit Sub
     
     Case SendTarget.ToAllButIndex
         For LoopC = 1 To LastUser
@@ -1593,37 +1598,31 @@ UserList(UserIndex).flags.TargetObj = 0
 UserList(UserIndex).flags.TargetUser = 0
 UserList(UserIndex).Char.FX = 0
 
-If UCase$(name) = "SANTO" And UserList(UserIndex).ip <> GetVar(IniPath & "Server.ini", "IPGM", "SantoIp") Then
+If UCase$(name) = "SANTO" And UserList(UserIndex).IP <> GetVar(IniPath & "Server.ini", "IPGM", "SantoIp") Then
     Call SendData(ToIndex, UserIndex, 0, "ERRTu no eres un GM. Dejate de joder y juega con tu usuario.")
     Call CloseSocket(UserIndex)
     Exit Sub
 End If
 
-If UCase$(name) = "ERWIN" And UserList(UserIndex).ip <> GetVar(IniPath & "Server.ini", "IPGM", "ErwinIp") Then
+If UCase$(name) = "ERWIN" And UserList(UserIndex).IP <> GetVar(IniPath & "Server.ini", "IPGM", "ErwinIp") Then
     Call SendData(ToIndex, UserIndex, 0, "ERRTu no eres un GM. Dejate de joder y juega con tu usuario.")
     Call CloseSocket(UserIndex)
     Exit Sub
 End If
 
-If UCase$(name) = "KURAMA" And UserList(UserIndex).ip <> GetVar(IniPath & "Server.ini", "IPGM", "KuramaIp") Then
+If UCase$(name) = "MORTIS" And UserList(UserIndex).IP <> GetVar(IniPath & "Server.ini", "IPGM", "MortisIp") Then
     Call SendData(ToIndex, UserIndex, 0, "ERRTu no eres un GM. Dejate de joder y juega con tu usuario.")
     Call CloseSocket(UserIndex)
     Exit Sub
 End If
 
-If UCase$(name) = "LA CREMME" And UserList(UserIndex).ip <> GetVar(IniPath & "Server.ini", "IPGM", "lacremmeIp") Then
+If UCase$(name) = "STICK" And UserList(UserIndex).IP <> GetVar(IniPath & "Server.ini", "IPGM", "StickIp") Then
     Call SendData(ToIndex, UserIndex, 0, "ERRTu no eres un GM. Dejate de joder y juega con tu usuario.")
     Call CloseSocket(UserIndex)
     Exit Sub
 End If
 
-If UCase$(name) = "Hennox" And UserList(UserIndex).ip <> GetVar(IniPath & "Server.ini", "IPGM", "HennoxIp") Then
-    Call SendData(ToIndex, UserIndex, 0, "ERRTu no eres un GM. Dejate de joder y juega con tu usuario.")
-    Call CloseSocket(UserIndex)
-    Exit Sub
-End If
-
-If UCase$(name) = "Martin" And UserList(UserIndex).ip <> GetVar(IniPath & "Server.ini", "IPGM", "MartinIp") Then
+If UCase$(name) = "HENNOX" And UserList(UserIndex).IP <> GetVar(IniPath & "Server.ini", "IPGM", "HennoxIp") Then
     Call SendData(ToIndex, UserIndex, 0, "ERRTu no eres un GM. Dejate de joder y juega con tu usuario.")
     Call CloseSocket(UserIndex)
     Exit Sub
@@ -1638,7 +1637,7 @@ End If
 
 '¿Este IP ya esta conectado?
 If AllowMultiLogins = 0 Then
-    If CheckForSameIP(UserIndex, UserList(UserIndex).ip) = True Then
+    If CheckForSameIP(UserIndex, UserList(UserIndex).IP) = True Then
         Call SendData(SendTarget.ToIndex, UserIndex, 0, "ERRNo es posible usar mas de un personaje al mismo tiempo.")
         Call CloseSocket(UserIndex)
         Exit Sub
@@ -1728,17 +1727,15 @@ If UserList(UserIndex).flags.Estupidez = 0 Then Call SendData(SendTarget.ToIndex
 
 'Posicion de comienzo
 If UserList(UserIndex).Pos.Map = 0 Then
-    If UCase$(UserList(UserIndex).Hogar) = "NIX" Then
-             UserList(UserIndex).Pos = Nix
-    ElseIf UCase$(UserList(UserIndex).Hogar) = "ULLATHORPE" Then
+   If UCase$(UserList(UserIndex).Hogar) = "ULLATHORPE" Then
              UserList(UserIndex).Pos = Ullathorpe
-    ElseIf UCase$(UserList(UserIndex).Hogar) = "BANDERBILL" Then
-             UserList(UserIndex).Pos = Banderbill
-    ElseIf UCase$(UserList(UserIndex).Hogar) = "LINDOS" Then
-             UserList(UserIndex).Pos = Lindos
+    ElseIf UCase$(UserList(UserIndex).Hogar) = "Ramx" Then
+             UserList(UserIndex).Pos = Ramx
     Else
         UserList(UserIndex).Hogar = "ULLATHORPE"
         UserList(UserIndex).Pos = Ullathorpe
+        UserList(UserIndex).Hogar = "Ramx"
+        UserList(UserIndex).Pos = Ramx
     End If
 Else
 
@@ -1786,16 +1783,16 @@ Call SendData(SendTarget.ToIndex, UserIndex, 0, "TM" & MapInfo(UserList(UserInde
 UserList(UserIndex).flags.EsRolesMaster = EsRolesMaster(name)
 If EsAdmin(name) Then
     UserList(UserIndex).flags.Privilegios = PlayerType.Admin
-    Call LogGM(UserList(UserIndex).name, "Se conecto con ip:" & UserList(UserIndex).ip, False)
+    Call LogGM(UserList(UserIndex).name, "Se conecto con ip:" & UserList(UserIndex).IP, False)
 ElseIf EsDios(name) Then
     UserList(UserIndex).flags.Privilegios = PlayerType.Dios
-    Call LogGM(UserList(UserIndex).name, "Se conecto con ip:" & UserList(UserIndex).ip, False)
+    Call LogGM(UserList(UserIndex).name, "Se conecto con ip:" & UserList(UserIndex).IP, False)
 ElseIf EsSemiDios(name) Then
     UserList(UserIndex).flags.Privilegios = PlayerType.SemiDios
-    Call LogGM(UserList(UserIndex).name, "Se conecto con ip:" & UserList(UserIndex).ip, False)
+    Call LogGM(UserList(UserIndex).name, "Se conecto con ip:" & UserList(UserIndex).IP, False)
 ElseIf EsConsejero(name) Then
     UserList(UserIndex).flags.Privilegios = PlayerType.Consejero
-    Call LogGM(UserList(UserIndex).name, "Se conecto con ip:" & UserList(UserIndex).ip, True)
+    Call LogGM(UserList(UserIndex).name, "Se conecto con ip:" & UserList(UserIndex).IP, True)
 Else
     UserList(UserIndex).flags.Privilegios = PlayerType.User
 End If
@@ -1906,6 +1903,7 @@ Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "CFX"
 
 Call SendData(SendTarget.ToIndex, UserIndex, 0, "LOKYED")
 
+Call SendUserHitBox(UserIndex)
 
 Call modGuilds.SendGuildNews(UserIndex)
 
@@ -1956,13 +1954,14 @@ End Sub
 Sub SendMOTD(ByVal UserIndex As Integer)
     Dim j As Long
     
-    Call SendData(SendTarget.ToIndex, UserIndex, 0, "|+Mensajes de entrada:" & FONTTYPE_INFO)
+    Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Mensajes de entrada:" & FONTTYPE_INFO)
     
     For j = 1 To MaxLines
-        Call SendData(SendTarget.ToIndex, UserIndex, 0, "|+" & Chr$(3) & MOTD(j).texto)
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & Chr$(3) & MOTD(j).texto)
     Next j
     Call SendData(ToIndex, UserIndex, 0, "||El Castillo Sur esta en manos del clan: " & GetVar(App.Path & "\Castillos.ini", "CLANES", "SUR") & FONTTYPE_FENIX)
     Call SendData(ToIndex, UserIndex, 0, "||El Castillo Norte esta en manos del clan: " & GetVar(App.Path & "\Castillos.ini", "CLANES", "NORTE") & FONTTYPE_FENIX)
+    Call SendData(ToIndex, UserIndex, 0, "||El Castillo Este esta en manos del clan: " & GetVar(App.Path & "\Castillos.ini", "CLANES", "ESTE") & FONTTYPE_FENIX)
 End Sub
 
 Sub ResetFacciones(ByVal UserIndex As Integer)
@@ -2057,7 +2056,7 @@ Sub ResetBasicUserInfo(ByVal UserIndex As Integer)
         .Pos.Map = 0
         .Pos.X = 0
         .Pos.Y = 0
-        .ip = ""
+        .IP = ""
         .RDBuffer = ""
         .Clase = ""
         .email = ""
@@ -2129,6 +2128,7 @@ Sub ResetUserFlags(ByVal UserIndex As Integer)
     With UserList(UserIndex).flags
         .Comerciando = False
         .Ban = 0
+        .ParticipaSubasta = False
         .Escondido = 0
         .DuracionEfecto = 0
         .NpcInv = 0
@@ -2570,15 +2570,48 @@ On Error GoTo ErrorHandler:
                         Call SendData(SendTarget.ToIndex, UserIndex, 0, "ERRSe te ha prohibido la entrada a Winter debido a tu mal comportamiento.")
                     End If
                 Exit Sub
-Case "TIRDAD"
-            
-                UserList(UserIndex).Stats.UserAtributos(eAtributos.Fuerza) = 9 + RandomNumber(2, 4) + RandomNumber(2, 5)
-                UserList(UserIndex).Stats.UserAtributos(eAtributos.Agilidad) = 9 + RandomNumber(2, 4) + RandomNumber(2, 5)
-                UserList(UserIndex).Stats.UserAtributos(eAtributos.Inteligencia) = 12 + RandomNumber(2, 3) + RandomNumber(2, 3)
-                UserList(UserIndex).Stats.UserAtributos(eAtributos.Carisma) = 12 + RandomNumber(2, 3) + RandomNumber(2, 3)
-                UserList(UserIndex).Stats.UserAtributos(eAtributos.Constitucion) = 12 + RandomNumber(2, 3) + RandomNumber(2, 3)
                 
-                Call SendData(SendTarget.ToIndex, UserIndex, 0, "DADOS" & UserList(UserIndex).Stats.UserAtributos(eAtributos.Fuerza) & "," & UserList(UserIndex).Stats.UserAtributos(eAtributos.Agilidad) & "," & UserList(UserIndex).Stats.UserAtributos(eAtributos.Inteligencia) & "," & UserList(UserIndex).Stats.UserAtributos(eAtributos.Carisma) & "," & UserList(UserIndex).Stats.UserAtributos(eAtributos.Constitucion))
+                            Case "~BORRA"
+                rData = Right$(rData, Len(rData) - 6)
+               
+             
+               
+                Cuenta = UCase$(ReadField(2, rData, Asc(",")))
+                rData = ReadField(1, rData, Asc(","))
+                Archivo = CuentasPath & Cuenta & ".ct"
+               
+                For i = 1 To val(GetVar(Archivo, "INIT", "NumPjs"))
+                    If UCase$(GetVar(Archivo, "INIT", "PJ" & i)) = UCase$(rData) Then
+                        Call WriteVar(Archivo, "INIT", "PJ" & i, "")
+                        Call WriteVar(Archivo, "INIT", "NumPjs", val(GetVar(Archivo, "INIT", "NumPjs")) - 1)
+                        BorrarUsuario (rData)
+                        Exit For
+                    End If
+                Next i
+                Exit Sub
+                
+            Case "TIRDAD"
+            rData = Right$(rData, Len(rData) - 6)
+Dim FueZa As Integer
+Dim AgiLi As Integer
+Dim InteL As Integer
+Dim CaRis As Integer
+Dim CnsTi As Integer
+
+FueZa = val(ReadField(1, rData, 44))
+AgiLi = val(ReadField(2, rData, 44))
+InteL = val(ReadField(3, rData, 44))
+CaRis = val(ReadField(4, rData, 44))
+CnsTi = val(ReadField(5, rData, 44))
+ 
+UserList(UserIndex).Stats.UserAtributos(eAtributos.Fuerza) = FueZa
+UserList(UserIndex).Stats.UserAtributos(eAtributos.Agilidad) = AgiLi
+UserList(UserIndex).Stats.UserAtributos(eAtributos.Inteligencia) = InteL
+UserList(UserIndex).Stats.UserAtributos(eAtributos.Carisma) = CaRis
+UserList(UserIndex).Stats.UserAtributos(eAtributos.Constitucion) = CnsTi
+                
+                 Call SendData(SendTarget.ToIndex, UserIndex, 0, "DADOS" & UserList(UserIndex).Stats.UserAtributos(eAtributos.Fuerza) & "," & UserList(UserIndex).Stats.UserAtributos(eAtributos.Agilidad) & "," & UserList(UserIndex).Stats.UserAtributos(eAtributos.Inteligencia) & "," & UserList(UserIndex).Stats.UserAtributos(eAtributos.Carisma) & "," & UserList(UserIndex).Stats.UserAtributos(eAtributos.Constitucion))
+                
                 
                 Exit Sub
 
@@ -2611,7 +2644,7 @@ Case "TIRDAD"
                     Exit Sub
                 End If
 
-                If aClon.MaxPersonajes(UserList(UserIndex).ip) Then
+                If aClon.MaxPersonajes(UserList(UserIndex).IP) Then
                     Call SendData(SendTarget.ToIndex, UserIndex, 0, "ERRHas creado demasiados personajes.")
                     Call CloseSocket(UserIndex)
                     Exit Sub
@@ -2635,7 +2668,7 @@ Case "TIRDAD"
            On Error GoTo ExitErr1
             rData = Right$(rData, Len(rData) - 4)
             If (UserList(UserIndex).flags.ValCoDe = 0) Or (ValidarLoginMSG(UserList(UserIndex).flags.ValCoDe) <> CInt(val(ReadField(3, rData, 44)))) Then
-                          Call LogHackAttemp("IP:" & UserList(UserIndex).ip & " intento borrar un personaje.")
+                          Call LogHackAttemp("IP:" & UserList(UserIndex).IP & " intento borrar un personaje.")
                           Call CloseSocket(UserIndex)
                           Exit Sub
             End If
@@ -2901,6 +2934,22 @@ Call SendData(SendTarget.ToAll, 0, 0, "||" & UserList(UserIndex).name & "> " & r
     Exit Sub
 End If
 
+    If UCase$(Left$(rData, 8)) = "/BUSCAR " Then
+     rData = Right$(rData, Len(rData) - 8)
+        For i = 1 To UBound(ObjData)
+            If InStr(1, Tilde(ObjData(i).name), Tilde(rData)) Then
+                Call SendData(ToIndex, UserIndex, 0, "||" & i & " " & ObjData(i).name & "." & FONTTYPE_INFO)
+                N = N + 1
+            End If
+        Next
+        If N = 0 Then
+           Call SendData(ToIndex, UserIndex, 0, "||No hubo resultados de la búsqueda: " & rData & "." & FONTTYPE_INFO)
+       Else
+           Call SendData(ToIndex, UserIndex, 0, "||Hubo " & N & " resultados de la busqueda: " & rData & "." & FONTTYPE_INFO)
+       End If
+      Exit Sub
+   End If
+
 'Teleportar
 If UCase$(Left$(rData, 7)) = "/TELEP " Then
     rData = Right$(rData, Len(rData) - 7)
@@ -2992,6 +3041,7 @@ If UCase$(Left$(rData, 5)) = "/IRA " And UserList(UserIndex).flags.Privilegios >
     Call WarpUserChar(UserIndex, UserList(tIndex).Pos.Map, UserList(tIndex).Pos.X, UserList(tIndex).Pos.Y + 1, True)
     
     If UserList(UserIndex).flags.AdminInvisible = 0 Then Call SendData(SendTarget.ToIndex, tIndex, 0, "||" & UserList(UserIndex).name & " se ha trasportado hacia donde te encontras." & FONTTYPE_INFO)
+
     Call LogGM(UserList(UserIndex).name, "/IRA " & UserList(tIndex).name & " Mapa:" & UserList(tIndex).Pos.Map & " X:" & UserList(tIndex).Pos.X & " Y:" & UserList(tIndex).Pos.Y, (UserList(UserIndex).flags.Privilegios = PlayerType.Consejero))
     Exit Sub
 End If
@@ -3384,6 +3434,30 @@ End If
         Exit Sub
     End If
 
+'Denuncias:
+If UCase$(Left$(rData, 6)) = "/DENU " Then
+rData = Right$(rData, Len(rData) - 6)
+If UCase$(rData) = "AC" And Denuncias = False Then
+Call SendData(SendTarget.ToAll, 0, 0, "||Las denuncias han sido activadas." & FONTTYPE_INFO)
+Denuncias = True
+ElseIf UCase$(rData) = "DES" And Denuncias = True Then
+Call SendData(SendTarget.ToAll, 0, 0, "||Las denuncias han sido desactivadas." & FONTTYPE_INFO)
+Denuncias = False
+End If
+Exit Sub
+End If
+
+If UCase$(Left$(rData, 6)) = "/GLOB " Then
+rData = Right$(rData, Len(rData) - 6)
+If UCase$(rData) = "AC" And glob = False Then
+Call SendData(SendTarget.ToAll, 0, 0, "||El Global ha sido activado. Se ruega no abusar de el." & FONTTYPE_INFO)
+glob = True
+ElseIf UCase$(rData) = "DES" And glob = True Then
+Call SendData(SendTarget.ToAll, 0, 0, "||El Global ha sido desactivado." & FONTTYPE_INFO)
+glob = False
+End If
+Exit Sub
+End If
 
 If UCase$(Left$(rData, 5)) = "/BAL " Then
 rData = Right$(rData, Len(rData) - 5)
@@ -3866,7 +3940,7 @@ If UCase$(Left$(rData, 9)) = "/NICK2IP " Then
     Call LogGM(UserList(UserIndex).name, "NICK2IP Solicito la IP de " & rData, UserList(UserIndex).flags.Privilegios = PlayerType.Consejero)
     If tIndex > 0 Then
         If (UserList(UserIndex).flags.Privilegios > PlayerType.User And UserList(tIndex).flags.Privilegios = PlayerType.User) Or (UserList(UserIndex).flags.Privilegios >= PlayerType.Dios) Then
-            Call SendData(SendTarget.ToIndex, UserIndex, 0, "||El ip de " & rData & " es " & UserList(tIndex).ip & FONTTYPE_INFO)
+            Call SendData(SendTarget.ToIndex, UserIndex, 0, "||El ip de " & rData & " es " & UserList(tIndex).IP & FONTTYPE_INFO)
         Else
             Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No tienes los privilegios necesarios" & FONTTYPE_INFO)
         End If
@@ -3887,12 +3961,12 @@ If UCase$(Left$(rData, 9)) = "/IP2NICK " Then
             Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Pj Offline" & FONTTYPE_INFO)
             Exit Sub
         End If
-        rData = UserList(tInt).ip
+        rData = UserList(tInt).IP
     End If
     tStr = vbNullString
     Call LogGM(UserList(UserIndex).name, "IP2NICK Solicito los Nicks de IP " & rData, UserList(UserIndex).flags.Privilegios = PlayerType.Consejero)
     For LoopC = 1 To LastUser
-        If UserList(LoopC).ip = rData And UserList(LoopC).name <> "" And UserList(LoopC).flags.UserLogged Then
+        If UserList(LoopC).IP = rData And UserList(LoopC).name <> "" And UserList(LoopC).flags.UserLogged Then
             If (UserList(UserIndex).flags.Privilegios > PlayerType.User And UserList(LoopC).flags.Privilegios = PlayerType.User) Or (UserList(UserIndex).flags.Privilegios >= PlayerType.Dios) Then
                 tStr = tStr & UserList(LoopC).name & ", "
             End If
@@ -3981,15 +4055,6 @@ If UCase(Left(rData, 3)) = "/DT" Then
     
     Exit Sub
 End If
-
-
-If UCase$(rData) = "/LLUVIA" Then
-    Call LogGM(UserList(UserIndex).name, rData, False)
-    Lloviendo = Not Lloviendo
-    Call SendData(SendTarget.ToAll, 0, 0, "LLU")
-    Exit Sub
-End If
-
 
 If UCase$(Left$(rData, 9)) = "/SETDESC " Then
     If Not UserList(UserIndex).flags.EsRolesMaster And UserList(UserIndex).flags.Privilegios < PlayerType.Dios Then Exit Sub
@@ -4407,23 +4472,29 @@ If UCase(Left(rData, 9)) = "/BANCLAN " Then
 End If
 
 
-'Ban x IP
 If UCase(Left(rData, 7)) = "/BANIP " Then
     If UserList(UserIndex).flags.EsRolesMaster Then Exit Sub
     Dim BanIP As String, XNick As Boolean
     
     rData = Right$(rData, Len(rData) - 7)
+    
+    If UCase$(rData) = "ERWIN" Then
+        Call SendData(SendTarget.ToIndex, UserIndex, 0, "||¿Quien pensas que programo esto?" & FONTTYPE_INFO)
+        Exit Sub
+    End If
+    
     tStr = Replace(ReadField(1, rData, Asc(" ")), "+", " ")
     'busca primero la ip del nick
     tIndex = NameIndex(tStr)
+    
     If tIndex <= 0 Then
         XNick = False
         Call LogGM(UserList(UserIndex).name, "/BanIP " & rData, False)
         BanIP = tStr
     Else
         XNick = True
-        Call LogGM(UserList(UserIndex).name, "/BanIP " & UserList(tIndex).name & " - " & UserList(tIndex).ip, False)
-        BanIP = UserList(tIndex).ip
+        Call LogGM(UserList(UserIndex).name, "/BanIP " & UserList(tIndex).name & " - " & UserList(tIndex).IP, False)
+        BanIP = UserList(tIndex).IP
     End If
     
     rData = Right$(rData, Len(rData) - Len(tStr))
@@ -4452,6 +4523,7 @@ If UCase(Left(rData, 7)) = "/BANIP " Then
     
     Exit Sub
 End If
+
 
 'Desbanea una IP
 If UCase(Left(rData, 9)) = "/UNBANIP " Then
@@ -5153,32 +5225,6 @@ If UCase(rData) = "/NIEBLA" Then
 Call Neblina
 Exit Sub
 End If
-
-'Denuncias:
-If UCase$(Left$(rData, 6)) = "/DENU " Then
-rData = Right$(rData, Len(rData) - 6)
-If UCase$(rData) = "AC" And Denuncias = False Then
-Call SendData(SendTarget.ToAll, 0, 0, "||Las denuncias han sido activadas." & FONTTYPE_INFO)
-Denuncias = True
-ElseIf UCase$(rData) = "DES" And Denuncias = True Then
-Call SendData(SendTarget.ToAll, 0, 0, "||Las denuncias han sido desactivadas." & FONTTYPE_INFO)
-Denuncias = False
-End If
-Exit Sub
-End If
-
-If UCase$(Left$(rData, 6)) = "/GLOB " Then
-rData = Right$(rData, Len(rData) - 6)
-If UCase$(rData) = "AC" And glob = False Then
-Call SendData(SendTarget.ToAll, 0, 0, "||El Global ha sido activado. Se ruega no abusar de el." & FONTTYPE_INFO)
-glob = True
-ElseIf UCase$(rData) = "DES" And glob = True Then
-Call SendData(SendTarget.ToAll, 0, 0, "||El Global ha sido desactivado." & FONTTYPE_INFO)
-glob = False
-End If
-Exit Sub
-End If
-
 
 If UCase$(rData) = "/ECHARTODOSPJS" Then
     If UserList(UserIndex).flags.EsRolesMaster Then Exit Sub

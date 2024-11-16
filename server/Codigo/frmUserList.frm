@@ -71,7 +71,7 @@ Text2.Text = Text2.Text & "NumUsers: " & NumUsers & vbCrLf
 List1.Clear
 
 For LoopC = 1 To MaxUsers
-    List1.AddItem Format(LoopC, "000") & " " & IIf(UserList(LoopC).flags.UserLogged, UserList(LoopC).Name, "")
+    List1.AddItem Format(LoopC, "000") & " " & IIf(UserList(LoopC).flags.UserLogged, UserList(LoopC).name, "")
     List1.ItemData(List1.NewIndex) = LoopC
 Next LoopC
 
@@ -104,3 +104,4 @@ If List1.ListIndex <> -1 Then
 End If
 
 End Sub
+

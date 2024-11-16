@@ -1,49 +1,11 @@
 Attribute VB_Name = "NPCs"
-'Argentum Online 0.9.0.2
-'Copyright (C) 2002 Márquez Pablo Ignacio
-'
-'This program is free software; you can redistribute it and/or modify
-'it under the terms of the GNU General Public License as published by
-'the Free Software Foundation; either version 2 of the License, or
-'any later version.
-'
-'This program is distributed in the hope that it will be useful,
-'but WITHOUT ANY WARRANTY; without even the implied warranty of
-'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-'GNU General Public License for more details.
-'
-'You should have received a copy of the GNU General Public License
-'along with this program; if not, write to the Free Software
-'Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-'
-'Argentum Online is based on Baronsoft's VB6 Online RPG
-'You can contact the original creator of ORE at aaron@baronsoft.com
-'for more information about ORE please visit http://www.baronsoft.com/
-'
-'
-'You can contact me at:
-'morgolock@speedy.com.ar
-'www.geocities.com/gmorgolock
-'Calle 3 número 983 piso 7 dto A
-'La Plata - Pcia, Buenos Aires - Republica Argentina
-'Código Postal 1900
-'Pablo Ignacio Márquez
-
-
-'?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
-'?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
 '?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
 '                        Modulo NPC
-'?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
-'?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
 '?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
 'Contiene todas las rutinas necesarias para cotrolar los
 'NPCs meno la rutina de AI que se encuentra en el modulo
 'AI_NPCs para su mejor comprension.
 '?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
-'?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
-'?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿?¿
-
 Option Explicit
 
 Sub QuitarMascota(ByVal UserIndex As Integer, ByVal NpcIndex As Integer)
@@ -76,12 +38,18 @@ On Error GoTo errhandler
    CastilloSUR = Guilds(UserList(UserIndex).GuildIndex).GuildName
 Call WriteVar(App.Path & "\Castillos.ini", "CLANES", "SUR", Guilds(UserList(UserIndex).GuildIndex).GuildName)
 Call SendData(ToAll, 0, 0, "||El clan " & Guilds(UserList(UserIndex).GuildIndex).GuildName & " ah dominado al castillo del sur" & FONTTYPE_FENIX)
-Call SendData(ToAll, 0, 0, "TW" & "44")
+Call SendData(ToAll, 0, 0, "TW" & "123")
 Case NORTE
    CastilloNORTE = Guilds(UserList(UserIndex).GuildIndex).GuildName
 Call WriteVar(App.Path & "\Castillos.ini", "CLANES", "NORTE", Guilds(UserList(UserIndex).GuildIndex).GuildName)
 Call SendData(ToAll, 0, 0, "||El clan " & Guilds(UserList(UserIndex).GuildIndex).GuildName & " ah dominado al castillo del norte" & FONTTYPE_FENIX)
-Call SendData(ToAll, 0, 0, "TW" & "44")
+Call SendData(ToAll, 0, 0, "TW" & "123")
+Case ESTE
+   CastilloNORTE = Guilds(UserList(UserIndex).GuildIndex).GuildName
+Call WriteVar(App.Path & "\Castillos.ini", "CLANES", "ESTE", Guilds(UserList(UserIndex).GuildIndex).GuildName)
+Call SendData(ToAll, 0, 0, "||El clan " & Guilds(UserList(UserIndex).GuildIndex).GuildName & " ah dominado al castillo del este" & FONTTYPE_FENIX)
+Call SendData(ToAll, 0, 0, "TW" & "123")
+
 End Select
 End If
 If MiNPC.Numero = NPCReyCastle Then ' VERIFICO SI ESTOY MATANDO AL REY
@@ -298,7 +266,7 @@ Sub ResetNpcMainInfo(ByVal NpcIndex As Integer)
     Npclist(NpcIndex).Attackable = 0
     Npclist(NpcIndex).CanAttack = 0
     Npclist(NpcIndex).Comercia = 0
-
+    Npclist(NpcIndex).Subasta = 0
     Npclist(NpcIndex).GiveEXP = 0
     Npclist(NpcIndex).GiveGLD = 0
     Npclist(NpcIndex).Hostile = 0
@@ -827,12 +795,11 @@ Npclist(NpcIndex).Char.Heading = val(Leer.GetValue("NPC" & NpcNumber, "Heading")
 
 Npclist(NpcIndex).Attackable = val(Leer.GetValue("NPC" & NpcNumber, "Attackable"))
 Npclist(NpcIndex).Comercia = val(Leer.GetValue("NPC" & NpcNumber, "Comercia"))
-
+Npclist(NpcIndex).Subasta = val(Leer.GetValue("NPC" & NpcNumber, "Subasta"))
 Npclist(NpcIndex).Hostile = val(Leer.GetValue("NPC" & NpcNumber, "Hostile"))
 Npclist(NpcIndex).flags.OldHostil = Npclist(NpcIndex).Hostile
 
-Npclist(NpcIndex).GiveEXP = val(Leer.GetValue("NPC" & NpcNumber, "GiveEXP")) * 33
-
+Npclist(NpcIndex).GiveEXP = val(Leer.GetValue("NPC" & NpcNumber, "GiveEXP")) * 28
 'Npclist(NpcIndex).flags.ExpDada = Npclist(NpcIndex).GiveEXP
 Npclist(NpcIndex).flags.ExpCount = Npclist(NpcIndex).GiveEXP
 
@@ -841,7 +808,7 @@ Npclist(NpcIndex).Veneno = val(Leer.GetValue("NPC" & NpcNumber, "Veneno"))
 Npclist(NpcIndex).flags.Domable = val(Leer.GetValue("NPC" & NpcNumber, "Domable"))
 
 
-Npclist(NpcIndex).GiveGLD = val(Leer.GetValue("NPC" & NpcNumber, "GiveGLD")) * 20
+Npclist(NpcIndex).GiveGLD = val(Leer.GetValue("NPC" & NpcNumber, "GiveGLD")) * 18
 
 Npclist(NpcIndex).PoderAtaque = val(Leer.GetValue("NPC" & NpcNumber, "PoderAtaque"))
 Npclist(NpcIndex).PoderEvasion = val(Leer.GetValue("NPC" & NpcNumber, "PoderEvasion"))

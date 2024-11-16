@@ -12,7 +12,7 @@
 '4.....Terreno
 
 [INIT]
-NumeroHechizos=52
+NumeroHechizos=53
 
 [HECHIZO1]
 Nombre=Curar Veneno
@@ -674,7 +674,7 @@ TargetMsg=lanzó Descarga Eléctrica sobre ti.
 PropioMsg=Has lanzado Descarga Eléctrica sobre ti.
 Tipo=1
 WAV=27
-FXgrh=11
+FXgrh=54
 Loops=1
 Resis=1
 
@@ -737,8 +737,8 @@ Loops=1
 Resis=1
 
 SubeHP=2
-MinHP=82
-MaxHP=84
+MinHP=77
+MaxHP=79
     
 MinSkill=100
 ManaRequerido=1000
@@ -1072,7 +1072,7 @@ StaRequerido= 44
 
 
 [HECHIZO42]
-Nombre=Mimetismo
+Nombre=Mimetismo (Druida)
 Desc=Asimila momentáneamente tu apariencia a la del usuario a quien se lo lances.
 PalabrasMagicas=Cimim Ux Maïo
 
@@ -1091,7 +1091,7 @@ ManaRequerido=800
 
 Target=1
 StaRequerido= 44
-
+ExclusivoClase=DRUIDA
 
 
 [HECHIZO43]
@@ -1129,8 +1129,8 @@ Loops=1
 Resis=1
 
 SubeHP=2
-MinHP=128
-MaxHP=128
+MinHP=115
+MaxHP=115
     
 MinSkill=100
 ManaRequerido=1600
@@ -1247,17 +1247,15 @@ PalabrasMagicas=Pòré l Dri mitrÎ*á
 HechizeroMsg=Has un Portal a otra dimension.
 TargetMsg=Has un Portal a otra dimension.
 PropioMsg=Has un Portal a otra dimension.
-Tipo=5
 WAV=159
-FXgrh=21
-Teleport=1
-TeleportMap=134
-TeleportX=50
-TeleportY=50
-Target=4
+Tipo=3
+Invoca=0
+Cant=1
+Materializa=1
 MinSkill=100
-ManaRequerido=2000
-StaRequerido=320
+ManaRequerido=1000
+StaRequerido=130
+Target=4
 
 [HECHIZO50]
 Nombre=Anillo Mágico(Asesino)
@@ -1329,3 +1327,26 @@ ManaRequerido=55
 FXgrh=25
 Target=1
 StaRequerido= 7
+
+[HECHIZO53]
+Nombre=Rayo de Zeus
+Desc=El Dios Zeus castiga a la victima con sus temibles Rayos
+PalabrasMagicas=ZÊ^ÙS RäYMeN
+HechizeroMsg=Has lanzado =Rayo de Zeus sobre
+TargetMsg=lanzó =Rayo de Zeus sobre ti.
+PropioMsg=Has lanzado =Rayo de Zeus sobre ti.
+Tipo=1
+WAV=27
+FXgrh=54
+Loops=1
+Resis=1
+
+SubeHP=2
+MinHP=50
+MaxHP=55
+    
+MinSkill=75
+ManaRequerido=400
+
+Target=3
+StaRequerido= 67

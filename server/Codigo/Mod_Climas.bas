@@ -1,33 +1,22 @@
 Attribute VB_Name = "Mod_Climas"
-'******************************************************************************
 'Modulo Climas
-'******************************************************************************
 Option Explicit
-'******************************************************************************
 'Declaraciones del Tiempo
-'******************************************************************************
 Public Anochecer As Byte
 Public Atardecer As Byte
 Public Amanecer As Byte
 Public MedioDia As Byte
 Public Niebla As Byte
-'******************************************************************************
 'Constantes de Tiempos
-'******************************************************************************
 Public Const TiempoMañana As Integer = 1
 Public Const TiempoDia As Integer = 100
 Public Const TiempoTarde As Integer = 250
 Public Const TiempoNoche As Integer = 380
 Public Const TiempoNeblina As Integer = 9999
-'******************************************************************************
 'Declaraciones del tiempo usado
-'******************************************************************************
 Public Clima As String
 Public TiempoClima As Integer
-
-'******************************************************************************
 'Funciones Del Tiempo:
-'******************************************************************************
 'Sorteo Del Clima
 Public Function SortearClima()
     Dim ClimaElegido As Byte

@@ -520,7 +520,7 @@ End If
 DañoUsuario = RandomNumber(UserList(UserIndex).Stats.MinHIT, UserList(UserIndex).Stats.MaxHIT)
 
 ''sacar esto si no queremos q la matadracos mate el dragon si o si
-    CalcularDaño = (((3 * DañoArma) + ((DañoMaxArma / 5) * Maximo(0, (UserList(UserIndex).Stats.UserAtributos(eAtributos.Fuerza) - 15))) + DañoUsuario) * ModifClase)
+    CalcularDaño = (((7 * DañoArma) + ((DañoMaxArma / 8) * Maximo(0, (UserList(UserIndex).Stats.UserAtributos(eAtributos.Fuerza) - 15))) + DañoUsuario) * ModifClase)
 
 End Function
 
@@ -542,7 +542,7 @@ If GranPoder = UserIndex Then daño = daño * 2
 If daño <= 0 Or Npclist(NpcIndex).Stats.MaxHP = -1 Then Exit Sub
 
 '[KEVIN]
-Call SendData(ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbRed & "°-" & daño & "°" & str(Npclist(NpcIndex).Char.CharIndex))
+Call SendData(ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbred & "°-" & daño & "°" & str(Npclist(NpcIndex).Char.CharIndex))
 
 Call SendData(SendTarget.ToIndex, UserIndex, 0, "U2" & daño)
 Call CalcularDarExp(UserIndex, NpcIndex, daño)
@@ -564,7 +564,6 @@ If Npclist(NpcIndex).Stats.MinHP <= 0 Then
         If Npclist(NpcIndex).NPCtype = DRAGON Then
             'Si tiene equipada la matadracos se la sacamos
             If UserList(UserIndex).Invent.WeaponEqpObjIndex = EspadaMataDragonesIndex Then
-                Call QuitarObjetos(EspadaMataDragonesIndex, 1, UserIndex)
             End If
             If Npclist(NpcIndex).Stats.MaxHP > 100000 Then Call LogDesarrollo(UserList(UserIndex).name & " mató un dragón")
         End If
@@ -746,7 +745,7 @@ If NpcImpacto(NpcIndex, UserIndex) Then
     If Npclist(NpcIndex).Veneno = 1 Then Call NpcEnvenenarUser(UserIndex)
 Else
     Call SendData(SendTarget.ToIndex, UserIndex, 0, "N1")
-    Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbRed & "°Falla" & "°" & str(Npclist(NpcIndex).Char.CharIndex))
+    Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbred & "°Falla" & "°" & str(Npclist(NpcIndex).Char.CharIndex))
 End If
 
 
@@ -839,6 +838,35 @@ End Sub
 
 Public Sub UsuarioAtacaNpc(ByVal UserIndex As Integer, ByVal NpcIndex As Integer)
 
+
+
+    If Npclist(NpcIndex).Numero = 904 Then
+  If UserList(UserIndex).GuildIndex = 0 Then
+    Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No Tenes Clan. Para participar en la conquista de castillos necesita uno!" & FONTTYPE_INFO)
+     Exit Sub
+     Else
+    If Npclist(NpcIndex).Stats.MinHP = Npclist(NpcIndex).Stats.MaxHP Then
+  Select Case UserList(UserIndex).Pos.Map
+  Case SUR
+   CastilloSUR = Guilds(UserList(UserIndex).GuildIndex).GuildName
+Call WriteVar(App.Path & "\Castillos.ini", "CLANES", "SUR", Guilds(UserList(UserIndex).GuildIndex).GuildName)
+Call SendData(ToAll, 0, 0, "||El clan " & Guilds(UserList(UserIndex).GuildIndex).GuildName & " esta atacando al rey del castillo Sur" & FONTTYPE_FENIX)
+Call SendData(ToAll, 0, 0, "TW" & "122")
+Case NORTE
+   CastilloNORTE = Guilds(UserList(UserIndex).GuildIndex).GuildName
+Call WriteVar(App.Path & "\Castillos.ini", "CLANES", "NORTE", Guilds(UserList(UserIndex).GuildIndex).GuildName)
+Call SendData(ToAll, 0, 0, "||El clan " & Guilds(UserList(UserIndex).GuildIndex).GuildName & " esta atacando al rey del castillo Norte" & FONTTYPE_FENIX)
+Call SendData(ToAll, 0, 0, "TW" & "122")
+Case ESTE
+   CastilloNORTE = Guilds(UserList(UserIndex).GuildIndex).GuildName
+Call WriteVar(App.Path & "\Castillos.ini", "CLANES", "ESTE", Guilds(UserList(UserIndex).GuildIndex).GuildName)
+Call SendData(ToAll, 0, 0, "||El clan " & Guilds(UserList(UserIndex).GuildIndex).GuildName & " esta atacando al rey del castillo Este" & FONTTYPE_FENIX)
+Call SendData(ToAll, 0, 0, "TW" & "122")
+End Select
+     End If
+     End If
+     End If
+
 If UserList(UserIndex).flags.Privilegios = PlayerType.Consejero Then Exit Sub
 
 If Distancia(UserList(UserIndex).Pos, Npclist(NpcIndex).Pos) > MAXDISTANCIAARCO Then
@@ -881,7 +909,7 @@ If UserImpactoNpc(UserIndex, NpcIndex) Then
 Else
     Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "TW" & SND_SWING)
     Call SendData(SendTarget.ToIndex, UserIndex, 0, "U1")
-    Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbRed & "°Fallas°" & str(Npclist(NpcIndex).Char.CharIndex))
+    Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbred & "°Fallas°" & str(Npclist(NpcIndex).Char.CharIndex))
 End If
 End Sub
 

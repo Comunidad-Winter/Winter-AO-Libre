@@ -20,11 +20,6 @@ Private Type p_tSoundMapInfo
     Probabilidad() As Single
 End Type
 
-Private Enum p_eSoundFlags
-    ninguna = 0
-    Lluvia = 1
-End Enum
-
 Private p_Mapas() As p_tSoundMapInfo
 
 
@@ -79,16 +74,7 @@ Dim SonidoMapa As Byte
         If p_Mapas(i).Cantidad > 0 Then
             SonidoMapa = RandomNumber(1, p_Mapas(i).Cantidad)
             If RandomNumber(1, 100) <= p_Mapas(i).Probabilidad(SonidoMapa) Then
-                'tocarlo
-                If Lloviendo Then
-                    If p_Mapas(i).flags(SonidoMapa) Xor p_eSoundFlags.Lluvia Then
-                        Call SendData(SendTarget.ToMap, 0, i, "TW" & p_Mapas(i).SoundIndex(SonidoMapa))
-                    End If
-                Else
-                    If p_Mapas(i).flags(SonidoMapa) Xor p_eSoundFlags.ninguna Then
-                        Call SendData(SendTarget.ToMap, 0, i, "TW" & p_Mapas(i).SoundIndex(SonidoMapa))
-                    End If
-                End If
+               
             End If
         End If
     Next i

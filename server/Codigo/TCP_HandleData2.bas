@@ -130,6 +130,12 @@ If UserList(UserIndex).Pos.Map = 127 Then
 Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Estas en la carcel" & FONTTYPE_INFO)
 Exit Sub
 End If
+If UserList(UserIndex).Stats.GLD < 100000 Then
+Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No tienes suficientes monedas de oro!." & FONTTYPE_INFO)
+Else
+UserList(UserIndex).Stats.GLD = UserList(UserIndex).Stats.GLD - 100000
+Call SendUserStatsBox(UserIndex)
+End If
                 
             EntrarGuerra UserIndex
             Exit Sub
@@ -334,6 +340,10 @@ Next Y
 Next MapaActual
 End If
 Exit Sub
+
+Case "/PUBLI"
+ Call Propagandas
+Exit Sub
         Case "/DESCANSAR"
             If UserList(UserIndex).flags.Muerto = 1 Then
                 Call SendData(SendTarget.ToIndex, UserIndex, 0, "||¡¡Estas muerto!! Solo podes usar items cuando estas vivo. " & FONTTYPE_INFO)
@@ -443,6 +453,8 @@ Exit Sub
            End If
            
            UserList(UserIndex).Stats.MinHP = UserList(UserIndex).Stats.MaxHP
+           UserList(UserIndex).Stats.MinSta = UserList(UserIndex).Stats.MaxSta
+           UserList(UserIndex).Stats.MinMAN = UserList(UserIndex).Stats.MaxMAN
            Call SendUserStatsBox(UserIndex)
            Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Notas como las heridas se te van cerrando poco a poco¡¡Hás sido curado!!" & FONTTYPE_INFO)
            Call SendData(ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "CFX" & UserList(UserIndex).Char.CharIndex & "," & 26 & "," & 0)
@@ -554,9 +566,46 @@ Call WarpUserChar(UserIndex, 62, 53, 63, True)
 
 Exit Sub
 
+Case "/CASTILLO ESTE"
+'Si esta en la carcel no se va
+If UserList(UserIndex).Pos.Map = 127 Then
+Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Estas en la carcel" & FONTTYPE_INFO)
+Exit Sub
+End If
+
+If UserList(UserIndex).Pos.Map = 118 Then
+Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Estas en Torneo" & FONTTYPE_INFO)
+Exit Sub
+End If
+
+If UserList(UserIndex).Pos.Map = 132 Then
+Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Estas en Torneo" & FONTTYPE_INFO)
+Exit Sub
+End If
+
+If UserList(UserIndex).Pos.Map = 128 Then
+Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Estas en la Mansion Sagrada, mas respeto" & FONTTYPE_INFO)
+Exit Sub
+End If
+
+If UserList(UserIndex).flags.Muerto Then
+Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Los muertos no pueden participar en la conquista de castillos !!" & FONTTYPE_INFO)
+End If
+If UserList(UserIndex).Stats.GLD < 100000 Then
+Call SendData(SendTarget.ToIndex, UserIndex, 0, "||No tienes suficientes monedas de oro!." & FONTTYPE_INFO)
+Else
+UserList(UserIndex).Stats.GLD = UserList(UserIndex).Stats.GLD - 100000
+Call SendUserStatsBox(UserIndex)
+End If
+Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Bienvenido al Castillo este. Se te restaron 100000 monedas de oro por el viaje." & FONTTYPE_INFO)
+Call WarpUserChar(UserIndex, 208, 60, 85, True)
+
+Exit Sub
+
 Case "/CASTILLO"
 Call SendData(ToIndex, UserIndex, 0, "||El Castillo Sur esta en manos del clan: " & GetVar(App.Path & "\Castillos.ini", "CLANES", "SUR") & FONTTYPE_FENIX)
 Call SendData(ToIndex, UserIndex, 0, "||El Castillo Norte esta en manos del clan: " & GetVar(App.Path & "\Castillos.ini", "CLANES", "NORTE") & FONTTYPE_FENIX)
+Call SendData(ToIndex, UserIndex, 0, "||El Castillo Este esta en manos del clan: " & GetVar(App.Path & "\Castillos.ini", "CLANES", "ESTE") & FONTTYPE_FENIX)
 Exit Sub
         Case "/AYUDA"
            Call SendHelp(UserIndex)
@@ -573,6 +622,49 @@ Exit Sub
                 Call SendData(SendTarget.ToIndex, UserIndex, 0, "SEGON")
             End If
             UserList(UserIndex).flags.Seguro = Not UserList(UserIndex).flags.Seguro
+            Exit Sub
+            
+            Case "/SUBASTAR"
+            If UserList(UserIndex).flags.Muerto = 1 Then
+                Call SendData(SendTarget.ToIndex, UserIndex, 0, "||¡¡Estas muerto!!" & FONTTYPE_INFO)
+                Exit Sub
+            End If
+            
+            If UserList(UserIndex).flags.Privilegios = PlayerType.Consejero Then Exit Sub
+            
+            If UserList(UserIndex).flags.TargetNPC > 0 Then
+                If Npclist(UserList(UserIndex).flags.TargetNPC).Subasta = 0 Then
+                    If Len(Npclist(UserList(UserIndex).flags.TargetNPC).Desc) > 0 Then Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbWhite & "°" & "Te has equivocado de persona, el subastador se encuentra en Banderbill." & "°" & CStr(Npclist(UserList(UserIndex).flags.TargetNPC).Char.CharIndex))
+                    Exit Sub
+                End If
+                If Distancia(Npclist(UserList(UserIndex).flags.TargetNPC).Pos, UserList(UserIndex).Pos) > 3 Then
+                    Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Estas demasiado lejos del subastador." & FONTTYPE_INFO)
+                    Exit Sub
+                End If
+                If UserList(UserIndex).Stats.ELV < 20 Then
+                    Call SendData(SendTarget.ToIndex, UserIndex, 0, "PRB43")
+                    Exit Sub
+                End If
+                If UserList(UserIndex).Stats.UserSkills(eSkill.Comerciar) < 20 Then
+                    Call SendData(SendTarget.ToIndex, UserIndex, 0, "PRB44")
+                    Exit Sub
+                End If
+                If Subastando = True Then
+                    Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & vbWhite & "°" & "Ya hay una subasta en curso, debes esperar a que finalice para comenzar la tuya." & "°" & CStr(Npclist(UserList(UserIndex).flags.TargetNPC).Char.CharIndex))
+                    Exit Sub
+                End If
+                Call IniciarSubasta(UserIndex)
+            Else
+                Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Primero hace click izquierdo sobre el personaje." & FONTTYPE_INFO)
+            End If
+            Exit Sub
+            
+        Case "/SUBASTA"
+            If Subastando = True Then
+                Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & Subastante & " está subastando: " & subastObj & " (Cantidad:" & subastCant & ") con un oferta mínima alcanzada de " & subastPrice & " monedas." & FONTTYPE_INFO)
+            Else
+                Call SendData(SendTarget.ToIndex, UserIndex, 0, "PRB40")
+            End If
             Exit Sub
             
         Case "/SEF"
@@ -760,6 +852,36 @@ Case "/ENCAMAR"
             Exit Sub
         '[/KEVIN]------------------------------------
    
+   
+               Case "/REWARD"
+               
+               If UserList(UserIndex).flags.Muerto = 1 Then
+Call SendData(SendTarget.ToIndex, UserIndex, 0, "||¡¡Estas muerto!!" & FONTTYPE_INFO)
+Exit Sub
+End If
+               
+If (UserList(UserIndex).Stats.ELV < 50) Then
+      Call SendData(ToIndex, UserIndex, 0, "||No eres nivel 50 aún" & FONTTYPE_INFO)
+       Exit Sub
+       End If
+       If UserList(UserIndex).Stats.Reward = 1 Then
+Call SendData(SendTarget.ToIndex, UserIndex, 0, "||Ya has hecho Reward no puedes volver a hacerlo" & FONTTYPE_INFO)
+Exit Sub
+         End If
+         If Not TieneObjetos(409, 1, UserIndex) Then
+Call SendData(ToIndex, UserIndex, 0, "||Necesitas tener la Gema Espectral. Solo los dragones te pueden dar estas Gemas" & FONTTYPE_GUILD)
+Exit Sub
+End If
+
+UserList(UserIndex).Stats.PuntosTorneo = UserList(UserIndex).Stats.PuntosTorneo + 5
+Call SendData(ToIndex, UserIndex, 0, "||Felicitaciones!, has cumplido el Reward. Obtienes 5 Pts de Torneo de recompensa." & FONTTYPE_INFO)
+Call CheckUserLevel(UserIndex)
+Call SendUserStatsBox(UserIndex)
+Call QuitarObjetos(409, 1, UserIndex)
+UserList(UserIndex).Stats.Reward = 1
+Exit Sub
+
+
         Case "/ENLISTAR"
             'Se asegura que el target es un npc
            If UserList(UserIndex).flags.TargetNPC = 0 Then
@@ -883,7 +1005,7 @@ Case "/ENCAMAR"
         'clanesnuevo
         rData = Right$(rData, Len(rData) - 6)
         If UserList(UserIndex).GuildIndex > 0 Then
-            Call SendData(SendTarget.ToDiosesYclan, UserList(UserIndex).GuildIndex, 0, "|+" & UserList(UserIndex).name & "> " & rData & FONTTYPE_GUILDMSG)
+            Call SendData(SendTarget.ToDiosesYclan, UserList(UserIndex).GuildIndex, 0, "||" & UserList(UserIndex).name & "> " & rData & FONTTYPE_GUILDMSG)
             Call SendData(SendTarget.ToClanArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbYellow & "°< " & rData & " >°" & CStr(UserList(UserIndex).Char.CharIndex))
         End If
         
@@ -1034,6 +1156,27 @@ Case "/ENCAMAR"
             
             Call SendData(SendTarget.ToIndex, UserIndex, 0, "||La Sugerencia ha sido reportado exitosamente!" & FONTTYPE_GUILD)
             Call SendData(SendTarget.ToAdmins, 0, 0, "||" & Sugerencia & FONTTYPE_TALK)
+            
+            Exit Sub
+            
+            Case "/REF "
+            rData = Right$(rData, Len(rData) - 5)
+            
+            Dim CantRefs As Integer
+            Dim Ref As Integer
+            Dim NuevaRef As String
+            Dim Referencia As String
+                
+            CantRefs = GetVar(App.Path & "\REFS\REFINI", "REFS", "CANTIDAD")
+                Ref = val(CantSugs) + 1
+            NuevaRef = "Sug" & Sug
+            Referencia = UserList(UserIndex).name & " Reporto la siguiente Sugerencia: " & rData
+
+            Call WriteVar(App.Path & "\REFS\REF.INI", "Refs", "Cantidad", Ref)
+            Call WriteVar(App.Path & "\REFS\REF.INI", "Referenciass", NuevaRef, Referencia)
+            
+            Call SendData(SendTarget.ToIndex, UserIndex, 0, "||La Referencia ha sido reportado exitosamente!" & FONTTYPE_GUILD)
+            Call SendData(SendTarget.ToAdmins, 0, 0, "||" & Referencia & FONTTYPE_TALK)
             
             Exit Sub
             
@@ -1251,6 +1394,37 @@ Case "/ENCAMAR"
             Exit Sub
     
                 
+            Case "/OFERTAR "
+            OfertaSUB = Right$(rData, Len(rData) - 9)
+            If UserList(UserIndex).flags.Muerto = 1 Then
+                Call SendData(SendTarget.ToIndex, UserIndex, 0, "||¡¡Estas muerto!!" & FONTTYPE_INFO)
+                Exit Sub
+            End If
+            
+            If UserList(UserIndex).flags.Privilegios = PlayerType.Consejero Then Exit Sub
+            
+            If UserList(UserIndex).Stats.ELV < 7 Then
+                Call SendData(SendTarget.ToIndex, UserIndex, 0, "PRE52")
+                Exit Sub
+            End If
+            
+            If UserList(UserIndex).Stats.GLD < OfertaSUB Then
+                Call SendData(SendTarget.ToIndex, UserIndex, 0, "PRB41")
+                Exit Sub
+            End If
+            
+            
+            If Subastando = True Then
+                If UserList(UserIndex).name = Subastante Then
+                    Call SendData(SendTarget.ToIndex, UserIndex, 0, "PRB42")
+                    Exit Sub
+                End If
+                Call OfertarSubasta(UserIndex, OfertaSUB)
+            Else
+                Call SendData(SendTarget.ToIndex, UserIndex, 0, "PRB40")
+            End If
+            
+            Exit Sub
     End Select
     
     Select Case UCase$(Left$(rData, 10))

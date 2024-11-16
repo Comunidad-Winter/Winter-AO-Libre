@@ -1,5 +1,5 @@
 [INIT]
-NumArmaduras=82
+NumArmaduras=85
 
 
 [Armadura1] ' Casco de hierro
@@ -251,3 +251,15 @@ Index=1033
 
 [Armadura83] ' Armadura de Dragon Negro
 Index=992
+
+[Armadura84] ' Armadura Durex
+Index=1293
+
+[Armadura85] 'Tunica Nogan
+Index=1298
+
+[Armadura86] 
+Index=1293
+
+[Armadura87] 
+Index=1294

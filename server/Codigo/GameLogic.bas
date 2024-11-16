@@ -20,6 +20,7 @@ If InMapBounds(Map, X, Y) Then
 If MapData(Map, X, Y).trigger = 7 Then
 If UserList(UserIndex).flags.Muerto = 1 Then
 Call RevivirUsuario(UserIndex)
+Call SendData(ToPCArea, UserIndex, Map, "TW20")
 Call SendData(ToIndex, UserIndex, 0, "||¡¡Hás sido resucitado!!" & FONTTYPE_INFO)
 UserList(UserIndex).Stats.MinHP = UserList(UserIndex).Stats.MaxHP
 Call SendUserStatsBox(val(UserIndex))
@@ -421,7 +422,7 @@ Public Sub Expresar(ByVal NpcIndex As Integer, ByVal UserIndex As Integer)
     If Npclist(NpcIndex).NroExpresiones > 0 Then
         Dim randomi
         randomi = RandomNumber(1, Npclist(NpcIndex).NroExpresiones)
-        Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbWhite & "°" & Npclist(NpcIndex).Expresiones(randomi) & "°" & Npclist(NpcIndex).Char.CharIndex & FONTTYPE_INFO)
+        Call SendData(SendTarget.ToPCArea, UserIndex, UserList(UserIndex).Pos.Map, "||" & vbwhite & "°" & Npclist(NpcIndex).Expresiones(randomi) & "°" & Npclist(NpcIndex).Char.CharIndex & FONTTYPE_INFO)
     End If
 End Sub
 
@@ -530,25 +531,25 @@ Stat = Stat & " <" & Guilds(UserList(TempCharIndex).GuildIndex).GuildName & ">"
 End If
 
 If Len(UserList(TempCharIndex).Desc) > 1 Then
-Stat = "Ves a " & UserList(TempCharIndex).name & Stat & " - " & UserList(TempCharIndex).Desc
+Stat = "Ves a " & UserList(TempCharIndex).name & Stat & " - " & UserList(TempCharIndex).Desc & " (" & UserList(TempCharIndex).Clase & " " & UserList(TempCharIndex).Raza & " " & " Nivel " & UserList(TempCharIndex).Stats.ELV & " | "
 Else
-Stat = "Ves a " & UserList(TempCharIndex).name & Stat
+Stat = "Ves a " & UserList(TempCharIndex).name & Stat & " (" & UserList(TempCharIndex).Clase & " " & UserList(TempCharIndex).Raza & " " & " Nivel " & UserList(TempCharIndex).Stats.ELV & " | "
 End If
 
 If UserList(TempCharIndex).Stats.MinHP < (UserList(TempCharIndex).Stats.MaxHP * 0.05) Then
-                    Stat = Stat & " [Muerto]"
+                    Stat = Stat & " Muerto)"
                 ElseIf UserList(TempCharIndex).Stats.MinHP < (UserList(TempCharIndex).Stats.MaxHP * 0.1) Then
-                    Stat = Stat & " [Casi muerto]"
+                    Stat = Stat & " Casi muerto)"
                 ElseIf UserList(TempCharIndex).Stats.MinHP < (UserList(TempCharIndex).Stats.MaxHP * 0.25) Then
-                    Stat = Stat & " [Muy Malherido]"
+                    Stat = Stat & " Muy Malherido)"
                 ElseIf UserList(TempCharIndex).Stats.MinHP < (UserList(TempCharIndex).Stats.MaxHP * 0.5) Then
-                    Stat = Stat & " [Malherido]"
+                    Stat = Stat & " Malherido)"
                 ElseIf UserList(TempCharIndex).Stats.MinHP < (UserList(TempCharIndex).Stats.MaxHP * 0.75) Then
-                    Stat = Stat & " [Herido]"
+                    Stat = Stat & " Herido9"
                 ElseIf UserList(TempCharIndex).Stats.MinHP < (UserList(TempCharIndex).Stats.MaxHP) Then
-                    Stat = Stat & " [Levemente Herido]"
+                    Stat = Stat & " Levemente Herido)"
                 Else
-                    Stat = Stat & " [Intacto]"
+                    Stat = Stat & " Intacto)"
                 End If
 
 If UserList(TempCharIndex).flags.PertAlCons > 0 Then
@@ -600,7 +601,7 @@ End If
             End If
            
             If Len(Npclist(TempCharIndex).Desc) > 1 Then
- Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & vbYellow & "°" & Npclist(TempCharIndex).Desc & "°" & Npclist(TempCharIndex).Char.CharIndex & FONTTYPE_INFO)
+ Call SendData(SendTarget.ToIndex, UserIndex, 0, "||" & vbyellow & "°" & Npclist(TempCharIndex).Desc & "°" & Npclist(TempCharIndex).Char.CharIndex & FONTTYPE_INFO)
             Else
                
                 If Npclist(TempCharIndex).MaestroUser > 0 Then

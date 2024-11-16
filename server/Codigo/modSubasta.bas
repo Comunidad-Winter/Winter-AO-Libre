@@ -1,5 +1,15 @@
 Attribute VB_Name = "modSubasta"
+Public Sub IniciarSubasta(ByVal UserIndex As Integer)
 
+On Error Resume Next
+    
+    Call UpdateUserInv(True, UserIndex, 0)
+    Call SendUserStatsBox(UserIndex)
+    Call SendData(SendTarget.ToIndex, UserIndex, 0, "INITSUB")
+    
+    Subastando = True
+
+End Sub
 
 
 Sub NPCSubasta(ByVal UserIndex As Integer, ByVal Item As Integer, ByVal Cantidad As Integer, ByVal Precio As Long)

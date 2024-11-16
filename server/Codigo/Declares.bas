@@ -2,15 +2,17 @@ Attribute VB_Name = "Declaraciones"
 Option Explicit
 Public CastilloSUR As String 'CLAN DUEÑO
 Public CastilloNORTE As String 'CLAN DUEÑO
+Public CastilloESTE As String 'CLAN DUEÑO
 Public NPCReyCastle As Integer 'REY DEL CASTILLO
 Public SUR As Integer 'NUMERO DEL MAPABUSCAR:
 Public NORTE As Integer 'NUMERO DEL MAPABUSCAR:
+Public ESTE As Integer 'NUMERO DEL MAPABUSCAR:
 Public CuentaRegresiva As Integer
 ''
 'Denuncias
 Public Denuncias As Boolean
 
-Public Const ClaveSeguridad As String * 18 = "PII421A5X%ZAXI-"
+Public Const ClaveSeguridad As String * 18 = "LOR817W0I@KPFKY*"
 ' Modulo de declaraciones. Aca hay de todo.
 '
 
@@ -111,7 +113,7 @@ Public Const TIEMPO_INICIOMEDITAR As Byte = 3
 Public Const NingunEscudo As Integer = 2
 Public Const NingunCasco As Integer = 2
 Public Const NingunArma As Integer = 2
-
+Public Const NingunAura As Integer = 2
 Public Const EspadaMataDragonesIndex As Integer = 402
 Public Const LAUDMAGICO As Integer = 696
 
@@ -327,6 +329,13 @@ Public Const iCabezaMuerto As Integer = 500
 Public Const iORO As Byte = 12
 Public Const Pescado As Byte = 139
 
+Public Subastando As Boolean
+Public Subastante As String
+Public subastCant As Integer
+Public subastObj As String
+Public subastPrice As Long
+Public subastObjIndex As Integer
+Public subastLastOffer As String
 
 Public Enum PECES_POSIBLES
     PESCADO1 = 139
@@ -664,6 +673,7 @@ End Type
 
 'Datos de user o npc
 Public Type Char
+Aura As Integer
     CharIndex As Integer
     Head As Integer
     Body As Integer
@@ -680,6 +690,7 @@ End Type
 
 'Tipos de objetos
 Public Type ObjData
+Aura As Integer
 ' Le damos los atributos al objeto.
 mapa As Integer
 X As Integer
@@ -744,6 +755,8 @@ Y As Integer
     
     Valor As Long     ' Precio
     
+    Minlvl As Integer
+    
     Cerrada As Integer
     Llave As Byte
     clave As Long 'si clave=llave la puerta se abre o cierra
@@ -755,7 +768,8 @@ Y As Integer
     RazaEnana As Byte
     Mujer As Byte
     Hombre As Byte
-            
+    NoSubasta As Byte
+    
     Envenena As Byte
     Paraliza As Byte
     
@@ -806,6 +820,13 @@ Public Type BancoInventario
     NroItems As Integer
 End Type
 '[/KEVIN]
+
+Public bancoObj(1 To MAX_BANCOINVENTORY_SLOTS) As SubastaBanco
+
+Public Type SubastaBanco
+    ObjIndex As Integer
+    Amount As Integer
+End Type
 
 
 '*********************************************************
@@ -865,7 +886,7 @@ Public Type UserStats
     
     SkillPts As Integer
     PuntosTorneo As Integer
-    
+        Reward As Integer
 End Type
 
 'Flags
@@ -889,6 +910,7 @@ cojiendo As Integer
     UserLogged As Boolean '¿Esta online?
     Meditando As Boolean
     ModoCombate As Boolean
+    ParticipaSubasta As Boolean
     Descuento As String
     Hambre As Byte
     Sed As Byte
@@ -1080,7 +1102,8 @@ Lac As TLac '[loopzer] 'el Anti-Cheats Lac(Loopzer Anti-Cheats)
     Genero As String
     email As String
     Hogar As String
-        
+    
+    
     Invent As Inventario
     
     Pos As WorldPos
@@ -1117,7 +1140,7 @@ Lac As TLac '[loopzer] 'el Anti-Cheats Lac(Loopzer Anti-Cheats)
     PacketNumber As Long
     RandKey As Long
     
-    ip As String
+    IP As String
     
      '[Alejo]
     ComUsu As tCOmercioUsuario
@@ -1255,7 +1278,7 @@ Public Type npc
     InvReSpawn As Byte
 
     Comercia As Integer
-
+Subasta As Integer
     Target As Long
     TargetNPC As Long
     TipoItems As Integer
@@ -1454,10 +1477,8 @@ Public BanIps As New Collection
 Public Parties() As clsParty
 '*********************************************************
 
-Public Nix As WorldPos
 Public Ullathorpe As WorldPos
-Public Banderbill As WorldPos
-Public Lindos As WorldPos
+Public Ramx As WorldPos
 
 Public Prision As WorldPos
 Public Libertad As WorldPos

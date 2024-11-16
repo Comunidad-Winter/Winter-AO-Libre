@@ -1,7 +1,9 @@
 # Winter-AO
-Winter AO Ultimate Mod de Argentum Online 0.11.5
+Winter AO Ultimate Mod de Argentum Online 0.11.5 con DX8
 
 ## Cambios:
+
+* Versión 1:
 
 - Añadido Global (; y el texto para hablar) Para activarlo hay que pone /Glob AC(Funcional)
 - Añadido Conectar directo desde el frmconnect (Funcional)
@@ -128,12 +130,32 @@ Winter AO Ultimate Mod de Argentum Online 0.11.5
 - Agregado Npc pegan menos a guerreros y cazadores. (Funcional)
 - Agregado luz al pasar el mouse por un objeto. (Funcional)
 
+Version 2.0
+
+-Eliminado el Engine DX7
+-Agregado nuevo Engine DX8
+-Agregado Fps libres
+
 ## Bug conocidos:
 
 - NPC de duelo no funciona.
 - En algunos mapas sale el minimapa cortado por la mitad
 - Bug en el casco de Hierro
 - Banderas de la Armada bugeadas
+- Inestabilidad del Motor Grafico
+
+## Instrucciones:
+
+Winter-AO cuenta con un pequeño sistema de seguridad de GM. Es simple, solo deja entrar al GM que tiene
+X ip asignada. Si por ejemplo la ip de ese GM es XX-XX-XX-XX solo podra entrar con esa ip, en caso de intentar
+entrar con la ip YY-YY-YY-YY-YY Le dara error.
+Esto evita que los usuarios puedan entrar a la cuenta de los GM apesar de que consigan su pass, o tambien que
+los GM le deje a un amigo entrar desde su casa.
+
+Simplemente buscan "ERWIN" y sustitulle en nombre de erwin por el nombre el GM. Despues en server.init
+Sustitullen el nombre y IP.
+
+En el cliente tendran que cambiar la ip de comprobacion de actualizaciones o si no dara muchos problemas.
 
 ## Galeria
 

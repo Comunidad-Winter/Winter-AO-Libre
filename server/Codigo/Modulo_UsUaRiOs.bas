@@ -116,17 +116,17 @@ Sub EnviarFama(ByVal UserIndex As Integer)
     cad = cad & UserList(UserIndex).Reputacion.NobleRep & ","
     cad = cad & UserList(UserIndex).Reputacion.PlebeRep & ","
     
-    Dim l As Long
+    Dim L As Long
     
-    l = (-UserList(UserIndex).Reputacion.AsesinoRep) + _
+    L = (-UserList(UserIndex).Reputacion.AsesinoRep) + _
         (-UserList(UserIndex).Reputacion.BandidoRep) + _
         UserList(UserIndex).Reputacion.BurguesRep + _
         (-UserList(UserIndex).Reputacion.LadronesRep) + _
         UserList(UserIndex).Reputacion.NobleRep + _
         UserList(UserIndex).Reputacion.PlebeRep
-    l = l / 6
+    L = L / 6
     
-    UserList(UserIndex).Reputacion.Promedio = l
+    UserList(UserIndex).Reputacion.Promedio = L
     
     cad = cad & UserList(UserIndex).Reputacion.Promedio
     
@@ -735,7 +735,35 @@ Function NextOpenUser() As Integer
     NextOpenUser = LoopC
 
 End Function
+Sub SendUserHitBox(ByVal UserIndex As Integer)
+Dim cosa As String
 
+If UserList(UserIndex).Invent.WeaponEqpObjIndex > 0 Then
+cosa = cosa & ObjData(UserList(UserIndex).Invent.WeaponEqpObjIndex).MinHIT & "/" & ObjData(UserList(UserIndex).Invent.WeaponEqpObjIndex).MaxHIT & ","
+Else
+cosa = cosa & "N/A,"
+End If
+
+If UserList(UserIndex).Invent.ArmourEqpObjIndex > 0 Then
+cosa = cosa & ObjData(UserList(UserIndex).Invent.ArmourEqpObjIndex).MinDef & "/" & ObjData(UserList(UserIndex).Invent.ArmourEqpObjIndex).MaxDef & ","
+Else
+cosa = cosa & "N/A,"
+End If
+
+If UserList(UserIndex).Invent.CascoEqpObjIndex > 0 Then
+cosa = cosa & ObjData(UserList(UserIndex).Invent.CascoEqpObjIndex).MinDef & "/" & ObjData(UserList(UserIndex).Invent.CascoEqpObjIndex).MaxDef & ","
+Else
+cosa = cosa & "N/A,"
+End If
+
+If UserList(UserIndex).Invent.EscudoEqpObjIndex > 0 Then
+cosa = cosa & ObjData(UserList(UserIndex).Invent.EscudoEqpObjIndex).MinDef & "/" & ObjData(UserList(UserIndex).Invent.EscudoEqpObjIndex).MaxDef
+Else
+cosa = cosa & "N/A"
+End If
+
+SendData SendTarget.ToIndex, UserIndex, 0, "ARM" & cosa
+End Sub
 
 
 Sub SendUserStatsBox(ByVal UserIndex As Integer)
@@ -1029,7 +1057,7 @@ End If
     Call SendData(SendTarget.ToIndex, UserIndex, 0, "|G0")
     Call SendData(SendTarget.ToIndex, UserIndex, 0, "MUERTEE")
     
-
+Call SendUserHitBox(UserIndex)
     
     Dim aN As Integer
     
