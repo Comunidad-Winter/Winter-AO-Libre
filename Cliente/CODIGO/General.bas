@@ -569,13 +569,13 @@ Sub Main()
         End
     End If
    
-    If GetVar(App.Path & "\init\Config.CFG", "UPDATE", "Y") = 1 Then
-        Call WriteVar(App.Path & "\init\Config.CFG", "UPDATE", "Y", "0")
-    Else
-        MsgBox "¡Debes de ejecutar el cliente desde el Launcher!", vbInformation
-        End
-        Exit Sub
-    End If
+'    If GetVar(App.Path & "\init\Config.CFG", "UPDATE", "Y") = 1 Then
+'        Call WriteVar(App.Path & "\init\Config.CFG", "UPDATE", "Y", "0")
+'    Else
+'        MsgBox "¡Debes de ejecutar el cliente desde el Launcher!", vbInformation
+'        End
+'        Exit Sub
+'    End If
    
     If Debugger Then
         Call AntiDebugger
