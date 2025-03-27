@@ -1493,6 +1493,10 @@ Public IniPath As String
 Public CharPath As String
 
 ''
+'Ruta base para guardar las cuentas
+Public AccPath As String
+
+''
 'Ruta base para los archivos de mapas
 Public MapPath As String
 

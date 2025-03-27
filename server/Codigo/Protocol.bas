@@ -4792,12 +4792,14 @@ End Sub
 ' @param    userIndex The index of the user sending the message.
 
 Private Sub HandleOnline(ByVal UserIndex As Integer)
-'***************************************************
-'Author: Juan Martín Sotuyo Dodero (Maraxus)
-'Last Modification: 05/17/06
-'
-'***************************************************
-    Dim i As Long
+
+    '***************************************************
+    'Author: Juan Martín Sotuyo Dodero (Maraxus)
+    'Last Modification: 05/17/06
+    '
+    '***************************************************
+    Dim i     As Long
+
     Dim Count As Long
     
     With UserList(UserIndex)
@@ -4805,41 +4807,44 @@ Private Sub HandleOnline(ByVal UserIndex As Integer)
         Call .incomingData.ReadByte
         
         For i = 1 To LastUser
+
             If LenB(UserList(i).Name) <> 0 Then
-                If UserList(i).flags.Privilegios And (PlayerType.User Or PlayerType.Consejero) Then _
-                    Count = Count + 1
+                If UserList(i).flags.Privilegios And (PlayerType.User Or PlayerType.Consejero) Then Count = Count + 1
+
             End If
+
         Next i
-        If Hour(Now) >= 6 And Hour(Now) < 12 Then
-            Call WriteConsoleMsg(UserIndex, "Número de usuarios: " & CStr(Count) + RandomNumber(3, 8), FontTypeNames.FONTTYPE_INFO)
-        Else
-            Call WriteConsoleMsg(UserIndex, "Número de usuarios: " & CStr(Count) + RandomNumber(14, 17), FontTypeNames.FONTTYPE_INFO)
-        End If
+
+        Call WriteConsoleMsg(UserIndex, "Número de usuarios: " & CStr(Count), FontTypeNames.FONTTYPE_INFO)
         
-            Dim Time As Long
-    Dim UpTimeStr As String
+        Dim Time      As Long
+
+        Dim UpTimeStr As String
     
-    'Get total time in seconds
-    Time = ((GetTickCount() And &H7FFFFFFF) - tInicioServer) \ 1000
+        'Get total time in seconds
+        Time = ((GetTickCount() And &H7FFFFFFF) - tInicioServer) \ 1000
     
-    'Get times in dd:hh:mm:ss format
-    UpTimeStr = (Time Mod 60) & " segundos."
-    Time = Time \ 60
+        'Get times in dd:hh:mm:ss format
+        UpTimeStr = (Time Mod 60) & " segundos."
+        Time = Time \ 60
     
-    UpTimeStr = (Time Mod 60) & " minutos, " & UpTimeStr
-    Time = Time \ 60
+        UpTimeStr = (Time Mod 60) & " minutos, " & UpTimeStr
+        Time = Time \ 60
     
-    UpTimeStr = (Time Mod 24) & " horas, " & UpTimeStr
-    Time = Time \ 24
+        UpTimeStr = (Time Mod 24) & " horas, " & UpTimeStr
+        Time = Time \ 24
     
-    If Time = 1 Then
-        UpTimeStr = Time & " día, " & UpTimeStr
-    Else
-        UpTimeStr = Time & " días, " & UpTimeStr
-    End If
+        If Time = 1 Then
+            UpTimeStr = Time & " día, " & UpTimeStr
+        Else
+            UpTimeStr = Time & " días, " & UpTimeStr
+
+        End If
     
-    Call WriteConsoleMsg(UserIndex, "Server Online: " & UpTimeStr, FontTypeNames.FONTTYPE_INFO)
+        Call WriteConsoleMsg(UserIndex, "Server Online: " & UpTimeStr, FontTypeNames.FONTTYPE_INFO)
+
     End With
+
 End Sub
 
 ''
